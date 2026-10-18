@@ -22,6 +22,10 @@ public class Atraccion {
     private BigDecimal price;
     private Integer minimumAge;
 
+    @ManyToOne
+    @JoinColumn(name = "enterprise_id")
+    private Enterprise enterprise;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getName() { return name; }
@@ -38,4 +42,7 @@ public class Atraccion {
     public void setPrice(BigDecimal price) { this.price = price; }
     public Integer getMinimumAge() { return minimumAge; }
     public void setMinimumAge(Integer minimumAge) { this.minimumAge = minimumAge; }
+
+    public Enterprise getEnterprise() { return enterprise; }
+    public void setEnterprise(Enterprise enterprise) { this.enterprise = enterprise; }
 }
