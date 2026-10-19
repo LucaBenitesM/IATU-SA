@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Uruguay Mnatural</title>
+<style>
+  :root {
+    --forest: #14352c;
+    --leaf: #3f7d4e;
+    --water: #2a7f9e;
+    --sun: #f2b705;
+    --bg: #f1f5f2;
+    --card: #ffffff;
+    --text: #1d2b26;
+    --muted: #5d6e66;
+    --line: #d3ddd7;
+    --ok-bg: #e2f3e6;
+    --ok-text: #1d5a2e;
+    --err-bg: #fbe5e3;
+    --err-text: #8a2a22;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1c18;
+      --card: #172a24;
+      --text: #e6efe9;
+      --muted: #9db3a8;
+      --line: #2a4038;
+      --ok-bg: #1b3b27;
+      --ok-text: #a8e2b8;
+      --err-bg: #3d1f1c;
+      --err-text: #f2b3ac;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  header {
+    background: var(--forest);
+    color: #fff;
+    padding: 2rem 1.25rem 1.5rem;
+    border-bottom: 6px solid var(--sun);
+  }
+  header h1 { margin: 0; font-size: 1.9rem; letter-spacing: -0.5px; }
+  header p { margin: 0.25rem 0 0; color: #b9d3c6; }
+  main {
+    max-width: 960px;
+    margin: 1.5rem auto;
+    padding: 0 1rem 3rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.25rem;
+    align-items: start;
+  }
+  section {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+  section h2 { margin: 0 0 1rem; font-size: 1.2rem; color: var(--leaf); }
+  label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.9rem; }
+  input, select, textarea {
+    display: block;
+    width: 100%;
+    margin-top: 0.25rem;
+    padding: 0.55rem 0.65rem;
+    font: inherit;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+  }
+  textarea { resize: vertical; min-height: 80px; }
+  input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible {
+    outline: 3px solid var(--water);
+    outline-offset: 1px;
+  }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  button {
+    width: 100%;
+    padding: 0.7rem;
+    font: inherit;
+    font-weight: 700;
+    color: #fff;
+    background: var(--leaf);
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  button:hover { background: var(--forest); }
+  button:disabled { opacity: 0.6; cursor: wait; }
+  .msg {
+    margin-top: 1rem;
+    padding: 0.7rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    display: none;
+    word-break: break-word;
+  }
+  .msg.ok { display: block; background: var(--ok-bg); color: var(--ok-text); }
+  .msg.err { display: block; background: var(--err-bg); color: var(--err-text); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Uruguay Mnatural</h1>
+  <p>Registrá usuarios y cargá atracciones turísticas.</p>
+</header>
+
+<main>
+
+  <section>
+    <h2>Crear usuario</h2>
+    <form id="userForm">
+      <div class="row">
+        <label>Nombre
+          <input name="firstName" required>
+        </label>
+        <label>Apellido
+          <input name="lastName" required>
+        </label>
+      </div>
+      <label>Email
+        <input name="email" type="email" required>
+      </label>
+      <label>Contraseña
+        <input name="password" type="password" minlength="4" required>
+      </label>
+      <label>Tipo de usuario
+        <select name="role" required>
+          <option value="TOURIST">Turista</option>
+          <option value="PROVIDER">Prestador</option>
+        </select>
+      </label>
+      <button type="submit">Crear usuario</button>
+    </form>
+    <div id="userMsg" class="msg" role="status"></div>
+  </section>
+
+  <section>
+    <h2>Crear atracción</h2>
+    <form id="attractionForm">
+      <label>Nombre
+        <input name="name" required>
+      </label>
+      <label>Descripción
+        <textarea name="description" maxlength="2000" required></textarea>
+      </label>
+      <div class="row">
+        <label>Departamento
+          <input name="department" required>
+        </label>
+        <label>Localidad
+          <input name="locality" required>
+        </label>
+      </div>
+      <div class="row">
+        <label>Duración (minutos)
+          <input name="durationMinutes" type="number" min="1" required>
+        </label>
+        <label>Precio ($)
+          <input name="price" type="number" min="0" step="0.01" required>
+        </label>
+      </div>
+      <label>Edad mínima (opcional)
+        <input name="minimumAge" type="number" min="0">
+      </label>
+      <button type="submit">Crear atracción</button>
+    </form>
+    <div id="attractionMsg" class="msg" role="status"></div>
+  </section>
+
+</main>
+
+<script>
+  // ---------------------------------------------------------------
+  // CONFIGURACIÓN: ajustar si en su proyecto los nombres son distintos.
+  // - Las URLs tienen que coincidir con el @RequestMapping de sus controllers.
+  // - Los nombres de los campos del formulario (atributo "name" de cada input)
+  //   tienen que coincidir con los atributos de sus entidades Java.
+  // ---------------------------------------------------------------
+  const USER_URL = "/api/users";
+  const ATTRACTION_URL = "/api/attractions";
+
+  async function sendForm(form, url, msgBox, successText, transform) {
+    const button = form.querySelector("button");
+    const data = Object.fromEntries(new FormData(form).entries());
+    const body = transform ? transform(data) : data;
+
+    button.disabled = true;
+    msgBox.className = "msg";
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+
+      if (response.ok) {
+        const created = await response.json().catch(() => ({}));
+        const idText = created.id ? " (id " + created.id + ")" : "";
+        msgBox.textContent = successText + idText;
+        msgBox.className = "msg ok";
+        form.reset();
+      } else {
+        const error = await response.json().catch(() => ({}));
+        const detail = error.message || error.error || "";
+        msgBox.textContent = "No se pudo guardar. Código " + response.status +
+          (detail ? ": " + detail : "") + ".";
+        msgBox.className = "msg err";
+      }
+    } catch (e) {
+      msgBox.textContent = "No se pudo conectar con el servidor. Verificá que la aplicación esté corriendo.";
+      msgBox.className = "msg err";
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  document.getElementById("userForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+    sendForm(
+      this,
+      USER_URL,
+      document.getElementById("userMsg"),
+      "Usuario creado"
+    );
+  });
+
+  document.getElementById("attractionForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+    sendForm(
+      this,
+      ATTRACTION_URL,
+      document.getElementById("attractionMsg"),
+      "Atracción creada",
+      function (data) {
+        return {
+          name: data.name,
+          description: data.description,
+          department: data.department,
+          locality: data.locality,
+          durationMinutes: Number(data.durationMinutes),
+          price: Number(data.price),
+          minimumAge: data.minimumAge === "" ? null : Number(data.minimumAge)
+        };
+      }
+    );
+  });
+</script>
+
+</body>
+</html>
