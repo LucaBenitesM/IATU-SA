@@ -23,8 +23,8 @@ public class Atraccion {
     private Integer minimumAge;
 
     @ManyToOne
-    @JoinColumn(name = "enterprise_id")
-    private Enterprise enterprise;
+    @JoinColumn(name = "prestador_id")
+    private Prestador prestador;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -43,6 +43,6 @@ public class Atraccion {
     public Integer getMinimumAge() { return minimumAge; }
     public void setMinimumAge(Integer minimumAge) { this.minimumAge = minimumAge; }
 
-    public Enterprise getEnterprise() { return enterprise; }
-    public void setEnterprise(Enterprise enterprise) { this.enterprise = enterprise; }
+    public Prestador getPrestador() { return prestador; }
+    public void setPrestador(Prestador prestador) { this.prestador = prestador; }
 }
