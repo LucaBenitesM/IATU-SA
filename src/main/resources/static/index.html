@@ -106,6 +106,29 @@
   }
   .msg.ok { display: block; background: var(--ok-bg); color: var(--ok-text); }
   .msg.err { display: block; background: var(--err-bg); color: var(--err-text); }
+  .hidden { display: none !important; }
+  .banner {
+    grid-column: 1 / -1;
+    background: var(--ok-bg);
+    color: var(--ok-text);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    font-size: 0.95rem;
+  }
+  .banner strong { font-weight: 700; }
+  .linklike {
+    background: none;
+    border: 0;
+    color: var(--water);
+    font: inherit;
+    font-weight: 700;
+    width: auto;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  .linklike:hover { background: none; color: var(--forest); }
 </style>
 </head>
 <body>
@@ -117,7 +140,9 @@
 
 <main>
 
-  <section>
+  <div id="statusBanner" class="banner hidden" role="status"></div>
+
+  <section id="userSection">
     <h2>Crear usuario</h2>
     <form id="userForm">
       <div class="row">
@@ -145,7 +170,7 @@
     <div id="userMsg" class="msg" role="status"></div>
   </section>
 
-  <section>
+  <section id="attractionSection" class="hidden">
     <h2>Crear atracción</h2>
     <form id="attractionForm">
       <label>Nombre
@@ -190,7 +215,7 @@
   const USER_URL = "/api/users";
   const ATTRACTION_URL = "/api/attractions";
 
-  async function sendForm(form, url, msgBox, successText, transform) {
+  async function sendForm(form, url, msgBox, successText, transform, onSuccess) {
     const button = form.querySelector("button");
     const data = Object.fromEntries(new FormData(form).entries());
     const body = transform ? transform(data) : data;
@@ -211,6 +236,7 @@
         msgBox.textContent = successText + idText;
         msgBox.className = "msg ok";
         form.reset();
+        if (onSuccess) onSuccess(created);
       } else {
         const error = await response.json().catch(() => ({}));
         const detail = error.message || error.error || "";
@@ -228,11 +254,52 @@
 
   document.getElementById("userForm").addEventListener("submit", function (event) {
     event.preventDefault();
+    const role = this.role.value; // TOURIST o PROVIDER
     sendForm(
       this,
       USER_URL,
       document.getElementById("userMsg"),
-      "Usuario creado"
+      "Usuario creado",
+      null,
+      function (created) {
+        // Callback tras crear el usuario con éxito.
+        const banner = document.getElementById("statusBanner");
+        const userSection = document.getElementById("userSection");
+        const attractionSection = document.getElementById("attractionSection");
+        const nombre = created.firstName || "";
+
+        // Ya se registró: ocultamos el formulario de crear usuario
+        // para que no parezca que hay que crear otro.
+        userSection.classList.add("hidden");
+
+        if (role === "PROVIDER") {
+          // Un prestador SÍ puede cargar atracciones: mostramos la sección.
+          attractionSection.classList.remove("hidden");
+          banner.innerHTML = "Bienvenido/a <strong>" + nombre +
+            "</strong>. Te registraste como <strong>prestador</strong>, " +
+            "ya podés cargar tus atracciones más abajo. " +
+            "<button type='button' class='linklike' id='otroUsuario'>Registrar otro usuario</button>";
+          banner.className = "banner";
+        } else {
+          // Un turista NO puede cargar atracciones: la sección queda oculta.
+          attractionSection.classList.add("hidden");
+          banner.innerHTML = "Bienvenido/a <strong>" + nombre +
+            "</strong>. Te registraste como <strong>turista</strong>. " +
+            "La carga de atracciones está disponible solo para prestadores. " +
+            "<button type='button' class='linklike' id='otroUsuario'>Registrar otro usuario</button>";
+          banner.className = "banner";
+        }
+        banner.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+        // Botón para volver a mostrar el formulario de crear usuario.
+        document.getElementById("otroUsuario").addEventListener("click", function () {
+          userSection.classList.remove("hidden");
+          attractionSection.classList.add("hidden");
+          banner.className = "banner hidden";
+          document.getElementById("userMsg").className = "msg";
+          userSection.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        });
+      }
     );
   });
 
