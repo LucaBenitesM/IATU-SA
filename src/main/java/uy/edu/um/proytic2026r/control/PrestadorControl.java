@@ -34,4 +34,13 @@ public class PrestadorControl {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+    @PutMapping("/{id}/approve")
+    public Prestador aprobar(@PathVariable Long id) {
+        return prestadorServicio.cambiarEstado(id, "APPROVED");
+    }
+
+    @PutMapping("/{id}/deny")
+    public Prestador denegar(@PathVariable Long id) {
+        return prestadorServicio.cambiarEstado(id, "DENIED");
+    }
 }

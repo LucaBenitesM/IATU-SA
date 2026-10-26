@@ -16,9 +16,20 @@ public class UsuarioServicio {
     }
 
     public Usuario crearUsuario(Usuario user) {
+        if ("ADMIN".equals(user.getRole())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No se puede crear un administrador");
+        }
         if (usuarioRepositorio.existsByEmail(user.getEmail())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "El mail ya está registrado!");
         }
         return usuarioRepositorio.save(user);
+    }
+    public Usuario login(String email, String password, String role) {
+        Usuario u = usuarioRepositorio.findByEmail(email).orElse(null);
+        if (u == null || password == null || !password.equals(u.getPassword())
+                || role == null || !role.equals(u.getRole())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email, contraseña o rol incorrectos");
+        }
+        return u;
     }
 }
