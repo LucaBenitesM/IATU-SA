@@ -5,50 +5,99 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Uruguay Mnatural</title>
 <style>
-  :root{--forest:#14352c;--leaf:#3f7d4e;--water:#2a7f9e;--sun:#f2b705;--bg:#f1f5f2;--card:#fff;--text:#1d2b26;--muted:#5d6e66;--line:#d3ddd7;--ok-bg:#e2f3e6;--ok:#1d5a2e;--err-bg:#fbe5e3;--err:#8a2a22}
-  @media (prefers-color-scheme:dark){:root{--bg:#0f1c18;--card:#172a24;--text:#e6efe9;--muted:#9db3a8;--line:#2a4038;--ok-bg:#1b3b27;--ok:#a8e2b8;--err-bg:#3d1f1c;--err:#f2b3ac}}
+  :root{--deep:#0f3d3e;--sea:#1d7a85;--leaf:#4f8f58;--sun:#f2b134;--bg:#eaf2f1;--card:#ffffff;--text:#12262a;--muted:#587074;--line:#d5e3e1;--soft:#f4f9f8;--ok-bg:#dff1e3;--ok:#1b5a2c;--err-bg:#fbe4e1;--err:#8d2b22;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif}
+  @media (prefers-color-scheme:dark){:root{--bg:#0b1a1b;--card:#12292b;--text:#e7f1f0;--muted:#9bb5b6;--line:#244144;--soft:#0f2224;--ok-bg:#1b3d29;--ok:#a9e3bb;--err-bg:#40201d;--err:#f3b5ae}}
   *{box-sizing:border-box}[hidden]{display:none!important}
-  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
-  header{background:var(--forest);color:#fff;padding:1.2rem;border-bottom:6px solid var(--sun);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
-  header h1{margin:0;font-size:1.6rem}
-  main{max-width:1000px;margin:1.25rem auto;padding:0 1rem 3rem;display:grid;gap:1.25rem}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.25rem;align-items:start}
-  section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.25rem}
-  h2{margin:0 0 1rem;font-size:1.2rem;color:var(--leaf)}h3{margin:0 0 .25rem}
-  label{display:block;font-size:.9rem;font-weight:600;margin-bottom:.8rem}
-  input,select,textarea{display:block;width:100%;margin-top:.25rem;padding:.55rem .65rem;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:6px}
-  input[type=checkbox]{display:inline-block;width:auto;margin:0 .4rem 0 0}
-  textarea{resize:vertical;min-height:70px}
-  :focus-visible{outline:3px solid var(--water);outline-offset:1px}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.55}
+  h1,h2,h3{font-family:var(--serif);line-height:1.2;margin:0}
+  nav{position:sticky;top:0;z-index:5;background:var(--deep);color:#fff;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.7rem 1.25rem;border-bottom:3px solid var(--sun)}
+  .brand{display:flex;align-items:center;gap:.6rem;font-family:var(--serif);font-size:1.3rem;font-weight:700}
+  .me{display:flex;align-items:center;gap:.75rem;font-size:.9rem}
+  .badge{background:var(--sun);color:#3a2900;font-weight:700;font-size:.78rem;padding:.15rem .6rem;border-radius:99px}
+  .wrap{max-width:1040px;margin:0 auto;padding:1.5rem 1rem 4rem}
+  .hero{display:grid;grid-template-columns:1.1fr 1fr;min-height:560px}
+  .hero-art{position:relative;overflow:hidden;color:#fff;padding:3rem 2.5rem;background:linear-gradient(170deg,#0f3d3e 0%,#1d7a85 70%,#7cc3c4 100%);display:flex;flex-direction:column;justify-content:flex-start}
+  .hero-art h1{font-size:clamp(2rem,4.2vw,3.2rem);max-width:12ch}
+  .hero-art p{max-width:34ch;color:#d3ecea;font-size:1.05rem}
+  .land{position:absolute;left:0;right:0;bottom:0;width:100%;height:55%}
+  .hero-form{display:flex;align-items:center;justify-content:center;padding:2rem 1.25rem}
+  .box{width:100%;max-width:400px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.5rem;box-shadow:0 10px 30px rgba(15,61,62,.12)}
+  .tabs{display:flex;background:var(--soft);border-radius:10px;padding:4px;margin-bottom:1.2rem}
+  .tabs button{flex:1;background:transparent;color:var(--muted);border:0;padding:.5rem;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
+  .tabs button.on{background:var(--card);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.15)}
+  label{display:block;font-size:.88rem;font-weight:600;margin-bottom:.8rem}
+  input,select,textarea{display:block;width:100%;margin-top:.25rem;padding:.6rem .7rem;font:inherit;color:var(--text);background:var(--soft);border:1px solid var(--line);border-radius:8px}
+  input[type=checkbox]{display:inline-block;width:auto;margin:0 .45rem 0 0}
+  textarea{resize:vertical;min-height:72px}
+  :focus-visible{outline:3px solid var(--sea);outline-offset:1px}
   .two{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
-  button{padding:.6rem 1rem;font:inherit;font-weight:700;color:#fff;background:var(--leaf);border:0;border-radius:6px;cursor:pointer}
-  button[type=submit]{width:100%}button:hover{background:var(--forest)}button:disabled{opacity:.6;cursor:wait}
-  button.ghost{background:transparent;color:inherit;border:1px solid currentColor}
-  button.deny{background:#a8372d}
-  .msg{margin-top:.9rem;padding:.65rem .8rem;border-radius:6px;font-size:.9rem;word-break:break-word}
+  .btn{padding:.6rem 1.1rem;font:inherit;font-weight:700;color:#fff;background:var(--deep);border:0;border-radius:8px;cursor:pointer}
+  .btn:hover{background:var(--sea)}.btn:disabled{opacity:.6;cursor:wait}.btn.block{width:100%}
+  .btn.ghost{background:transparent;color:inherit;border:1px solid currentColor}.btn.ghost:hover{background:rgba(127,127,127,.15)}
+  .btn.danger{background:#a8372d}.btn.ok{background:var(--leaf)}
+  .msg{margin-top:.9rem;padding:.65rem .8rem;border-radius:8px;font-size:.9rem;word-break:break-word}
   .msg:empty{display:none}.msg.ok{background:var(--ok-bg);color:var(--ok)}.msg.err{background:var(--err-bg);color:var(--err)}
-  .card{border:1px solid var(--line);border-radius:8px;padding:1rem;margin-bottom:.8rem}
-  .meta{color:var(--muted);font-size:.88rem;margin:.1rem 0}
-  .empty{color:var(--muted)}
-  .item{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;padding:.8rem;margin-bottom:.6rem}
-  .actions{display:flex;gap:.5rem;align-items:center}
-  .tag{font-size:.78rem;font-weight:700;padding:.1rem .5rem;border-radius:99px;background:var(--line)}
-  .tag.APPROVED{background:var(--ok-bg);color:var(--ok)}.tag.DENIED{background:var(--err-bg);color:var(--err)}.tag.PENDING{background:var(--sun);color:#3a2d00}
-  details{margin-top:.4rem;font-size:.9rem}summary{cursor:pointer;color:var(--water);font-weight:600}
+  .head{margin-bottom:1.25rem}.head h2{font-size:1.8rem}.head p{margin:.3rem 0 0;color:var(--muted);max-width:60ch}
+  .filters{display:grid;grid-template-columns:2fr 1fr;gap:.75rem;margin-bottom:.5rem}
+  .count{color:var(--muted);font-size:.9rem;margin:0 0 1rem}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1.1rem}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+  .cover{position:relative;height:96px;color:#fff;padding:.7rem .9rem;display:flex;justify-content:space-between;align-items:flex-start}
+  .cover svg{position:absolute;left:0;right:0;bottom:0;width:100%;height:60%}
+  .cover span{position:relative;font-size:.8rem;font-weight:600;background:rgba(0,0,0,.28);padding:.1rem .6rem;border-radius:99px}
+  .cover .price{background:var(--sun);color:#3a2900;font-weight:800}
+  .body{padding:1rem 1.1rem 1.1rem;display:flex;flex-direction:column;gap:.55rem;flex:1}
+  .body h3{font-size:1.2rem}.where{color:var(--muted);font-size:.88rem;margin:0}
+  .chips{display:flex;flex-wrap:wrap;gap:.4rem}
+  .chip{font-size:.78rem;font-weight:600;padding:.15rem .6rem;border-radius:99px;background:var(--soft);border:1px solid var(--line)}
+  .chip.good{background:var(--ok-bg);color:var(--ok);border-color:transparent}
+  .req{border-left:3px solid var(--sun);padding-left:.7rem;font-size:.88rem;color:var(--muted)}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.25rem;margin-bottom:1.25rem}
+  .panelhead{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+  .panelhead h3{font-size:1.3rem;display:flex;align-items:center;gap:.6rem}
+  .step{width:1.8rem;height:1.8rem;border-radius:50%;background:var(--sun);color:#3a2900;font:700 1rem system-ui;display:inline-flex;align-items:center;justify-content:center}
+  .item{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;border:1px solid var(--line);border-radius:10px;padding:.8rem 1rem;margin-bottom:.6rem;background:var(--soft)}
+  .actions{display:flex;gap:.5rem}
+  .tag{font-size:.78rem;font-weight:700;padding:.1rem .6rem;border-radius:99px;background:var(--line);margin-left:.4rem}
+  .tag.APPROVED{background:var(--ok-bg);color:var(--ok)}.tag.DENIED{background:var(--err-bg);color:var(--err)}.tag.PENDING{background:var(--sun);color:#3a2900}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.25rem}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem 1.2rem}
+  .stat b{display:block;font:700 2rem var(--serif);color:var(--sea)}.stat span{color:var(--muted);font-size:.9rem}
+  details{font-size:.9rem;margin-top:.3rem}summary{cursor:pointer;color:var(--sea);font-weight:600}
+  .meta{color:var(--muted);font-size:.88rem;margin:.2rem 0}.empty{color:var(--muted)}
+  .toast{position:fixed;left:50%;bottom:1.5rem;transform:translate(-50%,20px);background:var(--deep);color:#fff;padding:.7rem 1.2rem;border-radius:10px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:9}
+  .toast.show{opacity:1;transform:translate(-50%,0)}.toast.bad{background:#a8372d}
+  @media (max-width:820px){.hero{grid-template-columns:1fr}.hero-art{min-height:300px;padding:2rem 1.5rem}.filters,.stats{grid-template-columns:1fr}}
+  @media (prefers-reduced-motion:reduce){.toast{transition:none}}
 </style>
 </head>
 <body>
 
-<header>
-  <h1>Uruguay Mnatural</h1>
-  <div id="who" hidden><span id="whoText"></span> <button id="logout" class="ghost">Salir</button></div>
-</header>
+<nav>
+  <div class="brand">
+    <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="11" r="6" fill="#f2b134"/><path d="M2 21c4-4 8-4 12 0s8 4 12 0l4-2v11H2z" fill="#fff" opacity=".92"/></svg>
+    Uruguay Mnatural
+  </div>
+  <div class="me" id="who" hidden><span id="whoText"></span><span class="badge" id="whoRole"></span><button class="btn ghost" id="logout">Salir</button></div>
+</nav>
 
-<main>
-
-  <div id="auth" class="grid">
-    <section>
-      <h2>Ingresar</h2>
+<div id="auth" class="hero">
+  <div class="hero-art">
+    <h1>Todo Uruguay en un solo lugar</h1>
+    <p>Cabalgatas, trekking, enoturismo y mucho más. Encontrá la actividad ideal y reservala sin vueltas.</p>
+    <svg class="land" viewBox="0 0 400 200" preserveAspectRatio="none" aria-hidden="true">
+      <circle cx="290" cy="60" r="34" fill="#f2b134"/>
+      <path d="M0 120C60 70 110 130 180 100S320 60 400 110V200H0Z" fill="#2f8a8f" opacity=".75"/>
+      <path d="M0 150C70 110 140 170 220 135S350 110 400 145V200H0Z" fill="#4f8f58"/>
+      <path d="M0 180C80 155 150 195 240 172S350 160 400 178V200H0Z" fill="#0f3d3e"/>
+    </svg>
+  </div>
+  <div class="hero-form">
+    <div class="box">
+      <div class="tabs">
+        <button type="button" class="on" data-tab="login">Ingresar</button>
+        <button type="button" data-tab="register">Crear cuenta</button>
+      </div>
       <form id="loginForm">
         <label>Email <input name="email" type="email" required></label>
         <label>Contraseña <input name="password" type="password" required></label>
@@ -59,13 +108,10 @@
             <option value="ADMIN">Administrador</option>
           </select>
         </label>
-        <button type="submit">Ingresar</button>
+        <button class="btn block" type="submit">Ingresar</button>
         <div class="msg" role="status"></div>
       </form>
-    </section>
-    <section>
-      <h2>Crear cuenta</h2>
-      <form id="registerForm">
+      <form id="registerForm" hidden>
         <div class="two">
           <label>Nombre <input name="firstName" required></label>
           <label>Apellido <input name="lastName" required></label>
@@ -78,100 +124,136 @@
             <option value="PROVIDER">Emprendedor (ofrezco actividades)</option>
           </select>
         </label>
-        <button type="submit">Crear cuenta</button>
+        <button class="btn block" type="submit">Crear cuenta</button>
         <div class="msg" role="status"></div>
       </form>
-    </section>
+    </div>
   </div>
+</div>
+
+<div class="wrap" id="app" hidden>
 
   <div id="view-TOURIST" hidden>
-    <section><h2>Atracciones disponibles</h2><div id="touristList"></div></section>
+    <div class="head"><h2>Descubrí tu próxima aventura</h2><p>Buscá por nombre o localidad y filtrá por departamento.</p></div>
+    <div class="filters">
+      <input id="q" type="search" placeholder="Buscar actividad o localidad" aria-label="Buscar">
+      <select id="dep" aria-label="Departamento"></select>
+    </div>
+    <p class="count" id="count"></p>
+    <div class="cards" id="touristList"></div>
   </div>
 
   <div id="view-PROVIDER" hidden>
-    <div class="grid">
-      <section>
-        <h2>Mi emprendimiento</h2>
-        <div id="myProviders"></div>
-        <form id="providerForm">
-          <label>Nombre del emprendimiento <input name="name" required></label>
-          <label>Tipo de prestador
-            <select name="personType" id="personType">
-              <option value="PHYSICAL">Persona física</option>
-              <option value="LEGAL">Persona jurídica</option>
-            </select>
-          </label>
-          <div id="legalFields" hidden class="two">
-            <label>RUT <input name="rut" id="rut"></label>
-            <label>Razón social <input name="businessName" id="businessName"></label>
-          </div>
-          <div class="two">
-            <label>Departamento <input name="department" required></label>
-            <label>Localidad <input name="locality" required></label>
-          </div>
-          <div class="two">
-            <label>Teléfono <input name="phone" required></label>
-            <label>Email de contacto <input name="email" type="email" required></label>
-          </div>
-          <label>Descripción <textarea name="description" required></textarea></label>
-          <button type="submit">Enviar para aprobación</button>
-          <div class="msg" role="status"></div>
-        </form>
-      </section>
+    <div class="head"><h2>Panel del emprendedor</h2><p>Registrá tu emprendimiento. Cuando el administrador lo apruebe, podés publicar tus atracciones.</p></div>
 
-      <section id="attractionSection" hidden>
-        <h2>Nueva atracción</h2>
-        <form id="attractionForm">
-          <label>Emprendimiento <select name="prestadorId" id="prestadorId"></select></label>
-          <label>Nombre <input name="name" required></label>
-          <label>Descripción <textarea name="description" maxlength="2000" required></textarea></label>
-          <div class="two">
-            <label>Departamento <input name="department" required></label>
-            <label>Localidad <input name="locality" required></label>
-          </div>
-          <div class="two">
-            <label>Duración (min) <input name="durationMinutes" type="number" min="1" required></label>
-            <label>Precio ($) <input name="price" type="number" min="0" step="0.01" required></label>
-          </div>
-          <label>Edad mínima (opcional) <input name="minimumAge" type="number" min="0"></label>
-          <label>Requerimientos para participar (equipamiento, estado físico, documentos)
-            <textarea name="requirements" maxlength="2000"></textarea>
-          </label>
-          <label><input type="checkbox" name="allowsCancellation" id="allowsCancellation"> Esta actividad permite cancelación</label>
-          <div id="cancelFields" hidden class="two">
-            <label>Cancelar hasta (min antes) <input name="cancellationDeadlineMinutes" id="deadline" type="number" min="0"></label>
-            <label>Reembolso (0 a 100 %) <input name="refundPercentage" id="refund" type="number" min="0" max="100"></label>
-          </div>
-          <button type="submit">Crear atracción</button>
-          <div class="msg" role="status"></div>
-        </form>
-      </section>
-    </div>
-    <section style="margin-top:1.25rem"><h2>Mis atracciones</h2><div id="myAttractions"></div></section>
+    <section class="panel">
+      <div class="panelhead">
+        <h3><span class="step">1</span>Tu emprendimiento</h3>
+        <button class="btn ghost" id="toggleProvider" type="button">Registrar emprendimiento</button>
+      </div>
+      <div id="myProviders"></div>
+      <form id="providerForm" hidden>
+        <label>Nombre del emprendimiento <input name="name" required></label>
+        <label>Tipo de prestador
+          <select name="personType" id="personType">
+            <option value="PHYSICAL">Persona física</option>
+            <option value="LEGAL">Persona jurídica</option>
+          </select>
+        </label>
+        <div id="legalFields" hidden class="two">
+          <label>RUT <input name="rut" id="rut"></label>
+          <label>Razón social <input name="businessName" id="businessName"></label>
+        </div>
+        <div class="two">
+          <label>Departamento <input name="department" required></label>
+          <label>Localidad <input name="locality" required></label>
+        </div>
+        <div class="two">
+          <label>Teléfono <input name="phone" required></label>
+          <label>Email de contacto <input name="email" type="email" required></label>
+        </div>
+        <label>Descripción <textarea name="description" required></textarea></label>
+        <button class="btn" type="submit">Enviar para aprobación</button>
+        <div class="msg" role="status"></div>
+      </form>
+    </section>
+
+    <section class="panel" id="attractionSection" hidden>
+      <div class="panelhead">
+        <h3><span class="step">2</span>Tus atracciones</h3>
+        <button class="btn ghost" id="toggleAttraction" type="button">Nueva atracción</button>
+      </div>
+      <form id="attractionForm" hidden>
+        <label>Emprendimiento <select name="prestadorId" id="prestadorId"></select></label>
+        <label>Nombre <input name="name" required></label>
+        <label>Descripción <textarea name="description" maxlength="2000" required></textarea></label>
+        <div class="two">
+          <label>Departamento <input name="department" required></label>
+          <label>Localidad <input name="locality" required></label>
+        </div>
+        <div class="two">
+          <label>Duración (min) <input name="durationMinutes" type="number" min="1" required></label>
+          <label>Precio ($) <input name="price" type="number" min="0" step="0.01" required></label>
+        </div>
+        <label>Edad mínima (opcional) <input name="minimumAge" type="number" min="0"></label>
+        <label>Requerimientos para participar (equipamiento, estado físico, documentos)
+          <textarea name="requirements" maxlength="2000"></textarea>
+        </label>
+        <label><input type="checkbox" name="allowsCancellation" id="allowsCancellation">Esta actividad permite cancelación</label>
+        <div id="cancelFields" hidden class="two">
+          <label>Cancelar hasta (min antes) <input name="cancellationDeadlineMinutes" id="deadline" type="number" min="0"></label>
+          <label>Reembolso (0 a 100 %) <input name="refundPercentage" id="refund" type="number" min="0" max="100"></label>
+        </div>
+        <button class="btn" type="submit">Crear atracción</button>
+        <div class="msg" role="status"></div>
+      </form>
+      <div class="cards" id="myAttractions"></div>
+    </section>
   </div>
 
   <div id="view-ADMIN" hidden>
-    <section><h2>Solicitudes de prestadores</h2><div id="adminProviders"></div></section>
-    <section style="margin-top:1.25rem"><h2>Todas las atracciones</h2><div id="adminAttractions"></div></section>
+    <div class="head"><h2>Panel de administración</h2><p>Revisá las solicitudes de los emprendimientos y controlá lo que se publica.</p></div>
+    <div class="stats">
+      <div class="stat"><b id="stPending">0</b><span>Solicitudes pendientes</span></div>
+      <div class="stat"><b id="stApproved">0</b><span>Emprendimientos aprobados</span></div>
+      <div class="stat"><b id="stAttr">0</b><span>Atracciones publicadas</span></div>
+    </div>
+    <section class="panel"><div class="panelhead"><h3>Solicitudes de prestadores</h3></div><div id="adminProviders"></div></section>
+    <section class="panel"><div class="panelhead"><h3>Todas las atracciones</h3></div><div class="cards" id="adminAttractions"></div></section>
   </div>
 
-</main>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
 
 <script>
-  const $ = s => document.querySelector(s);
-  const ROLES = {ADMIN: "Administrador", TOURIST: "Turista", PROVIDER: "Emprendedor"};
-  const STATUS = {PENDING: "Pendiente", APPROVED: "Aprobado", DENIED: "Denegado"};
-  let user = null;
+  function $(s) { return document.querySelector(s); }
+  var ROLES = {ADMIN: "Administrador", TOURIST: "Turista", PROVIDER: "Emprendedor"};
+  var STATUS = {PENDING: "Pendiente", APPROVED: "Aprobado", DENIED: "Denegado"};
+  var user = null;
+  var touristData = [];
   try { user = JSON.parse(sessionStorage.getItem("user")); } catch (e) {}
 
-  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+      return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c];
+    });
+  }
+
+  function toast(text, bad) {
+    var t = $("#toast");
+    t.textContent = text;
+    t.className = "toast show" + (bad ? " bad" : "");
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(function () { t.className = "toast"; }, 3500);
+  }
 
   async function api(method, url, body) {
-    let r;
+    var r;
     try {
-      r = await fetch(url, {method, headers: {"Content-Type": "application/json"}, body: body ? JSON.stringify(body) : undefined});
+      r = await fetch(url, {method: method, headers: {"Content-Type": "application/json"}, body: body ? JSON.stringify(body) : undefined});
     } catch (e) { throw new Error("No se pudo conectar con el servidor."); }
-    const data = await r.json().catch(() => null);
+    var data = await r.json().catch(function () { return null; });
     if (!r.ok) throw new Error((data && (data.message || data.error)) || "Error " + r.status);
     return data;
   }
@@ -179,10 +261,10 @@
   function msg(box, text, ok) { box.textContent = text; box.className = "msg " + (ok ? "ok" : "err"); }
 
   function onSubmit(id, handler) {
-    const f = $(id), box = f.querySelector(".msg");
-    f.addEventListener("submit", async e => {
+    var f = $(id), box = f.querySelector(".msg");
+    f.addEventListener("submit", async function (e) {
       e.preventDefault();
-      const b = f.querySelector("button[type=submit]");
+      var b = f.querySelector("button[type=submit]");
       b.disabled = true; box.className = "msg"; box.textContent = "";
       try { await handler(Object.fromEntries(new FormData(f)), box, f); }
       catch (err) { msg(box, err.message, false); }
@@ -190,65 +272,114 @@
     });
   }
 
-  // ---------- Atracciones ----------
+  function hue(s) {
+    var h = 0;
+    for (var i = 0; i < s.length; i++) { h = (h * 31 + s.charCodeAt(i)) % 360; }
+    return 140 + h % 90;
+  }
+
   function card(a, admin) {
-    const p = a.prestador;
-    const cancel = a.allowsCancellation
-      ? "Permite cancelación hasta " + esc(a.cancellationDeadlineMinutes) + " min antes, con reembolso del " + esc(a.refundPercentage) + "%"
-      : "No permite cancelación";
-    const detail = admin && p ? `<details><summary>Detalles</summary>
-        <p class="meta">Prestador: ${esc(p.name)} (${STATUS[p.status] || "-"}), ${p.personType === "LEGAL" ? "persona jurídica, RUT " + esc(p.rut) + ", " + esc(p.businessName) : "persona física"}</p>
-        <p class="meta">Contacto: ${esc(p.email)}, ${esc(p.phone)}</p></details>` : "";
-    return `<article class="card"><h3>${esc(a.name)}</h3>
-      <p class="meta">${esc(a.locality)}, ${esc(a.department)}. $${esc(a.price)}, ${esc(a.durationMinutes)} min${a.minimumAge != null ? ", desde " + esc(a.minimumAge) + " años" : ""}</p>
-      <p>${esc(a.description)}</p>
-      ${a.requirements ? "<p><strong>Requerimientos:</strong> " + esc(a.requirements) + "</p>" : ""}
-      <p class="meta">${cancel}</p>${detail}</article>`;
+    var p = a.prestador, h = hue(a.department || "");
+    var cover = "background:linear-gradient(135deg,hsl(" + h + " 45% 26%),hsl(" + (h + 35) + " 55% 42%))";
+    var chips = '<span class="chip">' + esc(a.durationMinutes) + " min</span>";
+    if (a.minimumAge != null) chips += '<span class="chip">Desde ' + esc(a.minimumAge) + " años</span>";
+    chips += a.allowsCancellation
+      ? '<span class="chip good">Cancelación hasta ' + esc(a.cancellationDeadlineMinutes) + " min antes, reembolso " + esc(a.refundPercentage) + "%</span>"
+      : '<span class="chip">Sin cancelación</span>';
+    var detail = "";
+    if (admin && p) {
+      detail = '<details><summary>Detalles</summary><p class="meta">Prestador: ' + esc(p.name) + " (" + (STATUS[p.status] || "-") + "), "
+        + (p.personType === "LEGAL" ? "persona jurídica, RUT " + esc(p.rut) + ", " + esc(p.businessName) : "persona física")
+        + '</p><p class="meta">Contacto: ' + esc(p.email) + ", " + esc(p.phone) + "</p></details>";
+    }
+    return '<article class="card"><div class="cover" style="' + cover + '"><span>' + esc(a.department) + '</span><span class="price">$' + esc(a.price) + "</span>"
+      + '<svg viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 38C40 12 80 50 120 28S180 18 200 34V60H0Z" fill="rgba(255,255,255,.2)"/></svg></div>'
+      + '<div class="body"><h3>' + esc(a.name) + '</h3><p class="where">' + esc(a.locality) + "</p>"
+      + "<p>" + esc(a.description) + "</p>"
+      + (a.requirements ? '<p class="req"><strong>Requerimientos:</strong> ' + esc(a.requirements) + "</p>" : "")
+      + '<div class="chips">' + chips + "</div>" + detail + "</div></article>";
   }
 
   async function loadAttractions(el, filter, admin) {
-    const list = (await api("GET", "/api/attractions")).filter(filter || (() => true));
-    el.innerHTML = list.length ? list.map(a => card(a, admin)).join("") : '<p class="empty">Todavía no hay atracciones.</p>';
+    var all = await api("GET", "/api/attractions");
+    var list = filter ? all.filter(filter) : all;
+    el.innerHTML = list.length ? list.map(function (a) { return card(a, admin); }).join("") : '<p class="empty">Todavía no hay atracciones.</p>';
+    return all;
   }
 
-  // ---------- Emprendedor ----------
-  const mine = p => p.owner && p.owner.id === user.id;
+  function renderTourist() {
+    var q = $("#q").value.toLowerCase(), d = $("#dep").value;
+    var list = touristData.filter(function (a) {
+      var text = (a.name + " " + a.description + " " + a.locality).toLowerCase();
+      return (!q || text.indexOf(q) >= 0) && (!d || a.department === d);
+    });
+    $("#touristList").innerHTML = list.length
+      ? list.map(function (a) { return card(a, false); }).join("")
+      : '<p class="empty">No encontramos atracciones con esos criterios. Probá con otra búsqueda.</p>';
+    $("#count").textContent = list.length + (list.length === 1 ? " atracción" : " atracciones");
+  }
+
+  async function loadTourist() {
+    touristData = await api("GET", "/api/attractions");
+    var deps = [];
+    touristData.forEach(function (a) { if (a.department && deps.indexOf(a.department) < 0) deps.push(a.department); });
+    deps.sort();
+    $("#dep").innerHTML = '<option value="">Todos los departamentos</option>' + deps.map(function (d) { return "<option>" + esc(d) + "</option>"; }).join("");
+    renderTourist();
+  }
+  $("#q").addEventListener("input", renderTourist);
+  $("#dep").addEventListener("change", renderTourist);
+
+  function mine(p) { return p && p.owner && p.owner.id === user.id; }
 
   async function loadProvider() {
-    const providers = (await api("GET", "/api/providers")).filter(mine);
-    $("#myProviders").innerHTML = providers.map(p =>
-      `<div class="item"><strong>${esc(p.name)}</strong><span class="tag ${p.status}">${STATUS[p.status] || ""}</span></div>`).join("")
-      || '<p class="empty">Todavía no registraste tu emprendimiento.</p>';
-    const approved = providers.filter(p => p.status === "APPROVED");
-    $("#prestadorId").innerHTML = approved.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join("");
-    $("#attractionSection").hidden = !approved.length;
-    await loadAttractions($("#myAttractions"), a => a.prestador && mine(a.prestador));
+    var all = await api("GET", "/api/providers");
+    var providers = all.filter(mine);
+    $("#myProviders").innerHTML = providers.map(function (p) {
+      return '<div class="item"><div><strong>' + esc(p.name) + '</strong><span class="tag ' + p.status + '">' + (STATUS[p.status] || "") + "</span>"
+        + '<p class="meta">' + esc(p.locality) + ", " + esc(p.department) + "</p></div></div>";
+    }).join("");
+    $("#providerForm").hidden = providers.length > 0 && $("#providerForm").dataset.open !== "1";
+    $("#toggleProvider").hidden = providers.length === 0;
+    var approved = providers.filter(function (p) { return p.status === "APPROVED"; });
+    $("#prestadorId").innerHTML = approved.map(function (p) { return '<option value="' + p.id + '">' + esc(p.name) + "</option>"; }).join("");
+    $("#attractionSection").hidden = approved.length === 0;
+    await loadAttractions($("#myAttractions"), function (a) { return mine(a.prestador); });
   }
 
+  $("#toggleProvider").addEventListener("click", function () {
+    var f = $("#providerForm");
+    f.dataset.open = f.hidden ? "1" : "0";
+    f.hidden = !f.hidden;
+  });
+  $("#toggleAttraction").addEventListener("click", function () { $("#attractionForm").hidden = !$("#attractionForm").hidden; });
+
   function toggleLegal() {
-    const legal = $("#personType").value === "LEGAL";
+    var legal = $("#personType").value === "LEGAL";
     $("#legalFields").hidden = !legal;
-    $("#rut").required = $("#businessName").required = legal;
+    $("#rut").required = legal;
+    $("#businessName").required = legal;
   }
   function toggleCancel() {
-    const on = $("#allowsCancellation").checked;
+    var on = $("#allowsCancellation").checked;
     $("#cancelFields").hidden = !on;
-    $("#deadline").required = $("#refund").required = on;
+    $("#deadline").required = on;
+    $("#refund").required = on;
   }
   $("#personType").addEventListener("change", toggleLegal);
   $("#allowsCancellation").addEventListener("change", toggleCancel);
 
-  onSubmit("#providerForm", async (d, box, f) => {
+  onSubmit("#providerForm", async function (d, box, f) {
     if (d.personType !== "LEGAL") { delete d.rut; delete d.businessName; }
     d.owner = {id: user.id};
     await api("POST", "/api/providers", d);
-    f.reset(); toggleLegal();
-    msg(box, "Enviado. Queda pendiente hasta que el administrador lo acepte.", true);
+    f.reset(); toggleLegal(); f.dataset.open = "0";
+    toast("Emprendimiento enviado. Queda pendiente de aprobación.");
     loadProvider();
   });
 
-  onSubmit("#attractionForm", async (d, box, f) => {
-    const cancel = !!d.allowsCancellation;
+  onSubmit("#attractionForm", async function (d, box, f) {
+    var cancel = !!d.allowsCancellation;
     await api("POST", "/api/attractions", {
       name: d.name, description: d.description, department: d.department, locality: d.locality,
       durationMinutes: Number(d.durationMinutes), price: Number(d.price),
@@ -259,56 +390,74 @@
       refundPercentage: cancel ? Number(d.refundPercentage) : null,
       prestador: {id: Number(d.prestadorId)}
     });
-    f.reset(); toggleCancel();
-    msg(box, "Atracción creada.", true);
+    f.reset(); toggleCancel(); f.hidden = true;
+    toast("Atracción creada.");
     loadProvider();
   });
 
-  // ---------- Administrador ----------
   async function loadAdmin() {
-    const list = await api("GET", "/api/providers");
-    $("#adminProviders").innerHTML = list.map(p => `<div class="item"><div>
-        <strong>${esc(p.name)}</strong> <span class="tag ${p.status}">${STATUS[p.status] || ""}</span>
-        <details><summary>Detalles</summary>
-          <p class="meta">${p.personType === "LEGAL" ? "Persona jurídica, RUT " + esc(p.rut) + ", " + esc(p.businessName) : "Persona física"}</p>
-          <p class="meta">${esc(p.locality)}, ${esc(p.department)}. ${esc(p.email)}, ${esc(p.phone)}</p>
-          <p>${esc(p.description)}</p>
-        </details></div>
-        <div class="actions">
-          <button data-id="${p.id}" data-act="approve">Aceptar</button>
-          <button class="deny" data-id="${p.id}" data-act="deny">Denegar</button>
-        </div></div>`).join("") || '<p class="empty">No hay solicitudes.</p>';
-    await loadAttractions($("#adminAttractions"), null, true);
+    var list = await api("GET", "/api/providers");
+    var order = {PENDING: 0, DENIED: 1, APPROVED: 2};
+    list.sort(function (a, b) { return order[a.status] - order[b.status]; });
+    $("#stPending").textContent = list.filter(function (p) { return p.status === "PENDING"; }).length;
+    $("#stApproved").textContent = list.filter(function (p) { return p.status === "APPROVED"; }).length;
+    $("#adminProviders").innerHTML = list.map(function (p) {
+      var accept = p.status !== "APPROVED" ? '<button class="btn ok" data-id="' + p.id + '" data-act="approve">Aceptar</button>' : "";
+      var deny = p.status !== "DENIED" ? '<button class="btn danger" data-id="' + p.id + '" data-act="deny">Denegar</button>' : "";
+      return '<div class="item"><div><strong>' + esc(p.name) + '</strong><span class="tag ' + p.status + '">' + (STATUS[p.status] || "") + "</span>"
+        + '<details><summary>Detalles</summary><p class="meta">'
+        + (p.personType === "LEGAL" ? "Persona jurídica, RUT " + esc(p.rut) + ", " + esc(p.businessName) : "Persona física")
+        + '</p><p class="meta">' + esc(p.locality) + ", " + esc(p.department) + ". " + esc(p.email) + ", " + esc(p.phone)
+        + "</p><p>" + esc(p.description) + "</p></details></div>"
+        + '<div class="actions">' + accept + deny + "</div></div>";
+    }).join("") || '<p class="empty">Todavía no hay solicitudes.</p>';
+    var all = await loadAttractions($("#adminAttractions"), null, true);
+    $("#stAttr").textContent = all.length;
   }
 
-  $("#adminProviders").addEventListener("click", async e => {
-    const b = e.target.closest("button[data-act]");
+  $("#adminProviders").addEventListener("click", async function (e) {
+    var b = e.target.closest("button[data-act]");
     if (!b) return;
-    try { await api("PUT", "/api/providers/" + b.dataset.id + "/" + b.dataset.act); loadAdmin(); }
-    catch (err) { alert(err.message); }
+    try {
+      await api("PUT", "/api/providers/" + b.dataset.id + "/" + b.dataset.act);
+      toast(b.dataset.act === "approve" ? "Emprendimiento aprobado." : "Emprendimiento denegado.");
+      loadAdmin();
+    } catch (err) { toast(err.message, true); }
   });
 
-  // ---------- Acceso ----------
-  onSubmit("#loginForm", async d => {
+  var tabButtons = document.querySelectorAll(".tabs button");
+  tabButtons.forEach(function (b) {
+    b.addEventListener("click", function () {
+      tabButtons.forEach(function (x) { x.classList.toggle("on", x === b); });
+      $("#loginForm").hidden = b.dataset.tab !== "login";
+      $("#registerForm").hidden = b.dataset.tab !== "register";
+    });
+  });
+
+  onSubmit("#loginForm", async function (d) {
     user = await api("POST", "/api/users/login", d);
     sessionStorage.setItem("user", JSON.stringify(user));
     show();
   });
-  onSubmit("#registerForm", async (d, box, f) => {
+  onSubmit("#registerForm", async function (d, box, f) {
     await api("POST", "/api/users", d);
     f.reset();
     msg(box, "Cuenta creada. Ya podés ingresar.", true);
   });
-  $("#logout").addEventListener("click", () => { user = null; sessionStorage.removeItem("user"); show(); });
+  $("#logout").addEventListener("click", function () {
+    user = null; sessionStorage.removeItem("user"); show();
+  });
 
   function show() {
     $("#auth").hidden = !!user;
+    $("#app").hidden = !user;
     $("#who").hidden = !user;
-    for (const r of Object.keys(ROLES)) $("#view-" + r).hidden = !user || user.role !== r;
+    Object.keys(ROLES).forEach(function (r) { $("#view-" + r).hidden = !user || user.role !== r; });
     if (!user) return;
-    $("#whoText").textContent = user.firstName + " " + user.lastName + " (" + ROLES[user.role] + ")";
-    const run = p => p.catch(e => alert(e.message));
-    if (user.role === "TOURIST") run(loadAttractions($("#touristList")));
+    $("#whoText").textContent = user.firstName + " " + user.lastName;
+    $("#whoRole").textContent = ROLES[user.role];
+    var run = function (p) { p.catch(function (e) { toast(e.message, true); }); };
+    if (user.role === "TOURIST") run(loadTourist());
     if (user.role === "PROVIDER") run(loadProvider());
     if (user.role === "ADMIN") run(loadAdmin());
   }
