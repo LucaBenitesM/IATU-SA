@@ -5,6 +5,7 @@ import uy.edu.um.proytic2026r.servicio.UsuarioServicio;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -19,5 +20,9 @@ public class UsuarioControl {
     @PostMapping
     public ResponseEntity<Usuario> crearUsuario(@RequestBody Usuario usuario) {
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioServicio.crearUsuario(usuario));
+    }
+    @PostMapping("/login")
+    public Usuario login(@RequestBody Map<String, String> body) {
+        return usuarioServicio.login(body.get("email"), body.get("password"), body.get("role"));
     }
 }

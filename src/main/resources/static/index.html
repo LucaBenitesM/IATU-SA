@@ -5,325 +5,314 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Uruguay Mnatural</title>
 <style>
-  :root {
-    --forest: #14352c;
-    --leaf: #3f7d4e;
-    --water: #2a7f9e;
-    --sun: #f2b705;
-    --bg: #f1f5f2;
-    --card: #ffffff;
-    --text: #1d2b26;
-    --muted: #5d6e66;
-    --line: #d3ddd7;
-    --ok-bg: #e2f3e6;
-    --ok-text: #1d5a2e;
-    --err-bg: #fbe5e3;
-    --err-text: #8a2a22;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0f1c18;
-      --card: #172a24;
-      --text: #e6efe9;
-      --muted: #9db3a8;
-      --line: #2a4038;
-      --ok-bg: #1b3b27;
-      --ok-text: #a8e2b8;
-      --err-bg: #3d1f1c;
-      --err-text: #f2b3ac;
-    }
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.5;
-  }
-  header {
-    background: var(--forest);
-    color: #fff;
-    padding: 2rem 1.25rem 1.5rem;
-    border-bottom: 6px solid var(--sun);
-  }
-  header h1 { margin: 0; font-size: 1.9rem; letter-spacing: -0.5px; }
-  header p { margin: 0.25rem 0 0; color: #b9d3c6; }
-  main {
-    max-width: 960px;
-    margin: 1.5rem auto;
-    padding: 0 1rem 3rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.25rem;
-    align-items: start;
-  }
-  section {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: 1.25rem;
-  }
-  section h2 { margin: 0 0 1rem; font-size: 1.2rem; color: var(--leaf); }
-  label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.9rem; }
-  input, select, textarea {
-    display: block;
-    width: 100%;
-    margin-top: 0.25rem;
-    padding: 0.55rem 0.65rem;
-    font: inherit;
-    color: var(--text);
-    background: var(--bg);
-    border: 1px solid var(--line);
-    border-radius: 6px;
-  }
-  textarea { resize: vertical; min-height: 80px; }
-  input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible {
-    outline: 3px solid var(--water);
-    outline-offset: 1px;
-  }
-  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-  button {
-    width: 100%;
-    padding: 0.7rem;
-    font: inherit;
-    font-weight: 700;
-    color: #fff;
-    background: var(--leaf);
-    border: 0;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-  button:hover { background: var(--forest); }
-  button:disabled { opacity: 0.6; cursor: wait; }
-  .msg {
-    margin-top: 1rem;
-    padding: 0.7rem 0.8rem;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    display: none;
-    word-break: break-word;
-  }
-  .msg.ok { display: block; background: var(--ok-bg); color: var(--ok-text); }
-  .msg.err { display: block; background: var(--err-bg); color: var(--err-text); }
-  .hidden { display: none !important; }
-  .banner {
-    grid-column: 1 / -1;
-    background: var(--ok-bg);
-    color: var(--ok-text);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 0.8rem 1rem;
-    font-size: 0.95rem;
-  }
-  .banner strong { font-weight: 700; }
-  .linklike {
-    background: none;
-    border: 0;
-    color: var(--water);
-    font: inherit;
-    font-weight: 700;
-    width: auto;
-    padding: 0;
-    cursor: pointer;
-    text-decoration: underline;
-  }
-  .linklike:hover { background: none; color: var(--forest); }
+  :root{--forest:#14352c;--leaf:#3f7d4e;--water:#2a7f9e;--sun:#f2b705;--bg:#f1f5f2;--card:#fff;--text:#1d2b26;--muted:#5d6e66;--line:#d3ddd7;--ok-bg:#e2f3e6;--ok:#1d5a2e;--err-bg:#fbe5e3;--err:#8a2a22}
+  @media (prefers-color-scheme:dark){:root{--bg:#0f1c18;--card:#172a24;--text:#e6efe9;--muted:#9db3a8;--line:#2a4038;--ok-bg:#1b3b27;--ok:#a8e2b8;--err-bg:#3d1f1c;--err:#f2b3ac}}
+  *{box-sizing:border-box}[hidden]{display:none!important}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+  header{background:var(--forest);color:#fff;padding:1.2rem;border-bottom:6px solid var(--sun);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+  header h1{margin:0;font-size:1.6rem}
+  main{max-width:1000px;margin:1.25rem auto;padding:0 1rem 3rem;display:grid;gap:1.25rem}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.25rem;align-items:start}
+  section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.25rem}
+  h2{margin:0 0 1rem;font-size:1.2rem;color:var(--leaf)}h3{margin:0 0 .25rem}
+  label{display:block;font-size:.9rem;font-weight:600;margin-bottom:.8rem}
+  input,select,textarea{display:block;width:100%;margin-top:.25rem;padding:.55rem .65rem;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:6px}
+  input[type=checkbox]{display:inline-block;width:auto;margin:0 .4rem 0 0}
+  textarea{resize:vertical;min-height:70px}
+  :focus-visible{outline:3px solid var(--water);outline-offset:1px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+  button{padding:.6rem 1rem;font:inherit;font-weight:700;color:#fff;background:var(--leaf);border:0;border-radius:6px;cursor:pointer}
+  button[type=submit]{width:100%}button:hover{background:var(--forest)}button:disabled{opacity:.6;cursor:wait}
+  button.ghost{background:transparent;color:inherit;border:1px solid currentColor}
+  button.deny{background:#a8372d}
+  .msg{margin-top:.9rem;padding:.65rem .8rem;border-radius:6px;font-size:.9rem;word-break:break-word}
+  .msg:empty{display:none}.msg.ok{background:var(--ok-bg);color:var(--ok)}.msg.err{background:var(--err-bg);color:var(--err)}
+  .card{border:1px solid var(--line);border-radius:8px;padding:1rem;margin-bottom:.8rem}
+  .meta{color:var(--muted);font-size:.88rem;margin:.1rem 0}
+  .empty{color:var(--muted)}
+  .item{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;padding:.8rem;margin-bottom:.6rem}
+  .actions{display:flex;gap:.5rem;align-items:center}
+  .tag{font-size:.78rem;font-weight:700;padding:.1rem .5rem;border-radius:99px;background:var(--line)}
+  .tag.APPROVED{background:var(--ok-bg);color:var(--ok)}.tag.DENIED{background:var(--err-bg);color:var(--err)}.tag.PENDING{background:var(--sun);color:#3a2d00}
+  details{margin-top:.4rem;font-size:.9rem}summary{cursor:pointer;color:var(--water);font-weight:600}
 </style>
 </head>
 <body>
 
 <header>
   <h1>Uruguay Mnatural</h1>
-  <p>Registrá usuarios y cargá atracciones turísticas.</p>
+  <div id="who" hidden><span id="whoText"></span> <button id="logout" class="ghost">Salir</button></div>
 </header>
 
 <main>
 
-  <div id="statusBanner" class="banner hidden" role="status"></div>
+  <div id="auth" class="grid">
+    <section>
+      <h2>Ingresar</h2>
+      <form id="loginForm">
+        <label>Email <input name="email" type="email" required></label>
+        <label>Contraseña <input name="password" type="password" required></label>
+        <label>Ingresar como
+          <select name="role">
+            <option value="TOURIST">Turista</option>
+            <option value="PROVIDER">Emprendedor</option>
+            <option value="ADMIN">Administrador</option>
+          </select>
+        </label>
+        <button type="submit">Ingresar</button>
+        <div class="msg" role="status"></div>
+      </form>
+    </section>
+    <section>
+      <h2>Crear cuenta</h2>
+      <form id="registerForm">
+        <div class="two">
+          <label>Nombre <input name="firstName" required></label>
+          <label>Apellido <input name="lastName" required></label>
+        </div>
+        <label>Email <input name="email" type="email" required></label>
+        <label>Contraseña <input name="password" type="password" minlength="4" required></label>
+        <label>Quiero ser
+          <select name="role">
+            <option value="TOURIST">Turista</option>
+            <option value="PROVIDER">Emprendedor (ofrezco actividades)</option>
+          </select>
+        </label>
+        <button type="submit">Crear cuenta</button>
+        <div class="msg" role="status"></div>
+      </form>
+    </section>
+  </div>
 
-  <section id="userSection">
-    <h2>Crear usuario</h2>
-    <form id="userForm">
-      <div class="row">
-        <label>Nombre
-          <input name="firstName" required>
-        </label>
-        <label>Apellido
-          <input name="lastName" required>
-        </label>
-      </div>
-      <label>Email
-        <input name="email" type="email" required>
-      </label>
-      <label>Contraseña
-        <input name="password" type="password" minlength="4" required>
-      </label>
-      <label>Tipo de usuario
-        <select name="role" required>
-          <option value="TOURIST">Turista</option>
-          <option value="PROVIDER">Prestador</option>
-        </select>
-      </label>
-      <button type="submit">Crear usuario</button>
-    </form>
-    <div id="userMsg" class="msg" role="status"></div>
-  </section>
+  <div id="view-TOURIST" hidden>
+    <section><h2>Atracciones disponibles</h2><div id="touristList"></div></section>
+  </div>
 
-  <section id="attractionSection" class="hidden">
-    <h2>Crear atracción</h2>
-    <form id="attractionForm">
-      <label>Nombre
-        <input name="name" required>
-      </label>
-      <label>Descripción
-        <textarea name="description" maxlength="2000" required></textarea>
-      </label>
-      <div class="row">
-        <label>Departamento
-          <input name="department" required>
-        </label>
-        <label>Localidad
-          <input name="locality" required>
-        </label>
-      </div>
-      <div class="row">
-        <label>Duración (minutos)
-          <input name="durationMinutes" type="number" min="1" required>
-        </label>
-        <label>Precio ($)
-          <input name="price" type="number" min="0" step="0.01" required>
-        </label>
-      </div>
-      <label>Edad mínima (opcional)
-        <input name="minimumAge" type="number" min="0">
-      </label>
-      <button type="submit">Crear atracción</button>
-    </form>
-    <div id="attractionMsg" class="msg" role="status"></div>
-  </section>
+  <div id="view-PROVIDER" hidden>
+    <div class="grid">
+      <section>
+        <h2>Mi emprendimiento</h2>
+        <div id="myProviders"></div>
+        <form id="providerForm">
+          <label>Nombre del emprendimiento <input name="name" required></label>
+          <label>Tipo de prestador
+            <select name="personType" id="personType">
+              <option value="PHYSICAL">Persona física</option>
+              <option value="LEGAL">Persona jurídica</option>
+            </select>
+          </label>
+          <div id="legalFields" hidden class="two">
+            <label>RUT <input name="rut" id="rut"></label>
+            <label>Razón social <input name="businessName" id="businessName"></label>
+          </div>
+          <div class="two">
+            <label>Departamento <input name="department" required></label>
+            <label>Localidad <input name="locality" required></label>
+          </div>
+          <div class="two">
+            <label>Teléfono <input name="phone" required></label>
+            <label>Email de contacto <input name="email" type="email" required></label>
+          </div>
+          <label>Descripción <textarea name="description" required></textarea></label>
+          <button type="submit">Enviar para aprobación</button>
+          <div class="msg" role="status"></div>
+        </form>
+      </section>
+
+      <section id="attractionSection" hidden>
+        <h2>Nueva atracción</h2>
+        <form id="attractionForm">
+          <label>Emprendimiento <select name="prestadorId" id="prestadorId"></select></label>
+          <label>Nombre <input name="name" required></label>
+          <label>Descripción <textarea name="description" maxlength="2000" required></textarea></label>
+          <div class="two">
+            <label>Departamento <input name="department" required></label>
+            <label>Localidad <input name="locality" required></label>
+          </div>
+          <div class="two">
+            <label>Duración (min) <input name="durationMinutes" type="number" min="1" required></label>
+            <label>Precio ($) <input name="price" type="number" min="0" step="0.01" required></label>
+          </div>
+          <label>Edad mínima (opcional) <input name="minimumAge" type="number" min="0"></label>
+          <label>Requerimientos para participar (equipamiento, estado físico, documentos)
+            <textarea name="requirements" maxlength="2000"></textarea>
+          </label>
+          <label><input type="checkbox" name="allowsCancellation" id="allowsCancellation"> Esta actividad permite cancelación</label>
+          <div id="cancelFields" hidden class="two">
+            <label>Cancelar hasta (min antes) <input name="cancellationDeadlineMinutes" id="deadline" type="number" min="0"></label>
+            <label>Reembolso (0 a 100 %) <input name="refundPercentage" id="refund" type="number" min="0" max="100"></label>
+          </div>
+          <button type="submit">Crear atracción</button>
+          <div class="msg" role="status"></div>
+        </form>
+      </section>
+    </div>
+    <section style="margin-top:1.25rem"><h2>Mis atracciones</h2><div id="myAttractions"></div></section>
+  </div>
+
+  <div id="view-ADMIN" hidden>
+    <section><h2>Solicitudes de prestadores</h2><div id="adminProviders"></div></section>
+    <section style="margin-top:1.25rem"><h2>Todas las atracciones</h2><div id="adminAttractions"></div></section>
+  </div>
 
 </main>
 
 <script>
-  // ---------------------------------------------------------------
-  // CONFIGURACIÓN: ajustar si en su proyecto los nombres son distintos.
-  // - Las URLs tienen que coincidir con el @RequestMapping de sus controllers.
-  // - Los nombres de los campos del formulario (atributo "name" de cada input)
-  //   tienen que coincidir con los atributos de sus entidades Java.
-  // ---------------------------------------------------------------
-  const USER_URL = "/api/users";
-  const ATTRACTION_URL = "/api/attractions";
+  const $ = s => document.querySelector(s);
+  const ROLES = {ADMIN: "Administrador", TOURIST: "Turista", PROVIDER: "Emprendedor"};
+  const STATUS = {PENDING: "Pendiente", APPROVED: "Aprobado", DENIED: "Denegado"};
+  let user = null;
+  try { user = JSON.parse(sessionStorage.getItem("user")); } catch (e) {}
 
-  async function sendForm(form, url, msgBox, successText, transform, onSuccess) {
-    const button = form.querySelector("button");
-    const data = Object.fromEntries(new FormData(form).entries());
-    const body = transform ? transform(data) : data;
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
 
-    button.disabled = true;
-    msgBox.className = "msg";
-
+  async function api(method, url, body) {
+    let r;
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-      });
-
-      if (response.ok) {
-        const created = await response.json().catch(() => ({}));
-        const idText = created.id ? " (id " + created.id + ")" : "";
-        msgBox.textContent = successText + idText;
-        msgBox.className = "msg ok";
-        form.reset();
-        if (onSuccess) onSuccess(created);
-      } else {
-        const error = await response.json().catch(() => ({}));
-        const detail = error.message || error.error || "";
-        msgBox.textContent = "No se pudo guardar. Código " + response.status +
-          (detail ? ": " + detail : "") + ".";
-        msgBox.className = "msg err";
-      }
-    } catch (e) {
-      msgBox.textContent = "No se pudo conectar con el servidor. Verificá que la aplicación esté corriendo.";
-      msgBox.className = "msg err";
-    } finally {
-      button.disabled = false;
-    }
+      r = await fetch(url, {method, headers: {"Content-Type": "application/json"}, body: body ? JSON.stringify(body) : undefined});
+    } catch (e) { throw new Error("No se pudo conectar con el servidor."); }
+    const data = await r.json().catch(() => null);
+    if (!r.ok) throw new Error((data && (data.message || data.error)) || "Error " + r.status);
+    return data;
   }
 
-  document.getElementById("userForm").addEventListener("submit", function (event) {
-    event.preventDefault();
-    const role = this.role.value; // TOURIST o PROVIDER
-    sendForm(
-      this,
-      USER_URL,
-      document.getElementById("userMsg"),
-      "Usuario creado",
-      null,
-      function (created) {
-        // Callback tras crear el usuario con éxito.
-        const banner = document.getElementById("statusBanner");
-        const userSection = document.getElementById("userSection");
-        const attractionSection = document.getElementById("attractionSection");
-        const nombre = created.firstName || "";
+  function msg(box, text, ok) { box.textContent = text; box.className = "msg " + (ok ? "ok" : "err"); }
 
-        // Ya se registró: ocultamos el formulario de crear usuario
-        // para que no parezca que hay que crear otro.
-        userSection.classList.add("hidden");
+  function onSubmit(id, handler) {
+    const f = $(id), box = f.querySelector(".msg");
+    f.addEventListener("submit", async e => {
+      e.preventDefault();
+      const b = f.querySelector("button[type=submit]");
+      b.disabled = true; box.className = "msg"; box.textContent = "";
+      try { await handler(Object.fromEntries(new FormData(f)), box, f); }
+      catch (err) { msg(box, err.message, false); }
+      finally { b.disabled = false; }
+    });
+  }
 
-        if (role === "PROVIDER") {
-          // Un prestador SÍ puede cargar atracciones: mostramos la sección.
-          attractionSection.classList.remove("hidden");
-          banner.innerHTML = "Bienvenido/a <strong>" + nombre +
-            "</strong>. Te registraste como <strong>prestador</strong>, " +
-            "ya podés cargar tus atracciones más abajo. " +
-            "<button type='button' class='linklike' id='otroUsuario'>Registrar otro usuario</button>";
-          banner.className = "banner";
-        } else {
-          // Un turista NO puede cargar atracciones: la sección queda oculta.
-          attractionSection.classList.add("hidden");
-          banner.innerHTML = "Bienvenido/a <strong>" + nombre +
-            "</strong>. Te registraste como <strong>turista</strong>. " +
-            "La carga de atracciones está disponible solo para prestadores. " +
-            "<button type='button' class='linklike' id='otroUsuario'>Registrar otro usuario</button>";
-          banner.className = "banner";
-        }
-        banner.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  // ---------- Atracciones ----------
+  function card(a, admin) {
+    const p = a.prestador;
+    const cancel = a.allowsCancellation
+      ? "Permite cancelación hasta " + esc(a.cancellationDeadlineMinutes) + " min antes, con reembolso del " + esc(a.refundPercentage) + "%"
+      : "No permite cancelación";
+    const detail = admin && p ? `<details><summary>Detalles</summary>
+        <p class="meta">Prestador: ${esc(p.name)} (${STATUS[p.status] || "-"}), ${p.personType === "LEGAL" ? "persona jurídica, RUT " + esc(p.rut) + ", " + esc(p.businessName) : "persona física"}</p>
+        <p class="meta">Contacto: ${esc(p.email)}, ${esc(p.phone)}</p></details>` : "";
+    return `<article class="card"><h3>${esc(a.name)}</h3>
+      <p class="meta">${esc(a.locality)}, ${esc(a.department)}. $${esc(a.price)}, ${esc(a.durationMinutes)} min${a.minimumAge != null ? ", desde " + esc(a.minimumAge) + " años" : ""}</p>
+      <p>${esc(a.description)}</p>
+      ${a.requirements ? "<p><strong>Requerimientos:</strong> " + esc(a.requirements) + "</p>" : ""}
+      <p class="meta">${cancel}</p>${detail}</article>`;
+  }
 
-        // Botón para volver a mostrar el formulario de crear usuario.
-        document.getElementById("otroUsuario").addEventListener("click", function () {
-          userSection.classList.remove("hidden");
-          attractionSection.classList.add("hidden");
-          banner.className = "banner hidden";
-          document.getElementById("userMsg").className = "msg";
-          userSection.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        });
-      }
-    );
+  async function loadAttractions(el, filter, admin) {
+    const list = (await api("GET", "/api/attractions")).filter(filter || (() => true));
+    el.innerHTML = list.length ? list.map(a => card(a, admin)).join("") : '<p class="empty">Todavía no hay atracciones.</p>';
+  }
+
+  // ---------- Emprendedor ----------
+  const mine = p => p.owner && p.owner.id === user.id;
+
+  async function loadProvider() {
+    const providers = (await api("GET", "/api/providers")).filter(mine);
+    $("#myProviders").innerHTML = providers.map(p =>
+      `<div class="item"><strong>${esc(p.name)}</strong><span class="tag ${p.status}">${STATUS[p.status] || ""}</span></div>`).join("")
+      || '<p class="empty">Todavía no registraste tu emprendimiento.</p>';
+    const approved = providers.filter(p => p.status === "APPROVED");
+    $("#prestadorId").innerHTML = approved.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join("");
+    $("#attractionSection").hidden = !approved.length;
+    await loadAttractions($("#myAttractions"), a => a.prestador && mine(a.prestador));
+  }
+
+  function toggleLegal() {
+    const legal = $("#personType").value === "LEGAL";
+    $("#legalFields").hidden = !legal;
+    $("#rut").required = $("#businessName").required = legal;
+  }
+  function toggleCancel() {
+    const on = $("#allowsCancellation").checked;
+    $("#cancelFields").hidden = !on;
+    $("#deadline").required = $("#refund").required = on;
+  }
+  $("#personType").addEventListener("change", toggleLegal);
+  $("#allowsCancellation").addEventListener("change", toggleCancel);
+
+  onSubmit("#providerForm", async (d, box, f) => {
+    if (d.personType !== "LEGAL") { delete d.rut; delete d.businessName; }
+    d.owner = {id: user.id};
+    await api("POST", "/api/providers", d);
+    f.reset(); toggleLegal();
+    msg(box, "Enviado. Queda pendiente hasta que el administrador lo acepte.", true);
+    loadProvider();
   });
 
-  document.getElementById("attractionForm").addEventListener("submit", function (event) {
-    event.preventDefault();
-    sendForm(
-      this,
-      ATTRACTION_URL,
-      document.getElementById("attractionMsg"),
-      "Atracción creada",
-      function (data) {
-        return {
-          name: data.name,
-          description: data.description,
-          department: data.department,
-          locality: data.locality,
-          durationMinutes: Number(data.durationMinutes),
-          price: Number(data.price),
-          minimumAge: data.minimumAge === "" ? null : Number(data.minimumAge)
-        };
-      }
-    );
+  onSubmit("#attractionForm", async (d, box, f) => {
+    const cancel = !!d.allowsCancellation;
+    await api("POST", "/api/attractions", {
+      name: d.name, description: d.description, department: d.department, locality: d.locality,
+      durationMinutes: Number(d.durationMinutes), price: Number(d.price),
+      minimumAge: d.minimumAge === "" ? null : Number(d.minimumAge),
+      requirements: d.requirements,
+      allowsCancellation: cancel,
+      cancellationDeadlineMinutes: cancel ? Number(d.cancellationDeadlineMinutes) : null,
+      refundPercentage: cancel ? Number(d.refundPercentage) : null,
+      prestador: {id: Number(d.prestadorId)}
+    });
+    f.reset(); toggleCancel();
+    msg(box, "Atracción creada.", true);
+    loadProvider();
   });
+
+  // ---------- Administrador ----------
+  async function loadAdmin() {
+    const list = await api("GET", "/api/providers");
+    $("#adminProviders").innerHTML = list.map(p => `<div class="item"><div>
+        <strong>${esc(p.name)}</strong> <span class="tag ${p.status}">${STATUS[p.status] || ""}</span>
+        <details><summary>Detalles</summary>
+          <p class="meta">${p.personType === "LEGAL" ? "Persona jurídica, RUT " + esc(p.rut) + ", " + esc(p.businessName) : "Persona física"}</p>
+          <p class="meta">${esc(p.locality)}, ${esc(p.department)}. ${esc(p.email)}, ${esc(p.phone)}</p>
+          <p>${esc(p.description)}</p>
+        </details></div>
+        <div class="actions">
+          <button data-id="${p.id}" data-act="approve">Aceptar</button>
+          <button class="deny" data-id="${p.id}" data-act="deny">Denegar</button>
+        </div></div>`).join("") || '<p class="empty">No hay solicitudes.</p>';
+    await loadAttractions($("#adminAttractions"), null, true);
+  }
+
+  $("#adminProviders").addEventListener("click", async e => {
+    const b = e.target.closest("button[data-act]");
+    if (!b) return;
+    try { await api("PUT", "/api/providers/" + b.dataset.id + "/" + b.dataset.act); loadAdmin(); }
+    catch (err) { alert(err.message); }
+  });
+
+  // ---------- Acceso ----------
+  onSubmit("#loginForm", async d => {
+    user = await api("POST", "/api/users/login", d);
+    sessionStorage.setItem("user", JSON.stringify(user));
+    show();
+  });
+  onSubmit("#registerForm", async (d, box, f) => {
+    await api("POST", "/api/users", d);
+    f.reset();
+    msg(box, "Cuenta creada. Ya podés ingresar.", true);
+  });
+  $("#logout").addEventListener("click", () => { user = null; sessionStorage.removeItem("user"); show(); });
+
+  function show() {
+    $("#auth").hidden = !!user;
+    $("#who").hidden = !user;
+    for (const r of Object.keys(ROLES)) $("#view-" + r).hidden = !user || user.role !== r;
+    if (!user) return;
+    $("#whoText").textContent = user.firstName + " " + user.lastName + " (" + ROLES[user.role] + ")";
+    const run = p => p.catch(e => alert(e.message));
+    if (user.role === "TOURIST") run(loadAttractions($("#touristList")));
+    if (user.role === "PROVIDER") run(loadProvider());
+    if (user.role === "ADMIN") run(loadAdmin());
+  }
+  show();
 </script>
-
 </body>
 </html>
