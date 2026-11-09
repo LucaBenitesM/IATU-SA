@@ -34,7 +34,7 @@
   :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
   .i{width:1.1em;height:1.1em;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-  .num{font-variant-numeric:tabular-nums}
+  .num{font-variant-numeric:tabular-nums;white-space:nowrap}
 
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;min-height:40px;padding:0 1rem;border:1px solid var(--accent);border-radius:var(--r2);background:var(--accent);color:var(--on-accent);font-weight:600;transition:background .15s,border-color .15s}
   .btn:hover{background:var(--accent-h);border-color:var(--accent-h)}
@@ -51,7 +51,7 @@
   .field{display:block;margin-bottom:1rem}
   .field>span{display:block;font-size:.86rem;font-weight:600;margin-bottom:.3rem}
   .field small{display:block;color:var(--muted);font-size:.82rem;margin-top:.3rem}
-  input[type=text],input[type=email],input[type=password],input[type=number],input[type=search],select,textarea{width:100%;min-height:42px;padding:.55rem .75rem;font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r2);transition:border-color .15s,box-shadow .15s}
+  input[type=text],input[type=email],input[type=password],input[type=number],input[type=search],input[type=datetime-local],select,textarea{width:100%;min-height:42px;padding:.55rem .75rem;font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r2);transition:border-color .15s,box-shadow .15s}
   textarea{min-height:96px;resize:vertical}
   input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
   .two{display:grid;grid-template-columns:1fr 1fr;gap:0 1rem}
@@ -230,6 +230,51 @@
   .note h4{color:var(--warn)}
   .note p{color:var(--text)}
 
+  .tag.PENDING_PAYMENT{background:var(--warn-bg);color:var(--warn)}
+  .tag.CONFIRMED{background:var(--ok-bg);color:var(--ok)}
+  .tag.CANCELLED{background:var(--err-bg);color:var(--err)}
+  .slots{display:grid;gap:.5rem;margin:.6rem 0 1rem}
+  .slot{display:flex;align-items:center;gap:.75rem;padding:.65rem .85rem;border:1px solid var(--line-strong);border-radius:var(--r2);cursor:pointer}
+  .slot:hover{background:var(--sunken)}
+  .slot input{margin:0;width:18px;height:18px;accent-color:var(--accent)}
+  .slot:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+  .slot b{display:block;font-size:.93rem;text-transform:capitalize}
+  .slot small{color:var(--muted)}
+  .reserve{border-top:1px solid var(--line);padding-top:1.2rem}
+  .reserve h4{font-size:1.05rem}
+  .reserve .qtyrow{display:grid;grid-template-columns:130px 1fr;gap:1rem;align-items:end}
+  .tot{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:.55rem}
+  .tot span{color:var(--muted);font-size:.88rem}
+  .tot b{font:650 1.35rem var(--display);font-variant-numeric:tabular-nums}
+  .muted{color:var(--muted)}
+  dialog.modal{margin:auto;padding:0;border:0;border-radius:var(--r3);width:min(480px,calc(100vw - 2rem));max-height:calc(100dvh - 2rem);background:var(--surface);color:var(--text);box-shadow:0 24px 70px rgba(5,12,22,.35);overflow:auto}
+  dialog.modal::backdrop{background:rgba(6,13,24,.6)}
+  dialog.modal[open]{animation:up .2s ease-out}
+  .mh{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 1.4rem;border-bottom:1px solid var(--line)}
+  .mh h3{font-size:1.15rem}
+  .mh .xb{width:34px;height:34px;border:0;border-radius:50%;background:transparent;color:var(--muted);display:grid;place-items:center}
+  .mh .xb:hover{background:var(--sunken);color:var(--text)}
+  .mb{padding:1.2rem 1.4rem 1.5rem}
+  .sum{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;padding:.9rem 1rem;background:var(--sunken);border-radius:var(--r2);margin-bottom:1rem}
+  .sum p{color:var(--muted);font-size:.86rem}
+  .sum b{font-variant-numeric:tabular-nums}
+  .sum .big{font:650 1.3rem var(--display);white-space:nowrap}
+  .sandbox{display:flex;gap:.6rem;padding:.7rem .9rem;border:1px dashed var(--line-strong);border-radius:var(--r2);font-size:.86rem;color:var(--muted);margin-bottom:1rem}
+  .sandbox .i{margin-top:.15rem;color:var(--warn)}
+  .sandbox b{color:var(--text)}
+  .chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.5rem}
+  .chip{border:1px solid var(--line-strong);background:var(--surface);color:var(--text);border-radius:99px;padding:.2rem .65rem;font-size:.78rem;font-weight:600}
+  .chip:hover{background:var(--sunken)}
+  .three{display:grid;grid-template-columns:1fr 1fr;gap:0 1rem}
+  .acts2{display:flex;gap:.6rem;justify-content:flex-end;margin-top:.4rem}
+  .receipt{display:grid;justify-items:center;text-align:center;gap:.4rem;padding:.4rem 0 1rem}
+  .receipt .ok{width:48px;height:48px;border-radius:50%;background:var(--ok-bg);color:var(--ok);display:grid;place-items:center}
+  .receipt .ok .i{width:24px;height:24px}
+  .receipt h3{font-size:1.3rem}
+  .receipt dl{width:100%;margin:1rem 0 0;text-align:left;border-top:1px solid var(--line)}
+  .receipt dl div{display:flex;justify-content:space-between;gap:1rem;padding:.55rem 0;border-bottom:1px solid var(--line);font-size:.92rem}
+  .receipt dt{color:var(--muted)}
+  .receipt dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums}
   .toasts{position:fixed;left:50%;bottom:1.4rem;transform:translateX(-50%);display:grid;gap:.5rem;z-index:100;width:min(420px,calc(100% - 2rem))}
   .toast{display:flex;gap:.6rem;align-items:center;background:var(--ink);color:#fff;padding:.75rem 1rem;border-radius:var(--r2);box-shadow:0 10px 28px rgba(0,0,0,.3);font-size:.92rem;animation:up .2s ease-out}
   .toast.bad{background:#8f2323}
@@ -388,6 +433,11 @@
           <p>Abrí cada atracción para ver su descripción, los requerimientos para participar y la política de cancelación.</p>
         </div>
       </div>
+      <div class="tabs" role="tablist" id="tTabs">
+        <button type="button" role="tab" aria-selected="true" data-ttab="explore">Explorar</button>
+        <button type="button" role="tab" aria-selected="false" data-ttab="mine">Mis reservas</button>
+      </div>
+      <div id="t-explore">
       <div class="cat">
         <aside class="rail" aria-label="Filtros">
           <h3>Departamento</h3>
@@ -409,6 +459,10 @@
           <p class="count" id="count" aria-live="polite"></p>
           <div class="grid" id="touristList"></div>
         </div>
+      </div>
+      </div>
+      <div id="t-mine" hidden>
+        <div id="myBookings"></div>
       </div>
     </section>
 
@@ -510,6 +564,31 @@
           <div class="grid" id="myAttractions" style="margin-top:1.2rem"></div>
         </div>
       </div>
+
+      <div class="sect" id="sectBookings" hidden>
+        <div>
+          <h3>Horarios y reservas</h3>
+          <p>Publicá las fechas en las que ofrecés cada atracción, con su cupo, y mirá las reservas que reciben.</p>
+        </div>
+        <div>
+          <button class="btn sm" id="toggleInstance" type="button"><svg class="i"><use href="#i-plus"/></svg>Nuevo horario</button>
+          <form id="instanceForm" class="panel" hidden novalidate style="margin-top:1rem">
+            <h4 class="sub">Nuevo horario</h4>
+            <label class="field"><span>Atracción</span><select name="atraccionId" id="instAtt"></select></label>
+            <div class="two">
+              <label class="field"><span>Fecha y hora de inicio</span><input type="datetime-local" name="dateTime" required></label>
+              <label class="field"><span>Cupo máximo (personas)</span><input type="number" name="maxCapacity" min="1" required></label>
+            </div>
+            <label class="field"><span>Minutos antes del inicio hasta los que se puede reservar</span><input type="number" name="minutesBeforeBookingDeadline" min="0" value="0"><small>Con 0 se puede reservar hasta la hora de inicio.</small></label>
+            <button class="btn" type="submit">Publicar horario</button>
+            <div class="msg" role="status"></div>
+          </form>
+          <h4 class="sub" style="margin-top:1.6rem">Horarios publicados</h4>
+          <div id="myInstances"></div>
+          <h4 class="sub" style="margin-top:1.6rem">Reservas recibidas</h4>
+          <div id="providerBookings"></div>
+        </div>
+      </div>
     </section>
 
     <section id="view-ADMIN" hidden>
@@ -546,6 +625,7 @@
   <footer>Uruguay Mnatural, Proyecto TIC 2026</footer>
 </div>
 
+<dialog id="payDlg" class="modal" aria-label="Pago de la reserva"></dialog>
 <dialog id="dlg" class="drawer" aria-label="Detalle de la atracción"></dialog>
 <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
 
@@ -756,6 +836,7 @@
       }
       prov += "</p></div>";
     }
+    var reserveSlot = user && user.role === "TOURIST" ? '<div class="reserve" id="reserveBox"></div>' : "";
     $("#dlg").innerHTML = '<div class="dr"><div class="plate">' + plateSvg(a)
       + '<button class="x" type="button" aria-label="Cerrar" data-close>' + icon("x") + "</button></div>"
       + '<div class="body"><div><h3>' + esc(a.name) + '</h3><p class="loc" style="margin-top:.4rem">' + icon("pin") + esc(a.locality) + ", " + esc(a.department) + "</p></div>"
@@ -763,8 +844,9 @@
       + "<div><small>Edad mínima</small><b>" + (a.minimumAge != null ? esc(a.minimumAge) + " años" : "Sin límite") + "</b></div></div>"
       + '<div class="blk"><h4>Descripción</h4><p>' + esc(a.description) + "</p></div>"
       + (a.requirements ? '<div class="note">' + icon("alert") + '<div class="blk"><h4>Requerimientos para participar</h4><p>' + esc(a.requirements) + "</p></div></div>" : "")
-      + '<div class="blk"><h4>Política de cancelación</h4><p>' + esc(cancel) + "</p></div>" + prov + "</div></div>";
+      + '<div class="blk"><h4>Política de cancelación</h4><p>' + esc(cancel) + "</p></div>" + reserveSlot + prov + "</div></div>";
     $("#dlg").showModal();
+    if (reserveSlot) loadReserve(a);
   }
 
   $("#dlg").addEventListener("click", function (e) {
@@ -896,6 +978,11 @@
     $("#myAttractions").innerHTML = ok
       ? (own.length ? own.map(cardHtml).join("") : emptyHtml("list", "Todavía no publicaste atracciones", "Usá el botón Nueva atracción para crear la primera."))
       : "";
+    $("#sectBookings").hidden = !ok;
+    if (ok) {
+      $("#instAtt").innerHTML = own.map(function (a) { return '<option value="' + esc(a.id) + '">' + esc(a.name) + "</option>"; }).join("");
+      loadProviderBookings(own);
+    }
   }
 
   $("#toggleProvider").addEventListener("click", function () {
@@ -1096,10 +1183,347 @@
     $("#avatar").textContent = initials(full);
     $("#whoName").textContent = full;
     $("#whoRole").textContent = ROLES[user.role] || "";
-    if (user.role === "TOURIST") loadTourist();
+    if (user.role === "TOURIST") { switchT("explore"); loadTourist(); }
     if (user.role === "PROVIDER") loadProvider();
     if (user.role === "ADMIN") loadAdmin();
   }
+
+
+  var BSTATUS = {PENDING_PAYMENT: "Pendiente de pago", CONFIRMED: "Confirmada", CANCELLED: "Cancelada", COMPLETED: "Realizada"};
+  var reserving = null;
+  var myList = [];
+  var payingId = null;
+
+  function when(s) {
+    var d = new Date(s);
+    if (isNaN(d.getTime())) return "-";
+    return d.toLocaleDateString("es-UY", {weekday: "short", day: "numeric", month: "short", year: "numeric"})
+      + ", " + d.toLocaleTimeString("es-UY", {hour: "2-digit", minute: "2-digit"});
+  }
+
+  async function loadReserve(a) {
+    var box = $("#reserveBox");
+    if (!box) return;
+    reserving = a;
+    box.innerHTML = '<h4>Reservar</h4><p class="muted" style="margin-top:.4rem">Buscando horarios disponibles...</p>';
+    var list;
+    try {
+      list = await api("GET", "/api/instances/attraction/" + a.id);
+    } catch (e) {
+      box.innerHTML = '<h4>Reservar</h4><p class="muted" style="margin-top:.4rem">No pudimos cargar los horarios. ' + esc(e.message) + "</p>";
+      return;
+    }
+    var now = Date.now();
+    list = list.filter(function (i) { return new Date(i.dateTime).getTime() > now && i.availablePlaces > 0; });
+    list.sort(function (x, y) { return new Date(x.dateTime) - new Date(y.dateTime); });
+    if (!list.length) {
+      box.innerHTML = '<h4>Reservar</h4><p class="muted" style="margin-top:.4rem">Por ahora no hay horarios con lugares disponibles.</p>';
+      return;
+    }
+    var slots = list.map(function (i, n) {
+      return '<label class="slot"><input type="radio" name="slot" value="' + esc(i.id) + '" data-places="' + esc(i.availablePlaces) + '"' + (n === 0 ? " checked" : "") + '>'
+        + "<span><b>" + esc(when(i.dateTime)) + "</b><small>Quedan " + esc(i.availablePlaces) + (i.availablePlaces === 1 ? " lugar" : " lugares") + "</small></span></label>";
+    }).join("");
+    box.innerHTML = "<h4>Reservar</h4>"
+      + '<div class="slots" role="radiogroup" aria-label="Horarios disponibles">' + slots + "</div>"
+      + '<div class="qtyrow"><label class="field" style="margin:0"><span>Personas</span><input type="number" id="qty" min="1" value="1"></label>'
+      + '<div class="tot"><span>Total</span><b id="total">' + money(a.price) + "</b></div></div>"
+      + '<button class="btn block" type="button" id="reserveBtn" style="margin-top:.6rem">Reservar</button>'
+      + '<div class="msg" id="reserveMsg" role="status"></div>'
+      + '<p class="muted" style="font-size:.84rem;margin-top:.8rem">La reserva queda pendiente hasta que la pagues desde Mis reservas.</p>';
+    updateReserve();
+  }
+
+  function updateReserve() {
+    var sel = $("input[name=slot]:checked", $("#dlg"));
+    var qty = $("#qty");
+    if (!sel || !qty || !reserving) return;
+    var places = Number(sel.getAttribute("data-places"));
+    qty.max = String(places);
+    var n = Number(qty.value) || 0;
+    if (n > places) { n = places; qty.value = String(places); }
+    $("#total").textContent = money(Number(reserving.price) * n);
+  }
+
+  async function doReserve(btn) {
+    var box = $("#reserveMsg");
+    var sel = $("input[name=slot]:checked", $("#dlg"));
+    var n = Number($("#qty").value);
+    if (!sel) { msg(box, "Elegí un horario.", false); return; }
+    if (!n || n < 1) { msg(box, "Indicá cuántas personas participan.", false); return; }
+    btn.disabled = true;
+    box.className = "msg";
+    box.textContent = "";
+    try {
+      await api("POST", "/api/bookings", {
+        tourist: {id: user.id},
+        activityInstance: {id: Number(sel.value)},
+        participantsCount: n
+      });
+      $("#dlg").close();
+      toast("Reserva creada. Pagala para confirmarla.");
+      switchT("mine");
+    } catch (err) {
+      msg(box, err.message, false);
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  $("#dlg").addEventListener("change", function (e) {
+    if (e.target.name === "slot") updateReserve();
+  });
+  $("#dlg").addEventListener("input", function (e) {
+    if (e.target.id === "qty") updateReserve();
+  });
+  $("#dlg").addEventListener("click", function (e) {
+    var b = e.target.closest("#reserveBtn");
+    if (b) doReserve(b);
+  });
+
+  function switchT(which) {
+    $$("[data-ttab]").forEach(function (b) { b.setAttribute("aria-selected", String(b.getAttribute("data-ttab") === which)); });
+    $("#t-explore").hidden = which !== "explore";
+    $("#t-mine").hidden = which !== "mine";
+    if (which === "mine") loadMyBookings();
+  }
+  $$("[data-ttab]").forEach(function (b) {
+    b.addEventListener("click", function () { switchT(b.getAttribute("data-ttab")); });
+  });
+
+  function left(s) {
+    var ms = new Date(s).getTime() - Date.now();
+    if (ms <= 0) return "instantes";
+    var m = Math.floor(ms / 60000);
+    if (m < 60) return m + " min";
+    var h = Math.floor(m / 60);
+    return h + " h" + (m % 60 ? " " + (m % 60) + " min" : "");
+  }
+
+  function bookingRow(b, forProvider) {
+    var inst = b.activityInstance || {};
+    var att = inst.atraccion || {};
+    var t = b.tourist || {};
+    var who = ((t.firstName || "") + " " + (t.lastName || "")).trim();
+    var state = '<span class="tag ' + esc(b.status) + '">' + (BSTATUS[b.status] || esc(b.status)) + "</span>";
+    if (b.status === "CANCELLED" && b.refundAmount && Number(b.refundAmount) > 0) {
+      state += '<span class="sec">Reembolso ' + money(b.refundAmount) + "</span>";
+    }
+    if (b.status === "PENDING_PAYMENT" && b.paymentDeadline) {
+      state += '<span class="sec">Pagala antes del ' + esc(when(b.paymentDeadline)) + " (vence en " + esc(left(b.paymentDeadline)) + ")</span>";
+    }
+    if (b.status === "CANCELLED" && b.cancelReason) {
+      state += '<span class="sec">' + esc(b.cancelReason) + "</span>";
+    }
+    var row = "<tr>";
+    if (forProvider) row += '<td data-l="Turista"><strong>' + esc(who) + '</strong><span class="sec">' + esc(t.email) + "</span></td>";
+    row += '<td data-l="Actividad"><strong>' + esc(att.name) + '</strong><span class="sec">' + esc(att.locality) + ", " + esc(att.department) + "</span></td>"
+      + '<td data-l="Fecha">' + esc(when(inst.dateTime)) + "</td>"
+      + '<td data-l="Personas" class="num">' + esc(b.participantsCount) + "</td>"
+      + '<td data-l="Total" class="num">' + money(b.totalPrice) + "</td>"
+      + '<td data-l="Estado">' + state + "</td>";
+    if (!forProvider) {
+      var acts = "";
+      if (b.status === "PENDING_PAYMENT") acts += '<button class="btn sm" type="button" data-pay="' + esc(b.id) + '">Pagar</button>';
+      if (b.status === "PENDING_PAYMENT" || b.status === "CONFIRMED") acts += '<button class="btn danger sm" type="button" data-cancel="' + esc(b.id) + '">Cancelar</button>';
+      row += '<td class="acts">' + acts + "</td>";
+    }
+    return row + "</tr>";
+  }
+
+  function bookingTable(list, forProvider) {
+    var head = (forProvider ? '<th scope="col">Turista</th>' : "")
+      + '<th scope="col">Actividad</th><th scope="col">Fecha</th><th scope="col">Personas</th><th scope="col">Total</th><th scope="col">Estado</th>'
+      + (forProvider ? "" : '<th scope="col"><span class="sr">Acciones</span></th>');
+    return '<div class="tblwrap"><table><thead><tr>' + head + "</tr></thead><tbody>"
+      + list.map(function (b) { return bookingRow(b, forProvider); }).join("") + "</tbody></table></div>";
+  }
+
+  async function loadMyBookings() {
+    var box = $("#myBookings");
+    box.innerHTML = '<div class="grid">' + skeletons(1) + "</div>";
+    var list;
+    try {
+      list = await api("GET", "/api/bookings/tourist/" + user.id);
+    } catch (e) {
+      box.innerHTML = '<div class="grid">' + emptyHtml("alert", "No pudimos cargar tus reservas", e.message) + "</div>";
+      return;
+    }
+    list.sort(function (a, b) { return b.id - a.id; });
+    myList = list;
+    box.innerHTML = list.length
+      ? bookingTable(list, false)
+      : '<div class="grid">' + emptyHtml("list", "Todavía no hiciste reservas", "Elegí una atracción en Explorar y reservá un horario.") + "</div>";
+  }
+
+  $("#myBookings").addEventListener("click", async function (e) {
+    var p = e.target.closest("[data-pay]");
+    var c = e.target.closest("[data-cancel]");
+    if (p) { openPay(p.getAttribute("data-pay")); return; }
+    if (!c) return;
+    c.disabled = true;
+    try {
+      var res = await api("PUT", "/api/bookings/" + c.getAttribute("data-cancel") + "/cancel?touristId=" + user.id);
+      toast(res && res.refundAmount && Number(res.refundAmount) > 0 ? "Reserva cancelada. Reembolso de " + money(res.refundAmount) + "." : "Reserva cancelada.");
+    } catch (err) {
+      toast(err.message, true);
+    }
+    loadMyBookings();
+  });
+
+  var TEST_CARDS = [
+    {n: "4242424242424242", t: "Aprobada"},
+    {n: "4000000000000002", t: "Rechazada por el banco"},
+    {n: "4000000000009995", t: "Fondos insuficientes"},
+    {n: "4000000000000119", t: "Servicio de pagos caído"},
+    {n: "4111111111111111", t: "Aleatoria (75, 20, 5)"}
+  ];
+
+  function groups(n) { return n.replace(/(\d{4})(?=\d)/g, "$1 "); }
+
+  function openPay(id) {
+    var b = null;
+    myList.forEach(function (x) { if (String(x.id) === String(id)) b = x; });
+    if (!b) return;
+    payingId = b.id;
+    var inst = b.activityInstance || {};
+    var att = inst.atraccion || {};
+    var year = String(new Date().getFullYear() + 4).slice(2);
+    var chips = TEST_CARDS.map(function (c) {
+      return '<button type="button" class="chip" data-card="' + c.n + '" data-year="' + year + '">' + esc(c.t) + "</button>";
+    }).join("");
+    $("#payDlg").innerHTML = '<div class="mh"><h3>Pagar reserva</h3><button class="xb" type="button" data-close aria-label="Cerrar">' + icon("x") + "</button></div>"
+      + '<div class="mb"><div class="sum"><div><b>' + esc(att.name) + "</b><p>" + esc(when(inst.dateTime)) + "</p><p>" + esc(b.participantsCount) + (b.participantsCount === 1 ? " persona" : " personas") + "</p></div>"
+      + '<div class="big">' + money(b.totalPrice) + "</div></div>"
+      + '<div class="sandbox">' + icon("alert") + "<div><b>Modo de prueba (sandbox).</b> No se cobra dinero real. Tocá una tarjeta de prueba para completar el formulario:"
+      + '<div class="chips">' + chips + "</div></div></div>"
+      + '<form id="payForm" novalidate>'
+      + '<label class="field"><span>Número de tarjeta</span><input type="text" id="cc" name="cardNumber" inputmode="numeric" autocomplete="cc-number" maxlength="23" placeholder="0000 0000 0000 0000" required></label>'
+      + '<label class="field"><span>Nombre del titular</span><input type="text" name="cardHolder" autocomplete="cc-name" required></label>'
+      + '<div class="three"><label class="field"><span>Vencimiento</span><input type="text" id="exp" name="expiry" inputmode="numeric" autocomplete="cc-exp" maxlength="5" placeholder="MM/AA" required></label>'
+      + '<label class="field"><span>Código de seguridad</span><input type="text" name="cvv" inputmode="numeric" autocomplete="cc-csc" maxlength="4" placeholder="123" required></label></div>'
+      + '<div class="msg" id="payMsg" role="status"></div>'
+      + '<div class="acts2"><button class="btn ghost" type="button" data-close>Cancelar</button><button class="btn" type="submit" id="payBtn">Pagar ' + money(b.totalPrice) + "</button></div></form></div>";
+    $("#payDlg").showModal();
+  }
+
+  $("#payDlg").addEventListener("click", function (e) {
+    if (e.target === this || e.target.closest("[data-close]")) { this.close(); return; }
+    var c = e.target.closest("[data-card]");
+    if (c) {
+      var f = $("#payForm");
+      f.elements.cardNumber.value = groups(c.getAttribute("data-card"));
+      if (!f.elements.cardHolder.value) f.elements.cardHolder.value = "TITULAR DE PRUEBA";
+      f.elements.expiry.value = "12/" + c.getAttribute("data-year");
+      f.elements.cvv.value = "123";
+    }
+  });
+  $("#payDlg").addEventListener("input", function (e) {
+    if (e.target.id === "cc") {
+      e.target.value = groups(e.target.value.replace(/\D/g, "").slice(0, 19));
+    }
+    if (e.target.id === "exp") {
+      var v = e.target.value.replace(/\D/g, "").slice(0, 4);
+      e.target.value = v.length > 2 ? v.slice(0, 2) + "/" + v.slice(2) : v;
+    }
+  });
+  $("#payDlg").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    var f = $("#payForm");
+    var box = $("#payMsg");
+    var btn = $("#payBtn");
+    if (!f.checkValidity()) { f.reportValidity(); return; }
+    var d = Object.fromEntries(new FormData(f));
+    btn.disabled = true;
+    box.className = "msg";
+    box.textContent = "";
+    try {
+      await api("POST", "/api/bookings/" + payingId + "/pay?touristId=" + user.id, d);
+      await showReceipt(payingId);
+    } catch (err) {
+      msg(box, err.message, false);
+      btn.disabled = false;
+    }
+    loadMyBookings();
+  });
+
+  async function showReceipt(id) {
+    var pay = null;
+    try {
+      var list = await api("GET", "/api/bookings/" + id + "/payments");
+      list.forEach(function (p) { if (p.status === "APPROVED") pay = p; });
+    } catch (e) { pay = null; }
+    var rows = pay
+      ? "<div><dt>Referencia</dt><dd>" + esc(pay.externalReference) + "</dd></div>"
+        + "<div><dt>Monto</dt><dd>" + money(pay.amount) + "</dd></div>"
+        + "<div><dt>Tarjeta</dt><dd>**** " + esc(pay.cardLast4) + "</dd></div>"
+        + "<div><dt>Fecha</dt><dd>" + esc(when(pay.paymentDate)) + "</dd></div>"
+      : "";
+    $("#payDlg").innerHTML = '<div class="mh"><h3>Comprobante</h3><button class="xb" type="button" data-close aria-label="Cerrar">' + icon("x") + "</button></div>"
+      + '<div class="mb"><div class="receipt"><div class="ok">' + icon("check") + "</div><h3>Pago aprobado</h3><p class=\"muted\">Tu reserva quedó confirmada.</p>"
+      + (rows ? "<dl>" + rows + "</dl>" : "") + "</div>"
+      + '<div class="acts2"><button class="btn" type="button" data-close>Listo</button></div></div>';
+  }
+
+  async function loadProviderBookings(own) {
+    var instBox = $("#myInstances");
+    var bookBox = $("#providerBookings");
+    instBox.innerHTML = '<div class="grid">' + skeletons(1) + "</div>";
+    bookBox.innerHTML = "";
+    var rows = [];
+    var i, list, j;
+    try {
+      for (i = 0; i < own.length; i++) {
+        list = await api("GET", "/api/instances/attraction/" + own[i].id);
+        for (j = 0; j < list.length; j++) rows.push({att: own[i], inst: list[j]});
+      }
+    } catch (e) {
+      instBox.innerHTML = '<div class="grid">' + emptyHtml("alert", "No pudimos cargar los horarios", e.message) + "</div>";
+      return;
+    }
+    rows.sort(function (a, b) { return new Date(a.inst.dateTime) - new Date(b.inst.dateTime); });
+    if (!own.length) {
+      instBox.innerHTML = '<div class="grid">' + emptyHtml("list", "Primero publicá una atracción", "Después vas a poder agregarle horarios.") + "</div>";
+    } else if (!rows.length) {
+      instBox.innerHTML = '<div class="grid">' + emptyHtml("clock", "Todavía no publicaste horarios", "Sin horarios, los turistas no pueden reservar tus atracciones.") + "</div>";
+    } else {
+      instBox.innerHTML = '<div class="tblwrap"><table><thead><tr><th scope="col">Atracción</th><th scope="col">Fecha y hora</th><th scope="col">Lugares libres</th><th scope="col">Se reserva hasta</th></tr></thead><tbody>'
+        + rows.map(function (r) {
+          var m = r.inst.minutesBeforeBookingDeadline || 0;
+          return '<tr><td data-l="Atracción"><strong>' + esc(r.att.name) + "</strong></td>"
+            + '<td data-l="Fecha y hora">' + esc(when(r.inst.dateTime)) + "</td>"
+            + '<td data-l="Lugares libres" class="num">' + esc(r.inst.availablePlaces) + " de " + esc(r.inst.maxCapacity) + "</td>"
+            + '<td data-l="Se reserva hasta">' + (m === 0 ? "La hora de inicio" : dur(m) + " antes") + "</td></tr>";
+        }).join("") + "</tbody></table></div>";
+    }
+    try {
+      var bookings = await api("GET", "/api/bookings/provider/" + user.id);
+      bookings.sort(function (a, b) { return b.id - a.id; });
+      bookBox.innerHTML = bookings.length
+        ? bookingTable(bookings, true)
+        : '<div class="grid">' + emptyHtml("list", "Todavía no recibiste reservas", "Van a aparecer acá cuando un turista reserve alguno de tus horarios.") + "</div>";
+    } catch (e2) {
+      bookBox.innerHTML = '<div class="grid">' + emptyHtml("alert", "No pudimos cargar las reservas", e2.message) + "</div>";
+    }
+  }
+
+  $("#toggleInstance").addEventListener("click", function () {
+    var f = $("#instanceForm");
+    f.hidden = !f.hidden;
+  });
+  onSubmit("#instanceForm", async function (d, box, f) {
+    if (new Date(d.dateTime).getTime() <= Date.now()) throw new Error("La fecha y hora tienen que ser futuras.");
+    await api("POST", "/api/instances", {
+      atraccion: {id: Number(d.atraccionId)},
+      dateTime: d.dateTime.length === 16 ? d.dateTime + ":00" : d.dateTime,
+      maxCapacity: Number(d.maxCapacity),
+      minutesBeforeBookingDeadline: Number(d.minutesBeforeBookingDeadline || 0)
+    });
+    f.reset();
+    f.hidden = true;
+    toast("Horario publicado.");
+    loadProvider();
+  });
 
   paintHero();
   show();
