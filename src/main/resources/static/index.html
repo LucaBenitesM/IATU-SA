@@ -5,247 +5,707 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Uruguay Mnatural</title>
 <style>
-  :root{--deep:#0f3d3e;--sea:#1d7a85;--leaf:#4f8f58;--sun:#f2b134;--bg:#eaf2f1;--card:#ffffff;--text:#12262a;--muted:#587074;--line:#d5e3e1;--soft:#f4f9f8;--ok-bg:#dff1e3;--ok:#1b5a2c;--err-bg:#fbe4e1;--err:#8d2b22;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif}
-  @media (prefers-color-scheme:dark){:root{--bg:#0b1a1b;--card:#12292b;--text:#e7f1f0;--muted:#9bb5b6;--line:#244144;--soft:#0f2224;--ok-bg:#1b3d29;--ok:#a9e3bb;--err-bg:#40201d;--err:#f3b5ae}}
-  *{box-sizing:border-box}[hidden]{display:none!important}
-  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.55}
-  h1,h2,h3{font-family:var(--serif);line-height:1.2;margin:0}
-  nav{position:sticky;top:0;z-index:5;background:var(--deep);color:#fff;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.7rem 1.25rem;border-bottom:3px solid var(--sun)}
-  .brand{display:flex;align-items:center;gap:.6rem;font-family:var(--serif);font-size:1.3rem;font-weight:700}
-  .me{display:flex;align-items:center;gap:.75rem;font-size:.9rem}
-  .badge{background:var(--sun);color:#3a2900;font-weight:700;font-size:.78rem;padding:.15rem .6rem;border-radius:99px}
-  .wrap{max-width:1040px;margin:0 auto;padding:1.5rem 1rem 4rem}
-  .hero{display:grid;grid-template-columns:1.1fr 1fr;min-height:560px}
-  .hero-art{position:relative;overflow:hidden;color:#fff;padding:3rem 2.5rem;background:linear-gradient(170deg,#0f3d3e 0%,#1d7a85 70%,#7cc3c4 100%);display:flex;flex-direction:column;justify-content:flex-start}
-  .hero-art h1{font-size:clamp(2rem,4.2vw,3.2rem);max-width:12ch}
-  .hero-art p{max-width:34ch;color:#d3ecea;font-size:1.05rem}
-  .land{position:absolute;left:0;right:0;bottom:0;width:100%;height:55%}
-  .hero-form{display:flex;align-items:center;justify-content:center;padding:2rem 1.25rem}
-  .box{width:100%;max-width:400px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.5rem;box-shadow:0 10px 30px rgba(15,61,62,.12)}
-  .tabs{display:flex;background:var(--soft);border-radius:10px;padding:4px;margin-bottom:1.2rem}
-  .tabs button{flex:1;background:transparent;color:var(--muted);border:0;padding:.5rem;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
-  .tabs button.on{background:var(--card);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.15)}
-  label{display:block;font-size:.88rem;font-weight:600;margin-bottom:.8rem}
-  input,select,textarea{display:block;width:100%;margin-top:.25rem;padding:.6rem .7rem;font:inherit;color:var(--text);background:var(--soft);border:1px solid var(--line);border-radius:8px}
-  input[type=checkbox]{display:inline-block;width:auto;margin:0 .45rem 0 0}
-  textarea{resize:vertical;min-height:72px}
-  :focus-visible{outline:3px solid var(--sea);outline-offset:1px}
-  .two{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
-  .btn{padding:.6rem 1.1rem;font:inherit;font-weight:700;color:#fff;background:var(--deep);border:0;border-radius:8px;cursor:pointer}
-  .btn:hover{background:var(--sea)}.btn:disabled{opacity:.6;cursor:wait}.btn.block{width:100%}
-  .btn.ghost{background:transparent;color:inherit;border:1px solid currentColor}.btn.ghost:hover{background:rgba(127,127,127,.15)}
-  .btn.danger{background:#a8372d}.btn.ok{background:var(--leaf)}
-  .msg{margin-top:.9rem;padding:.65rem .8rem;border-radius:8px;font-size:.9rem;word-break:break-word}
-  .msg:empty{display:none}.msg.ok{background:var(--ok-bg);color:var(--ok)}.msg.err{background:var(--err-bg);color:var(--err)}
-  .head{margin-bottom:1.25rem}.head h2{font-size:1.8rem}.head p{margin:.3rem 0 0;color:var(--muted);max-width:60ch}
-  .filters{display:grid;grid-template-columns:2fr 1fr;gap:.75rem;margin-bottom:.5rem}
+  :root{
+    --bg:#f5f6f8;--surface:#ffffff;--sunken:#eef0f4;--line:#e1e5eb;--line-strong:#c9d0da;
+    --text:#151f2b;--muted:#566274;--faint:#8791a1;
+    --accent:#1d4e89;--accent-h:#163e6e;--accent-soft:#e7eef8;--on-accent:#ffffff;
+    --ok:#17704a;--ok-bg:#e2f2ea;--warn:#80540a;--warn-bg:#fbf0d8;--err:#b02a2a;--err-bg:#fbe8e7;
+    --ink:#0e1a2a;
+    --font:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Roboto,sans-serif;
+    --display:"Segoe UI Variable Display","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Roboto,sans-serif;
+    --r1:6px;--r2:8px;--r3:12px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0c1520;--surface:#121d2b;--sunken:#0e1823;--line:#223144;--line-strong:#314660;
+      --text:#e6ecf4;--muted:#9aa7b9;--faint:#6f7d92;
+      --accent:#6aa6f2;--accent-h:#8bbcf6;--accent-soft:#14283f;--on-accent:#08121f;
+      --ok:#6fd7a3;--ok-bg:#10342a;--warn:#f1cf7d;--warn-bg:#35290d;--err:#ff9d94;--err-bg:#3b1a1b;
+      --ink:#08111c;
+    }
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  body{margin:0;font-family:var(--font);font-size:15px;line-height:1.5;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+  h1,h2,h3,h4{font-family:var(--display);margin:0;line-height:1.15;letter-spacing:-.02em;font-weight:650}
+  p{margin:0}
+  button{font:inherit;cursor:pointer}
+  ul,ol{margin:0;padding:0;list-style:none}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+  .i{width:1.1em;height:1.1em;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .num{font-variant-numeric:tabular-nums}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;min-height:40px;padding:0 1rem;border:1px solid var(--accent);border-radius:var(--r2);background:var(--accent);color:var(--on-accent);font-weight:600;transition:background .15s,border-color .15s}
+  .btn:hover{background:var(--accent-h);border-color:var(--accent-h)}
+  .btn:disabled{opacity:.55;cursor:wait}
+  .btn.block{width:100%;min-height:44px}
+  .btn.ghost{background:transparent;color:var(--text);border-color:var(--line-strong)}
+  .btn.ghost:hover{background:var(--sunken)}
+  .btn.danger{background:transparent;color:var(--err);border-color:var(--line-strong)}
+  .btn.danger:hover{background:var(--err-bg);border-color:var(--err)}
+  .btn.sm{min-height:34px;padding:0 .75rem;font-size:.88rem}
+  .link{background:none;border:0;padding:0;color:var(--accent);font-weight:600}
+  .link:hover{text-decoration:underline}
+
+  .field{display:block;margin-bottom:1rem}
+  .field>span{display:block;font-size:.86rem;font-weight:600;margin-bottom:.3rem}
+  .field small{display:block;color:var(--muted);font-size:.82rem;margin-top:.3rem}
+  input[type=text],input[type=email],input[type=password],input[type=number],input[type=search],select,textarea{width:100%;min-height:42px;padding:.55rem .75rem;font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r2);transition:border-color .15s,box-shadow .15s}
+  textarea{min-height:96px;resize:vertical}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:0 1rem}
+  .pw{position:relative}
+  .pw input{padding-right:2.8rem}
+  .pw button{position:absolute;right:3px;top:3px;width:36px;height:36px;border:0;background:transparent;color:var(--muted);border-radius:var(--r1);display:grid;place-items:center}
+  .pw button:hover{background:var(--sunken);color:var(--text)}
+  .msg{margin-top:1rem;padding:.65rem .85rem;border-radius:var(--r2);font-size:.9rem;word-break:break-word}
+  .msg:empty{display:none}
+  .msg.ok{background:var(--ok-bg);color:var(--ok)}
+  .msg.err{background:var(--err-bg);color:var(--err)}
+
+  .tag{display:inline-flex;align-items:center;gap:.4rem;font-size:.8rem;font-weight:600;padding:.12rem .6rem;border-radius:99px;background:var(--sunken);color:var(--muted)}
+  .tag::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+  .tag.APPROVED{background:var(--ok-bg);color:var(--ok)}
+  .tag.PENDING{background:var(--warn-bg);color:var(--warn)}
+  .tag.DENIED{background:var(--err-bg);color:var(--err)}
+
+  .auth{display:grid;grid-template-columns:minmax(0,1fr) 540px;min-height:100vh}
+  .side{position:relative;overflow:hidden;background:var(--ink);color:#e8eef7;display:flex;flex-direction:column;justify-content:space-between;padding:2.2rem 3rem 2.6rem}
+  .side>svg.art{position:absolute;inset:0;width:100%;height:100%}
+  .side>*:not(svg.art){position:relative}
+  .wordmark{display:flex;align-items:center;gap:.65rem;font:650 1.1rem var(--display);letter-spacing:-.01em}
+  .wordmark svg{width:28px;height:28px;flex:none}
+  .statement{max-width:30rem}
+  .statement h1{font-size:clamp(2rem,3.6vw,3rem);font-weight:650;letter-spacing:-.03em}
+  .statement>p{margin-top:1rem;color:#b9c6d8;font-size:1.02rem;max-width:36ch}
+  .facts3{margin-top:2.2rem;display:grid;gap:0;border-top:1px solid rgba(255,255,255,.16)}
+  .facts3 li{padding:.8rem 0;border-bottom:1px solid rgba(255,255,255,.16);color:#d4deeb;font-size:.95rem}
+  .formside{display:flex;flex-direction:column;justify-content:center;padding:2.5rem 3rem;background:var(--surface)}
+  .formwrap{width:100%;max-width:380px;margin:0 auto}
+  .utabs{display:flex;gap:1.6rem;border-bottom:1px solid var(--line);margin-bottom:1.8rem}
+  .utabs button{border:0;background:none;padding:.6rem 0;color:var(--muted);font-weight:600;border-bottom:2px solid transparent;margin-bottom:-1px}
+  .utabs button[aria-selected=true]{color:var(--text);border-bottom-color:var(--accent)}
+  .formwrap h2{font-size:1.6rem;margin-bottom:.3rem}
+  .formwrap .lead{color:var(--muted);margin-bottom:1.4rem}
+  .seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--sunken);border-radius:var(--r2);padding:3px;margin-bottom:1.2rem}
+  .seg label{position:relative;display:block}
+  .seg input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+  .seg span{display:block;text-align:center;padding:.5rem .3rem;border-radius:6px;font-size:.88rem;font-weight:600;color:var(--muted)}
+  .seg input:checked+span{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgba(10,20,35,.18)}
+  .seg input:focus-visible+span{outline:2px solid var(--accent);outline-offset:1px}
+  .segcap{display:block;font-size:.86rem;font-weight:600;margin-bottom:.4rem}
+  .legal{margin-top:1.6rem;color:var(--faint);font-size:.82rem;text-align:center}
+
+  .top{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+  .top .in{max-width:1240px;margin:0 auto;padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+  .top .wordmark{color:var(--text)}
+  .top .wordmark svg{color:var(--accent)}
+  .me{display:flex;align-items:center;gap:.8rem}
+  .avatar{width:34px;height:34px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700;font-size:.8rem;flex:none}
+  .who{line-height:1.2}
+  .who b{display:block;font-size:.9rem}
+  .who small{color:var(--muted);font-size:.78rem}
+
+  .page{max-width:1240px;margin:0 auto;padding:2rem 1.5rem 4rem}
+  .head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.6rem}
+  .head h2{font-size:clamp(1.6rem,2.6vw,2.1rem)}
+  .head p{color:var(--muted);margin-top:.35rem;max-width:60ch}
+
+  .cat{display:grid;grid-template-columns:230px minmax(0,1fr);gap:2rem;align-items:start}
+  .cat>*{min-width:0}
+  .rail{position:sticky;top:84px}
+  .rail h3{font:650 .8rem var(--font);color:var(--muted);letter-spacing:0;margin:0 0 .5rem}
+  .rail ul{display:grid;gap:2px;margin-bottom:1.5rem}
+  .rail li button{width:100%;display:flex;justify-content:space-between;gap:.5rem;align-items:center;border:0;background:none;color:var(--text);padding:.45rem .6rem;border-radius:var(--r1);text-align:left}
+  .rail li button:hover{background:var(--sunken)}
+  .rail li button[aria-pressed=true]{background:var(--accent-soft);color:var(--accent);font-weight:650}
+  .rail li small{color:var(--muted);font-variant-numeric:tabular-nums}
+  .check{display:flex;gap:.6rem;align-items:center;font-size:.92rem;cursor:pointer;margin-bottom:1.2rem}
+  .check input{width:18px;height:18px;margin:0;accent-color:var(--accent)}
+  .bar{display:flex;gap:.75rem;margin-bottom:.8rem;flex-wrap:wrap}
+  .search{position:relative;flex:1 1 260px}
+  .search .i{position:absolute;left:.8rem;top:50%;transform:translateY(-50%);color:var(--muted)}
+  .search input{padding-left:2.4rem}
+  .bar select{width:auto;min-width:210px}
   .count{color:var(--muted);font-size:.9rem;margin:0 0 1rem}
-  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1.1rem}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
-  .cover{position:relative;height:96px;color:#fff;padding:.7rem .9rem;display:flex;justify-content:space-between;align-items:flex-start}
-  .cover svg{position:absolute;left:0;right:0;bottom:0;width:100%;height:60%}
-  .cover span{position:relative;font-size:.8rem;font-weight:600;background:rgba(0,0,0,.28);padding:.1rem .6rem;border-radius:99px}
-  .cover .price{background:var(--sun);color:#3a2900;font-weight:800}
-  .body{padding:1rem 1.1rem 1.1rem;display:flex;flex-direction:column;gap:.55rem;flex:1}
-  .body h3{font-size:1.2rem}.where{color:var(--muted);font-size:.88rem;margin:0}
-  .chips{display:flex;flex-wrap:wrap;gap:.4rem}
-  .chip{font-size:.78rem;font-weight:600;padding:.15rem .6rem;border-radius:99px;background:var(--soft);border:1px solid var(--line)}
-  .chip.good{background:var(--ok-bg);color:var(--ok);border-color:transparent}
-  .req{border-left:3px solid var(--sun);padding-left:.7rem;font-size:.88rem;color:var(--muted)}
-  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.25rem;margin-bottom:1.25rem}
-  .panelhead{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
-  .panelhead h3{font-size:1.3rem;display:flex;align-items:center;gap:.6rem}
-  .step{width:1.8rem;height:1.8rem;border-radius:50%;background:var(--sun);color:#3a2900;font:700 1rem system-ui;display:inline-flex;align-items:center;justify-content:center}
-  .item{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;border:1px solid var(--line);border-radius:10px;padding:.8rem 1rem;margin-bottom:.6rem;background:var(--soft)}
-  .actions{display:flex;gap:.5rem}
-  .tag{font-size:.78rem;font-weight:700;padding:.1rem .6rem;border-radius:99px;background:var(--line);margin-left:.4rem}
-  .tag.APPROVED{background:var(--ok-bg);color:var(--ok)}.tag.DENIED{background:var(--err-bg);color:var(--err)}.tag.PENDING{background:var(--sun);color:#3a2900}
-  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.25rem}
-  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem 1.2rem}
-  .stat b{display:block;font:700 2rem var(--serif);color:var(--sea)}.stat span{color:var(--muted);font-size:.9rem}
-  details{font-size:.9rem;margin-top:.3rem}summary{cursor:pointer;color:var(--sea);font-weight:600}
-  .meta{color:var(--muted);font-size:.88rem;margin:.2rem 0}.empty{color:var(--muted)}
-  .toast{position:fixed;left:50%;bottom:1.5rem;transform:translate(-50%,20px);background:var(--deep);color:#fff;padding:.7rem 1.2rem;border-radius:10px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:9}
-  .toast.show{opacity:1;transform:translate(-50%,0)}.toast.bad{background:#a8372d}
-  @media (max-width:820px){.hero{grid-template-columns:1fr}.hero-art{min-height:300px;padding:2rem 1.5rem}.filters,.stats{grid-template-columns:1fr}}
-  @media (prefers-reduced-motion:reduce){.toast{transition:none}}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.25rem}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r3);overflow:hidden;display:flex;flex-direction:column;text-align:left}
+  .card[data-open]{cursor:pointer;transition:border-color .15s}
+  .card[data-open]:hover{border-color:var(--line-strong)}
+  .card[data-open]:hover .ttl{color:var(--accent)}
+  .plate{position:relative;aspect-ratio:8/5;background:var(--ink)}
+  .plate svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .plate .dept{position:absolute;left:.8rem;bottom:.7rem;color:#fff;font-size:.8rem;font-weight:600;background:rgba(8,17,28,.62);padding:.15rem .55rem;border-radius:var(--r1)}
+  .cb{padding:1rem 1.1rem 1.1rem;display:flex;flex-direction:column;gap:.5rem;flex:1}
+  .l1{display:flex;justify-content:space-between;align-items:baseline;gap:.8rem}
+  .ttl{font-size:1.06rem;transition:color .15s}
+  .price{font:650 1.02rem var(--display);white-space:nowrap;font-variant-numeric:tabular-nums}
+  .loc{display:flex;align-items:center;gap:.35rem;color:var(--muted);font-size:.88rem}
+  .desc{color:var(--muted);font-size:.9rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .facts{display:flex;flex-wrap:wrap;gap:.35rem .9rem;margin-top:auto;padding-top:.75rem;border-top:1px solid var(--line);font-size:.84rem;color:var(--muted)}
+  .facts li{display:inline-flex;align-items:center;gap:.35rem}
+  .facts .yes{color:var(--ok);font-weight:600}
+  .skel{height:340px;border-radius:var(--r3);border:1px solid var(--line);background:linear-gradient(100deg,var(--surface) 30%,var(--sunken) 50%,var(--surface) 70%);background-size:300% 100%;animation:sh 1.5s linear infinite}
+  @keyframes sh{from{background-position:100% 0}to{background-position:0 0}}
+  .empty{grid-column:1/-1;display:grid;justify-items:center;gap:.4rem;text-align:center;padding:3rem 1rem;border:1px dashed var(--line-strong);border-radius:var(--r3);color:var(--muted)}
+  .empty .i{width:1.6rem;height:1.6rem;color:var(--faint);margin-bottom:.3rem}
+  .empty b{color:var(--text);font-size:1rem}
+
+  .flow{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem}
+  .flow li{border-top:3px solid var(--line-strong);padding-top:.7rem}
+  .flow li.done{border-top-color:var(--accent)}
+  .flow li.now{border-top-color:var(--accent)}
+  .flow li small{display:block;color:var(--muted);font-size:.8rem;font-variant-numeric:tabular-nums}
+  .flow li b{display:block;font-size:.95rem}
+  .flow li.todo b{color:var(--muted)}
+  .flow li.now small{color:var(--accent);font-weight:650}
+  .sect{display:grid;grid-template-columns:260px minmax(0,1fr);gap:2rem;padding:2rem 0;border-top:1px solid var(--line)}
+  .sect>div:first-child h3{font-size:1.1rem;margin-bottom:.4rem}
+  .sect>div:first-child p{color:var(--muted);font-size:.9rem}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r3);padding:1.4rem}
+  .sub{font:650 .9rem var(--display);margin:0 0 .9rem;color:var(--text)}
+  .formcols{display:grid;grid-template-columns:1fr 1fr;gap:0 2rem}
+  .rowitem{display:flex;align-items:center;gap:.9rem;padding:.9rem 1rem;border:1px solid var(--line);border-radius:var(--r2);margin-bottom:.7rem;background:var(--surface)}
+  .rowitem .main{flex:1;min-width:0}
+  .rowitem .main p{color:var(--muted);font-size:.88rem}
+  .rowitem strong{margin-right:.4rem}
+  .switch{position:relative;display:flex;align-items:center;gap:.7rem;margin:.1rem 0 1rem;font-weight:600;cursor:pointer}
+  .switch input{position:absolute;left:0;top:50%;transform:translateY(-50%);width:40px;height:22px;margin:0;opacity:0;cursor:pointer;z-index:1}
+  .switch .track{width:40px;height:22px;border-radius:99px;background:var(--line-strong);position:relative;flex:none;transition:background .15s}
+  .switch .track::after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3);transition:transform .15s}
+  .switch input:checked+.track{background:var(--accent)}
+  .switch input:checked+.track::after{transform:translateX(18px)}
+  .switch input:focus-visible+.track{outline:2px solid var(--accent);outline-offset:2px}
+  .locked{display:flex;gap:.8rem;align-items:flex-start;padding:1rem 1.1rem;background:var(--sunken);border-radius:var(--r2);color:var(--muted)}
+  .locked b{display:block;color:var(--text)}
+  .locked .i{margin-top:.15rem}
+
+  .summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);border-radius:var(--r3);background:var(--surface);margin-bottom:1.8rem}
+  .summary div{padding:1rem 1.3rem;border-right:1px solid var(--line)}
+  .summary div:last-child{border-right:0}
+  .summary b{display:block;font:650 1.7rem var(--display);font-variant-numeric:tabular-nums;line-height:1.1}
+  .summary span{color:var(--muted);font-size:.86rem}
+  .tabs{display:flex;gap:1.6rem;border-bottom:1px solid var(--line);margin-bottom:1.2rem}
+  .tabs button{border:0;background:none;padding:.65rem 0;color:var(--muted);font-weight:600;border-bottom:2px solid transparent;margin-bottom:-1px}
+  .tabs button[aria-selected=true]{color:var(--text);border-bottom-color:var(--accent)}
+  .filt{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem}
+  .pill{border:1px solid var(--line-strong);background:var(--surface);color:var(--text);padding:.3rem .8rem;border-radius:99px;font-size:.86rem;font-weight:600}
+  .pill:hover{background:var(--sunken)}
+  .pill[aria-pressed=true]{background:var(--text);border-color:var(--text);color:var(--surface)}
+  .tblwrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--r3);overflow:hidden}
+  table{width:100%;border-collapse:collapse}
+  th{text-align:left;font-size:.8rem;font-weight:650;color:var(--muted);padding:.7rem 1rem;background:var(--sunken);border-bottom:1px solid var(--line)}
+  td{padding:.85rem 1rem;border-bottom:1px solid var(--line);vertical-align:middle;font-size:.92rem}
+  tr:last-child>td{border-bottom:0}
+  td .sec{display:block;color:var(--muted);font-size:.82rem}
+  td.acts{text-align:right;white-space:nowrap}
+  td.acts .btn{margin-left:.35rem}
+  tr.more td{background:var(--sunken)}
+  .dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.9rem 1.5rem}
+  .dl dt{font-size:.78rem;color:var(--muted);font-weight:600}
+  .dl dd{margin:0;word-break:break-word}
+  .dl .wide{grid-column:1/-1}
+
+  dialog.drawer{position:fixed;inset:0 0 0 auto;margin:0;padding:0;border:0;height:100vh;height:100dvh;max-height:none;width:min(540px,100vw);max-width:none;background:var(--surface);color:var(--text);box-shadow:-24px 0 60px rgba(5,12,22,.28);overflow:hidden}
+  dialog.drawer[open]{animation:slide .22s ease-out}
+  dialog.drawer::backdrop{background:rgba(6,13,24,.55)}
+  @keyframes slide{from{transform:translateX(28px);opacity:0}to{transform:none;opacity:1}}
+  .dr{display:flex;flex-direction:column;height:100%}
+  .dr .plate{aspect-ratio:auto;height:190px;flex:none}
+  .dr .x{position:absolute;right:.8rem;top:.8rem;width:38px;height:38px;border-radius:50%;border:0;background:rgba(8,17,28,.65);color:#fff;display:grid;place-items:center;z-index:2}
+  .dr .x:hover{background:rgba(8,17,28,.85)}
+  .dr .body{overflow:auto;padding:1.4rem 1.6rem 2rem;display:grid;gap:1.5rem;align-content:start}
+  .dr h3{font-size:1.5rem}
+  .keys{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:var(--r2)}
+  .keys div{padding:.7rem .9rem;border-right:1px solid var(--line)}
+  .keys div:last-child{border-right:0}
+  .keys small{display:block;color:var(--muted);font-size:.78rem}
+  .keys b{font-variant-numeric:tabular-nums}
+  .blk h4{font-size:.92rem;margin-bottom:.4rem}
+  .blk p{color:var(--muted);white-space:pre-line}
+  .note{display:flex;gap:.8rem;background:var(--warn-bg);color:var(--text);padding:.9rem 1rem;border-radius:var(--r2)}
+  .note .i{color:var(--warn);margin-top:.2rem}
+  .note h4{color:var(--warn)}
+  .note p{color:var(--text)}
+
+  .toasts{position:fixed;left:50%;bottom:1.4rem;transform:translateX(-50%);display:grid;gap:.5rem;z-index:100;width:min(420px,calc(100% - 2rem))}
+  .toast{display:flex;gap:.6rem;align-items:center;background:var(--ink);color:#fff;padding:.75rem 1rem;border-radius:var(--r2);box-shadow:0 10px 28px rgba(0,0,0,.3);font-size:.92rem;animation:up .2s ease-out}
+  .toast.bad{background:#8f2323}
+  @keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  footer{text-align:center;color:var(--faint);font-size:.82rem;padding:0 1rem 2.2rem}
+
+  @media (max-width:1000px){
+    .auth{grid-template-columns:1fr}
+    .side{min-height:300px;padding:1.6rem 1.5rem 1.8rem}
+    .facts3{display:none}
+    .formside{padding:2rem 1.25rem 2.5rem}
+    .sect{grid-template-columns:1fr;gap:1rem}
+  }
+  @media (max-width:860px){
+    .cat{grid-template-columns:1fr;gap:1rem}
+    .rail{position:static}
+    .rail h3{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+    .rail ul{display:flex;overflow-x:auto;gap:.4rem;margin-bottom:.8rem;padding-bottom:.3rem}
+    .rail li{flex:none}
+    .rail li button{border:1px solid var(--line-strong);border-radius:99px;padding:.35rem .8rem;gap:.5rem;background:var(--surface)}
+    .rail li button[aria-pressed=true]{border-color:var(--accent)}
+    .plate{aspect-ratio:16/7}
+    .flow{grid-template-columns:1fr;gap:.6rem}
+    .formcols{grid-template-columns:1fr}
+  }
+  @media (max-width:760px){
+    table,thead,tbody,tr,td{display:block}
+    thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+    tr{border-bottom:1px solid var(--line);padding:.5rem 0}
+    tr:last-child{border-bottom:0}
+    td{border:0;padding:.3rem 1rem;display:flex;justify-content:space-between;gap:1rem;text-align:right}
+    td::before{content:attr(data-l);color:var(--muted);font-size:.82rem;font-weight:600;text-align:left}
+    td.acts{justify-content:flex-end;padding-top:.6rem}
+    td.acts::before{content:none}
+    tr.more td::before{content:none}
+    .summary b{font-size:1.35rem}
+    .summary div{padding:.8rem}
+  }
+  @media (max-width:560px){
+    .two{grid-template-columns:1fr}
+    .who{display:none}
+    .formside{padding:1.6rem 1rem 2.2rem}
+    .keys{grid-template-columns:1fr}
+    .keys div{border-right:0;border-bottom:1px solid var(--line)}
+    .keys div:last-child{border-bottom:0}
+    .top .in,.page{padding-left:1rem;padding-right:1rem}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="brand">
-    <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="11" r="6" fill="#f2b134"/><path d="M2 21c4-4 8-4 12 0s8 4 12 0l4-2v11H2z" fill="#fff" opacity=".92"/></svg>
-    Uruguay Mnatural
-  </div>
-  <div class="me" id="who" hidden><span id="whoText"></span><span class="badge" id="whoRole"></span><button class="btn ghost" id="logout">Salir</button></div>
-</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-5.6-7-11a7 7 0 0 1 14 0c0 5.4-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 4H5v16h4"/><path d="M16 8l4 4-4 4M20 12H9"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-eyeoff" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 6.2A9.8 9.8 0 0 1 12 6c6.4 0 10 6 10 6a17 17 0 0 1-3.2 3.9M6.5 7.6A17 17 0 0 0 2 12s3.6 6 10 6a9.7 9.7 0 0 0 4-.9"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-mark" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.6"><ellipse cx="16" cy="16" rx="13" ry="8.5" transform="rotate(-24 16 16)"/><ellipse cx="16" cy="16" rx="8.5" ry="5" transform="rotate(-24 16 16)"/><ellipse cx="16" cy="16" rx="3.8" ry="2" transform="rotate(-24 16 16)"/></g></symbol>
+</svg>
 
-<div id="auth" class="hero">
-  <div class="hero-art">
-    <h1>Todo Uruguay en un solo lugar</h1>
-    <p>Cabalgatas, trekking, enoturismo y mucho más. Encontrá la actividad ideal y reservala sin vueltas.</p>
-    <svg class="land" viewBox="0 0 400 200" preserveAspectRatio="none" aria-hidden="true">
-      <circle cx="290" cy="60" r="34" fill="#f2b134"/>
-      <path d="M0 120C60 70 110 130 180 100S320 60 400 110V200H0Z" fill="#2f8a8f" opacity=".75"/>
-      <path d="M0 150C70 110 140 170 220 135S350 110 400 145V200H0Z" fill="#4f8f58"/>
-      <path d="M0 180C80 155 150 195 240 172S350 160 400 178V200H0Z" fill="#0f3d3e"/>
-    </svg>
+<div class="auth" id="auth">
+  <div class="side">
+    <svg class="art" id="heroArt" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+    <div class="wordmark"><svg aria-hidden="true"><use href="#i-mark"/></svg>Uruguay Mnatural</div>
+    <div class="statement">
+      <h1>Actividades al aire libre en todo Uruguay</h1>
+      <p>Cabalgatas, trekking, kayak y enoturismo ofrecidos por emprendedores locales.</p>
+      <ul class="facts3">
+        <li>Atracciones de todos los departamentos</li>
+        <li>Emprendimientos revisados antes de publicarse</li>
+        <li>Requerimientos y política de cancelación a la vista</li>
+      </ul>
+    </div>
   </div>
-  <div class="hero-form">
-    <div class="box">
-      <div class="tabs">
-        <button type="button" class="on" data-tab="login">Ingresar</button>
-        <button type="button" data-tab="register">Crear cuenta</button>
+
+  <div class="formside">
+    <div class="formwrap">
+      <div class="utabs" role="tablist" aria-label="Acceso">
+        <button type="button" role="tab" id="tabLogin" aria-selected="true" data-tab="login">Ingresar</button>
+        <button type="button" role="tab" id="tabRegister" aria-selected="false" data-tab="register">Crear cuenta</button>
       </div>
-      <form id="loginForm">
-        <label>Email <input name="email" type="email" required></label>
-        <label>Contraseña <input name="password" type="password" required></label>
-        <label>Ingresar como
-          <select name="role">
-            <option value="TOURIST">Turista</option>
-            <option value="PROVIDER">Emprendedor</option>
-            <option value="ADMIN">Administrador</option>
-          </select>
+
+      <form id="loginForm" novalidate>
+        <h2>Bienvenido de nuevo</h2>
+        <p class="lead">Ingresá con tu cuenta para continuar.</p>
+        <span class="segcap" id="capLogin">Ingresar como</span>
+        <div class="seg" role="radiogroup" aria-labelledby="capLogin">
+          <label><input type="radio" name="role" value="TOURIST" checked><span>Turista</span></label>
+          <label><input type="radio" name="role" value="PROVIDER"><span>Emprendedor</span></label>
+          <label><input type="radio" name="role" value="ADMIN"><span>Administrador</span></label>
+        </div>
+        <label class="field"><span>Email</span><input type="email" name="email" autocomplete="email" required></label>
+        <label class="field"><span>Contraseña</span>
+          <div class="pw"><input type="password" name="password" autocomplete="current-password" required><button type="button" data-pw aria-label="Mostrar contraseña"><svg class="i"><use href="#i-eye"/></svg></button></div>
         </label>
         <button class="btn block" type="submit">Ingresar</button>
         <div class="msg" role="status"></div>
       </form>
-      <form id="registerForm" hidden>
-        <div class="two">
-          <label>Nombre <input name="firstName" required></label>
-          <label>Apellido <input name="lastName" required></label>
+
+      <form id="registerForm" hidden novalidate>
+        <h2>Creá tu cuenta</h2>
+        <p class="lead">Elegí cómo vas a usar Uruguay Mnatural.</p>
+        <span class="segcap" id="capReg">Quiero ser</span>
+        <div class="seg" role="radiogroup" aria-labelledby="capReg">
+          <label><input type="radio" name="role" value="TOURIST" checked><span>Turista</span></label>
+          <label><input type="radio" name="role" value="PROVIDER"><span>Emprendedor</span></label>
         </div>
-        <label>Email <input name="email" type="email" required></label>
-        <label>Contraseña <input name="password" type="password" minlength="4" required></label>
-        <label>Quiero ser
-          <select name="role">
-            <option value="TOURIST">Turista</option>
-            <option value="PROVIDER">Emprendedor (ofrezco actividades)</option>
-          </select>
+        <div class="two">
+          <label class="field"><span>Nombre</span><input type="text" name="firstName" autocomplete="given-name" required></label>
+          <label class="field"><span>Apellido</span><input type="text" name="lastName" autocomplete="family-name" required></label>
+        </div>
+        <label class="field"><span>Email</span><input type="email" name="email" autocomplete="email" required></label>
+        <label class="field"><span>Contraseña</span>
+          <div class="pw"><input type="password" name="password" minlength="4" autocomplete="new-password" required><button type="button" data-pw aria-label="Mostrar contraseña"><svg class="i"><use href="#i-eye"/></svg></button></div>
+          <small>Mínimo 4 caracteres.</small>
         </label>
         <button class="btn block" type="submit">Crear cuenta</button>
         <div class="msg" role="status"></div>
       </form>
+      <p class="legal">Proyecto TIC 2026</p>
     </div>
   </div>
 </div>
 
-<div class="wrap" id="app" hidden>
-
-  <div id="view-TOURIST" hidden>
-    <div class="head"><h2>Descubrí tu próxima aventura</h2><p>Buscá por nombre o localidad y filtrá por departamento.</p></div>
-    <div class="filters">
-      <input id="q" type="search" placeholder="Buscar actividad o localidad" aria-label="Buscar">
-      <select id="dep" aria-label="Departamento"></select>
-    </div>
-    <p class="count" id="count"></p>
-    <div class="cards" id="touristList"></div>
-  </div>
-
-  <div id="view-PROVIDER" hidden>
-    <div class="head"><h2>Panel del emprendedor</h2><p>Registrá tu emprendimiento. Cuando el administrador lo apruebe, podés publicar tus atracciones.</p></div>
-
-    <section class="panel">
-      <div class="panelhead">
-        <h3><span class="step">1</span>Tu emprendimiento</h3>
-        <button class="btn ghost" id="toggleProvider" type="button">Registrar emprendimiento</button>
+<div id="app" hidden>
+  <header class="top">
+    <div class="in">
+      <div class="wordmark"><svg aria-hidden="true"><use href="#i-mark"/></svg>Uruguay Mnatural</div>
+      <div class="me">
+        <div class="avatar" id="avatar"></div>
+        <div class="who"><b id="whoName"></b><small id="whoRole"></small></div>
+        <button class="btn ghost sm" id="logout" type="button"><svg class="i"><use href="#i-logout"/></svg>Salir</button>
       </div>
-      <div id="myProviders"></div>
-      <form id="providerForm" hidden>
-        <label>Nombre del emprendimiento <input name="name" required></label>
-        <label>Tipo de prestador
-          <select name="personType" id="personType">
-            <option value="PHYSICAL">Persona física</option>
-            <option value="LEGAL">Persona jurídica</option>
-          </select>
-        </label>
-        <div id="legalFields" hidden class="two">
-          <label>RUT <input name="rut" id="rut"></label>
-          <label>Razón social <input name="businessName" id="businessName"></label>
+    </div>
+  </header>
+
+  <main class="page">
+
+    <section id="view-TOURIST" hidden>
+      <div class="head">
+        <div>
+          <h2>Atracciones</h2>
+          <p>Abrí cada atracción para ver su descripción, los requerimientos para participar y la política de cancelación.</p>
         </div>
-        <div class="two">
-          <label>Departamento <input name="department" required></label>
-          <label>Localidad <input name="locality" required></label>
+      </div>
+      <div class="cat">
+        <aside class="rail" aria-label="Filtros">
+          <h3>Departamento</h3>
+          <ul id="depList"></ul>
+          <h3>Cancelación</h3>
+          <label class="check"><input type="checkbox" id="fCancel"><span>Solo con cancelación</span></label>
+          <button type="button" class="link" id="clearF">Limpiar filtros</button>
+        </aside>
+        <div>
+          <div class="bar">
+            <label class="search"><span class="sr">Buscar</span><svg class="i"><use href="#i-search"/></svg><input type="search" id="q" placeholder="Buscar por nombre o localidad"></label>
+            <select id="sort" aria-label="Ordenar por">
+              <option value="new">Más recientes</option>
+              <option value="priceAsc">Precio: menor a mayor</option>
+              <option value="priceDesc">Precio: mayor a menor</option>
+              <option value="dur">Duración: más corta</option>
+            </select>
+          </div>
+          <p class="count" id="count" aria-live="polite"></p>
+          <div class="grid" id="touristList"></div>
         </div>
-        <div class="two">
-          <label>Teléfono <input name="phone" required></label>
-          <label>Email de contacto <input name="email" type="email" required></label>
-        </div>
-        <label>Descripción <textarea name="description" required></textarea></label>
-        <button class="btn" type="submit">Enviar para aprobación</button>
-        <div class="msg" role="status"></div>
-      </form>
+      </div>
     </section>
 
-    <section class="panel" id="attractionSection" hidden>
-      <div class="panelhead">
-        <h3><span class="step">2</span>Tus atracciones</h3>
-        <button class="btn ghost" id="toggleAttraction" type="button">Nueva atracción</button>
+    <section id="view-PROVIDER" hidden>
+      <div class="head">
+        <div>
+          <h2 id="provHello">Panel del emprendedor</h2>
+          <p>Registrá tu emprendimiento. Cuando el administrador lo apruebe, vas a poder publicar tus atracciones.</p>
+        </div>
       </div>
-      <form id="attractionForm" hidden>
-        <label>Emprendimiento <select name="prestadorId" id="prestadorId"></select></label>
-        <label>Nombre <input name="name" required></label>
-        <label>Descripción <textarea name="description" maxlength="2000" required></textarea></label>
-        <div class="two">
-          <label>Departamento <input name="department" required></label>
-          <label>Localidad <input name="locality" required></label>
+      <ol class="flow" id="flow"></ol>
+
+      <div class="sect">
+        <div>
+          <h3>Tu emprendimiento</h3>
+          <p>Datos de identificación, ubicación y contacto. Las personas jurídicas deben informar RUT y razón social.</p>
         </div>
-        <div class="two">
-          <label>Duración (min) <input name="durationMinutes" type="number" min="1" required></label>
-          <label>Precio ($) <input name="price" type="number" min="0" step="0.01" required></label>
+        <div>
+          <div id="myProviders"></div>
+          <button class="btn ghost sm" id="toggleProvider" type="button" hidden><svg class="i"><use href="#i-plus"/></svg>Registrar otro emprendimiento</button>
+          <form id="providerForm" class="panel" novalidate>
+            <div class="formcols">
+              <div>
+                <h4 class="sub">Datos del emprendimiento</h4>
+                <label class="field"><span>Nombre</span><input type="text" name="name" required></label>
+                <label class="field"><span>Tipo de prestador</span>
+                  <select name="personType" id="personType">
+                    <option value="PHYSICAL">Persona física</option>
+                    <option value="LEGAL">Persona jurídica</option>
+                  </select>
+                </label>
+                <div id="legalFields" class="two" hidden>
+                  <label class="field"><span>RUT</span><input type="text" name="rut" id="rut"></label>
+                  <label class="field"><span>Razón social</span><input type="text" name="businessName" id="businessName"></label>
+                </div>
+                <label class="field"><span>Descripción</span><textarea name="description" required></textarea></label>
+              </div>
+              <div>
+                <h4 class="sub">Ubicación y contacto</h4>
+                <div class="two">
+                  <label class="field"><span>Departamento</span><input type="text" name="department" required></label>
+                  <label class="field"><span>Localidad</span><input type="text" name="locality" required></label>
+                </div>
+                <div class="two">
+                  <label class="field"><span>Teléfono</span><input type="text" name="phone" required></label>
+                  <label class="field"><span>Email de contacto</span><input type="email" name="email" required></label>
+                </div>
+              </div>
+            </div>
+            <button class="btn" type="submit">Enviar para aprobación</button>
+            <div class="msg" role="status"></div>
+          </form>
         </div>
-        <label>Edad mínima (opcional) <input name="minimumAge" type="number" min="0"></label>
-        <label>Requerimientos para participar (equipamiento, estado físico, documentos)
-          <textarea name="requirements" maxlength="2000"></textarea>
-        </label>
-        <label><input type="checkbox" name="allowsCancellation" id="allowsCancellation">Esta actividad permite cancelación</label>
-        <div id="cancelFields" hidden class="two">
-          <label>Cancelar hasta (min antes) <input name="cancellationDeadlineMinutes" id="deadline" type="number" min="0"></label>
-          <label>Reembolso (0 a 100 %) <input name="refundPercentage" id="refund" type="number" min="0" max="100"></label>
+      </div>
+
+      <div class="sect">
+        <div>
+          <h3>Tus atracciones</h3>
+          <p>Cada atracción puede indicar requerimientos para participar y si permite cancelación con reembolso.</p>
         </div>
-        <button class="btn" type="submit">Crear atracción</button>
-        <div class="msg" role="status"></div>
-      </form>
-      <div class="cards" id="myAttractions"></div>
+        <div>
+          <div class="locked" id="locked" hidden>
+            <svg class="i"><use href="#i-lock"/></svg>
+            <div><b>Todavía no podés publicar</b>Se habilita cuando el administrador apruebe tu emprendimiento.</div>
+          </div>
+          <div id="attrTools" hidden>
+            <button class="btn sm" id="toggleAttraction" type="button"><svg class="i"><use href="#i-plus"/></svg>Nueva atracción</button>
+          </div>
+          <form id="attractionForm" class="panel" hidden novalidate style="margin-top:1rem">
+            <div class="formcols">
+              <div>
+                <h4 class="sub">Datos de la atracción</h4>
+                <label class="field"><span>Emprendimiento</span><select name="prestadorId" id="prestadorId"></select></label>
+                <label class="field"><span>Nombre</span><input type="text" name="name" required></label>
+                <label class="field"><span>Descripción</span><textarea name="description" maxlength="2000" required></textarea></label>
+                <div class="two">
+                  <label class="field"><span>Departamento</span><input type="text" name="department" required></label>
+                  <label class="field"><span>Localidad</span><input type="text" name="locality" required></label>
+                </div>
+              </div>
+              <div>
+                <h4 class="sub">Precio, requisitos y cancelación</h4>
+                <div class="two">
+                  <label class="field"><span>Duración (minutos)</span><input type="number" name="durationMinutes" min="1" required></label>
+                  <label class="field"><span>Precio ($)</span><input type="number" name="price" min="0" step="0.01" required></label>
+                </div>
+                <label class="field"><span>Edad mínima</span><input type="number" name="minimumAge" min="0"><small>Opcional.</small></label>
+                <label class="field"><span>Requerimientos para participar</span><textarea name="requirements" maxlength="2000"></textarea><small>Equipamiento, estado físico, documentos. El turista lo ve destacado.</small></label>
+                <label class="switch"><input type="checkbox" name="allowsCancellation" id="allowsCancellation"><span class="track"></span><span>Esta actividad permite cancelación</span></label>
+                <div id="cancelFields" class="two" hidden>
+                  <label class="field"><span>Cancelar hasta (min antes)</span><input type="number" name="cancellationDeadlineMinutes" id="deadline" min="0"></label>
+                  <label class="field"><span>Reembolso (0 a 100 %)</span><input type="number" name="refundPercentage" id="refund" min="0" max="100"></label>
+                </div>
+              </div>
+            </div>
+            <button class="btn" type="submit">Publicar atracción</button>
+            <div class="msg" role="status"></div>
+          </form>
+          <div class="grid" id="myAttractions" style="margin-top:1.2rem"></div>
+        </div>
+      </div>
     </section>
-  </div>
 
-  <div id="view-ADMIN" hidden>
-    <div class="head"><h2>Panel de administración</h2><p>Revisá las solicitudes de los emprendimientos y controlá lo que se publica.</p></div>
-    <div class="stats">
-      <div class="stat"><b id="stPending">0</b><span>Solicitudes pendientes</span></div>
-      <div class="stat"><b id="stApproved">0</b><span>Emprendimientos aprobados</span></div>
-      <div class="stat"><b id="stAttr">0</b><span>Atracciones publicadas</span></div>
-    </div>
-    <section class="panel"><div class="panelhead"><h3>Solicitudes de prestadores</h3></div><div id="adminProviders"></div></section>
-    <section class="panel"><div class="panelhead"><h3>Todas las atracciones</h3></div><div class="cards" id="adminAttractions"></div></section>
-  </div>
+    <section id="view-ADMIN" hidden>
+      <div class="head">
+        <div>
+          <h2>Administración</h2>
+          <p>Revisá las solicitudes de los emprendimientos, mirá sus detalles y controlá lo que se publica.</p>
+        </div>
+      </div>
+      <div class="summary">
+        <div><b id="stPending">0</b><span>Solicitudes pendientes</span></div>
+        <div><b id="stApproved">0</b><span>Emprendimientos aprobados</span></div>
+        <div><b id="stAttr">0</b><span>Atracciones publicadas</span></div>
+      </div>
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" aria-selected="true" data-atab="requests">Solicitudes</button>
+        <button type="button" role="tab" aria-selected="false" data-atab="attractions">Atracciones</button>
+      </div>
+      <div id="atab-requests">
+        <div class="filt" id="stFilter" role="group" aria-label="Filtrar por estado">
+          <button class="pill" type="button" data-st="" aria-pressed="true">Todas</button>
+          <button class="pill" type="button" data-st="PENDING" aria-pressed="false">Pendientes</button>
+          <button class="pill" type="button" data-st="APPROVED" aria-pressed="false">Aprobadas</button>
+          <button class="pill" type="button" data-st="DENIED" aria-pressed="false">Denegadas</button>
+        </div>
+        <div id="adminProviders"></div>
+      </div>
+      <div id="atab-attractions" hidden>
+        <div id="adminAttractions"></div>
+      </div>
+    </section>
 
+  </main>
+  <footer>Uruguay Mnatural, Proyecto TIC 2026</footer>
 </div>
 
-<div class="toast" id="toast" role="status"></div>
+<dialog id="dlg" class="drawer" aria-label="Detalle de la atracción"></dialog>
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
 
 <script>
-  function $(s) { return document.querySelector(s); }
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
   var ROLES = {ADMIN: "Administrador", TOURIST: "Turista", PROVIDER: "Emprendedor"};
   var STATUS = {PENDING: "Pendiente", APPROVED: "Aprobado", DENIED: "Denegado"};
+  var TONES = [
+    {bg: "#16314f", line: "#8db3dc"},
+    {bg: "#173f3b", line: "#8cc7b6"},
+    {bg: "#2f3d26", line: "#b6c98f"},
+    {bg: "#43341f", line: "#d9b98a"},
+    {bg: "#27345a", line: "#a4b4e2"},
+    {bg: "#35373f", line: "#bcc1cc"}
+  ];
   var user = null;
-  var touristData = [];
-  try { user = JSON.parse(sessionStorage.getItem("user")); } catch (e) {}
+  try { user = JSON.parse(sessionStorage.getItem("user")); } catch (e) { user = null; }
+
+  var attractions = [];
+  var attractionById = {};
+  var providersAll = [];
+  var plateCache = {};
+  var tourist = {q: "", dep: "", cancel: false, sort: "new"};
+  var adminStatus = "";
 
   function esc(s) {
-    return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
-      return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c];
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c];
     });
+  }
+  function icon(n) { return '<svg class="i" aria-hidden="true"><use href="#i-' + n + '"/></svg>'; }
+  function money(n) { return "$ " + Number(n || 0).toLocaleString("es-UY", {maximumFractionDigits: 2}); }
+  function dur(m) {
+    m = Number(m || 0);
+    if (m < 60) return m + " min";
+    var h = Math.floor(m / 60), r = m % 60;
+    return h + " h" + (r ? " " + r + " min" : "");
+  }
+  function initials(n) {
+    var p = String(n || "?").trim().split(/\s+/);
+    return ((p[0] || "?")[0] + (p.length > 1 ? p[1][0] : "")).toUpperCase();
+  }
+  function hash(s) {
+    var h = 2166136261;
+    for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+    return h >>> 0;
+  }
+  function rng(a) {
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function contourPaths(seed, W, H, cell, levels) {
+    var rnd = rng(seed), nx = Math.ceil(W / cell) + 1, ny = Math.ceil(H / cell) + 1;
+    var bumps = [], k = 4 + Math.floor(rnd() * 3), i, j, b;
+    for (i = 0; i < k; i++) {
+      bumps.push({x: rnd() * W, y: rnd() * H, s: (0.14 + rnd() * 0.22) * Math.max(W, H), a: 0.5 + rnd() * 0.8});
+    }
+    var grid = [], min = 1e9, max = -1e9;
+    for (j = 0; j < ny; j++) {
+      grid[j] = [];
+      for (i = 0; i < nx; i++) {
+        var v = 0;
+        for (b = 0; b < k; b++) {
+          var dx = i * cell - bumps[b].x, dy = j * cell - bumps[b].y;
+          v += bumps[b].a * Math.exp(-(dx * dx + dy * dy) / (2 * bumps[b].s * bumps[b].s));
+        }
+        grid[j][i] = v;
+        if (v < min) min = v;
+        if (v > max) max = v;
+      }
+    }
+    var table = [[], [[3, 0]], [[0, 1]], [[3, 1]], [[1, 2]], [[3, 0], [1, 2]], [[0, 2]], [[3, 2]], [[2, 3]], [[0, 2]], [[0, 1], [2, 3]], [[1, 2]], [[3, 1]], [[0, 1]], [[3, 0]], []];
+    var minor = "", major = "", l;
+    for (l = 1; l <= levels; l++) {
+      var L = min + (max - min) * (l / (levels + 1)), d = "";
+      for (j = 0; j < ny - 1; j++) {
+        for (i = 0; i < nx - 1; i++) {
+          var v0 = grid[j][i], v1 = grid[j][i + 1], v2 = grid[j + 1][i + 1], v3 = grid[j + 1][i];
+          var c = (v0 >= L ? 1 : 0) | (v1 >= L ? 2 : 0) | (v2 >= L ? 4 : 0) | (v3 >= L ? 8 : 0);
+          var segs = table[c];
+          for (var s = 0; s < segs.length; s++) {
+            var p = [], e;
+            for (e = 0; e < 2; e++) {
+              var ed = segs[s][e], px, py, t;
+              if (ed === 0) { t = (L - v0) / (v1 - v0); px = i + t; py = j; }
+              else if (ed === 1) { t = (L - v1) / (v2 - v1); px = i + 1; py = j + t; }
+              else if (ed === 2) { t = (L - v3) / (v2 - v3); px = i + t; py = j + 1; }
+              else { t = (L - v0) / (v3 - v0); px = i; py = j + t; }
+              p.push((px * cell).toFixed(1) + " " + (py * cell).toFixed(1));
+            }
+            d += "M" + p[0] + "L" + p[1];
+          }
+        }
+      }
+      if (l % 4 === 0) major += d; else minor += d;
+    }
+    return {minor: minor, major: major};
+  }
+
+  function contourSvg(seed, W, H, cell, levels, tone, extra) {
+    var c = contourPaths(seed, W, H, cell, levels);
+    return '<rect width="' + W + '" height="' + H + '" fill="' + tone.bg + '"/>'
+      + '<path d="' + c.minor + '" fill="none" stroke="' + tone.line + '" stroke-opacity="' + (extra ? 0.16 : 0.38) + '" stroke-width="' + (extra ? 1 : 0.9) + '" stroke-linecap="round"/>'
+      + '<path d="' + c.major + '" fill="none" stroke="' + tone.line + '" stroke-opacity="' + (extra ? 0.3 : 0.8) + '" stroke-width="' + (extra ? 1.6 : 1.5) + '" stroke-linecap="round"/>';
+  }
+
+  function plateSvg(a) {
+    var key = String(a.id) + "|" + a.name + "|" + a.department;
+    if (plateCache[key]) return plateCache[key];
+    var tone = TONES[hash(String(a.department || a.name || "")) % TONES.length];
+    var svg = '<svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'
+      + contourSvg(hash(String(a.name || "") + String(a.id)), 400, 250, 9, 11, tone, false) + "</svg>";
+    plateCache[key] = svg;
+    return svg;
+  }
+
+  function paintHero() {
+    $("#heroArt").setAttribute("viewBox", "0 0 900 1000");
+    $("#heroArt").innerHTML = contourSvg(20262026, 900, 1000, 12, 20, {bg: "#0e1a2a", line: "#7f9fc6"}, true);
+  }
+
+  function facts(a) {
+    var f = "<li>" + icon("clock") + dur(a.durationMinutes) + "</li>";
+    if (a.minimumAge != null) f += "<li>" + icon("user") + "Desde " + esc(a.minimumAge) + " años</li>";
+    f += a.allowsCancellation
+      ? '<li class="yes">' + icon("shield") + "Cancelación con reembolso " + esc(a.refundPercentage) + "%</li>"
+      : "<li>" + icon("ban") + "Sin cancelación</li>";
+    return '<ul class="facts">' + f + "</ul>";
+  }
+
+  function cardHtml(a) {
+    return '<article class="card" data-open="' + esc(a.id) + '" tabindex="0" role="button" aria-label="Ver detalle de ' + esc(a.name) + '">'
+      + '<div class="plate">' + plateSvg(a) + '<span class="dept">' + esc(a.department) + "</span></div>"
+      + '<div class="cb"><div class="l1"><h3 class="ttl">' + esc(a.name) + '</h3><span class="price">' + money(a.price) + "</span></div>"
+      + '<p class="loc">' + icon("pin") + esc(a.locality) + "</p>"
+      + '<p class="desc">' + esc(a.description) + "</p>" + facts(a) + "</div></article>";
+  }
+
+  function skeletons(n) {
+    var s = "";
+    for (var i = 0; i < n; i++) s += '<div class="skel"></div>';
+    return s;
+  }
+  function emptyHtml(ic, title, text) {
+    return '<div class="empty">' + icon(ic) + "<b>" + esc(title) + "</b><span>" + esc(text) + "</span></div>";
   }
 
   function toast(text, bad) {
-    var t = $("#toast");
-    t.textContent = text;
-    t.className = "toast show" + (bad ? " bad" : "");
-    clearTimeout(toast.timer);
-    toast.timer = setTimeout(function () { t.className = "toast"; }, 3500);
+    var t = document.createElement("div");
+    t.className = "toast" + (bad ? " bad" : "");
+    t.innerHTML = icon(bad ? "alert" : "check") + "<span>" + esc(text) + "</span>";
+    $("#toasts").appendChild(t);
+    setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 3800);
   }
 
   async function api(method, url, body) {
@@ -264,6 +724,7 @@
     var f = $(id), box = f.querySelector(".msg");
     f.addEventListener("submit", async function (e) {
       e.preventDefault();
+      if (!f.checkValidity()) { f.reportValidity(); return; }
       var b = f.querySelector("button[type=submit]");
       b.disabled = true; box.className = "msg"; box.textContent = "";
       try { await handler(Object.fromEntries(new FormData(f)), box, f); }
@@ -272,87 +733,180 @@
     });
   }
 
-  function hue(s) {
-    var h = 0;
-    for (var i = 0; i < s.length; i++) { h = (h * 31 + s.charCodeAt(i)) % 360; }
-    return 140 + h % 90;
+  async function loadAttractions() {
+    attractions = await api("GET", "/api/attractions");
+    attractionById = {};
+    attractions.forEach(function (a) { attractionById[a.id] = a; });
+    return attractions;
   }
 
-  function card(a, admin) {
-    var p = a.prestador, h = hue(a.department || "");
-    var cover = "background:linear-gradient(135deg,hsl(" + h + " 45% 26%),hsl(" + (h + 35) + " 55% 42%))";
-    var chips = '<span class="chip">' + esc(a.durationMinutes) + " min</span>";
-    if (a.minimumAge != null) chips += '<span class="chip">Desde ' + esc(a.minimumAge) + " años</span>";
-    chips += a.allowsCancellation
-      ? '<span class="chip good">Cancelación hasta ' + esc(a.cancellationDeadlineMinutes) + " min antes, reembolso " + esc(a.refundPercentage) + "%</span>"
-      : '<span class="chip">Sin cancelación</span>';
-    var detail = "";
-    if (admin && p) {
-      detail = '<details><summary>Detalles</summary><p class="meta">Prestador: ' + esc(p.name) + " (" + (STATUS[p.status] || "-") + "), "
-        + (p.personType === "LEGAL" ? "persona jurídica, RUT " + esc(p.rut) + ", " + esc(p.businessName) : "persona física")
-        + '</p><p class="meta">Contacto: ' + esc(p.email) + ", " + esc(p.phone) + "</p></details>";
+  function openDetail(id) {
+    var a = attractionById[id];
+    if (!a) return;
+    var p = a.prestador;
+    var cancel = a.allowsCancellation
+      ? "Podés cancelar hasta " + dur(a.cancellationDeadlineMinutes) + " antes de la actividad y se reembolsa el " + a.refundPercentage + "% del pago total."
+      : "Esta actividad no permite cancelación.";
+    var prov = "";
+    if (p) {
+      prov = '<div class="blk"><h4>Prestador</h4><p><strong style="color:var(--text)">' + esc(p.name) + "</strong><br>" + esc(p.locality) + ", " + esc(p.department)
+        + (p.email ? "<br>" + esc(p.email) : "") + (p.phone ? "<br>" + esc(p.phone) : "");
+      if (user && user.role === "ADMIN") {
+        prov += "<br>" + (p.personType === "LEGAL" ? "Persona jurídica, RUT " + esc(p.rut) + ", " + esc(p.businessName) : "Persona física") + " (" + (STATUS[p.status] || "-") + ")";
+      }
+      prov += "</p></div>";
     }
-    return '<article class="card"><div class="cover" style="' + cover + '"><span>' + esc(a.department) + '</span><span class="price">$' + esc(a.price) + "</span>"
-      + '<svg viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 38C40 12 80 50 120 28S180 18 200 34V60H0Z" fill="rgba(255,255,255,.2)"/></svg></div>'
-      + '<div class="body"><h3>' + esc(a.name) + '</h3><p class="where">' + esc(a.locality) + "</p>"
-      + "<p>" + esc(a.description) + "</p>"
-      + (a.requirements ? '<p class="req"><strong>Requerimientos:</strong> ' + esc(a.requirements) + "</p>" : "")
-      + '<div class="chips">' + chips + "</div>" + detail + "</div></article>";
+    $("#dlg").innerHTML = '<div class="dr"><div class="plate">' + plateSvg(a)
+      + '<button class="x" type="button" aria-label="Cerrar" data-close>' + icon("x") + "</button></div>"
+      + '<div class="body"><div><h3>' + esc(a.name) + '</h3><p class="loc" style="margin-top:.4rem">' + icon("pin") + esc(a.locality) + ", " + esc(a.department) + "</p></div>"
+      + '<div class="keys"><div><small>Precio</small><b>' + money(a.price) + "</b></div><div><small>Duración</small><b>" + dur(a.durationMinutes) + "</b></div>"
+      + "<div><small>Edad mínima</small><b>" + (a.minimumAge != null ? esc(a.minimumAge) + " años" : "Sin límite") + "</b></div></div>"
+      + '<div class="blk"><h4>Descripción</h4><p>' + esc(a.description) + "</p></div>"
+      + (a.requirements ? '<div class="note">' + icon("alert") + '<div class="blk"><h4>Requerimientos para participar</h4><p>' + esc(a.requirements) + "</p></div></div>" : "")
+      + '<div class="blk"><h4>Política de cancelación</h4><p>' + esc(cancel) + "</p></div>" + prov + "</div></div>";
+    $("#dlg").showModal();
   }
 
-  async function loadAttractions(el, filter, admin) {
-    var all = await api("GET", "/api/attractions");
-    var list = filter ? all.filter(filter) : all;
-    el.innerHTML = list.length ? list.map(function (a) { return card(a, admin); }).join("") : '<p class="empty">Todavía no hay atracciones.</p>';
-    return all;
+  $("#dlg").addEventListener("click", function (e) {
+    if (e.target === this || e.target.closest("[data-close]")) this.close();
+  });
+  document.addEventListener("click", function (e) {
+    var c = e.target.closest("[data-open]");
+    if (c) openDetail(c.getAttribute("data-open"));
+  });
+  document.addEventListener("keydown", function (e) {
+    if ((e.key === "Enter" || e.key === " ") && e.target.matches && e.target.matches("article[data-open]")) {
+      e.preventDefault();
+      openDetail(e.target.getAttribute("data-open"));
+    }
+  });
+
+  function filtered() {
+    var q = tourist.q.toLowerCase();
+    return attractions.filter(function (a) {
+      var text = (a.name + " " + a.description + " " + a.locality).toLowerCase();
+      return (!q || text.indexOf(q) >= 0) && (!tourist.dep || a.department === tourist.dep) && (!tourist.cancel || a.allowsCancellation);
+    });
+  }
+
+  function renderRail() {
+    var counts = {}, deps = [];
+    attractions.forEach(function (a) {
+      if (!a.department) return;
+      if (!counts[a.department]) { counts[a.department] = 0; deps.push(a.department); }
+      counts[a.department]++;
+    });
+    deps.sort();
+    var html = '<li><button type="button" data-dep="" aria-pressed="' + (!tourist.dep) + '">Todos <small>' + attractions.length + "</small></button></li>";
+    deps.forEach(function (d) {
+      html += '<li><button type="button" data-dep="' + esc(d) + '" aria-pressed="' + (tourist.dep === d) + '">' + esc(d) + " <small>" + counts[d] + "</small></button></li>";
+    });
+    $("#depList").innerHTML = html;
   }
 
   function renderTourist() {
-    var q = $("#q").value.toLowerCase(), d = $("#dep").value;
-    var list = touristData.filter(function (a) {
-      var text = (a.name + " " + a.description + " " + a.locality).toLowerCase();
-      return (!q || text.indexOf(q) >= 0) && (!d || a.department === d);
+    var list = filtered();
+    list.sort(function (a, b) {
+      if (tourist.sort === "priceAsc") return a.price - b.price;
+      if (tourist.sort === "priceDesc") return b.price - a.price;
+      if (tourist.sort === "dur") return a.durationMinutes - b.durationMinutes;
+      return b.id - a.id;
     });
     $("#touristList").innerHTML = list.length
-      ? list.map(function (a) { return card(a, false); }).join("")
-      : '<p class="empty">No encontramos atracciones con esos criterios. Probá con otra búsqueda.</p>';
+      ? list.map(cardHtml).join("")
+      : emptyHtml("search", "No encontramos atracciones", attractions.length ? "Probá con otra búsqueda o limpiá los filtros." : "Todavía no hay atracciones publicadas.");
     $("#count").textContent = list.length + (list.length === 1 ? " atracción" : " atracciones");
   }
 
   async function loadTourist() {
-    touristData = await api("GET", "/api/attractions");
-    var deps = [];
-    touristData.forEach(function (a) { if (a.department && deps.indexOf(a.department) < 0) deps.push(a.department); });
-    deps.sort();
-    $("#dep").innerHTML = '<option value="">Todos los departamentos</option>' + deps.map(function (d) { return "<option>" + esc(d) + "</option>"; }).join("");
-    renderTourist();
+    $("#touristList").innerHTML = skeletons(6);
+    $("#count").textContent = "";
+    try {
+      await loadAttractions();
+      renderRail();
+      renderTourist();
+    } catch (e) {
+      $("#touristList").innerHTML = emptyHtml("alert", "No pudimos cargar las atracciones", e.message);
+    }
   }
-  $("#q").addEventListener("input", renderTourist);
-  $("#dep").addEventListener("change", renderTourist);
 
-  function mine(p) { return p && p.owner && p.owner.id === user.id; }
+  $("#q").addEventListener("input", function () { tourist.q = this.value; renderTourist(); });
+  $("#sort").addEventListener("change", function () { tourist.sort = this.value; renderTourist(); });
+  $("#fCancel").addEventListener("change", function () { tourist.cancel = this.checked; renderTourist(); });
+  $("#clearF").addEventListener("click", function () {
+    tourist.q = ""; tourist.dep = ""; tourist.cancel = false;
+    $("#q").value = ""; $("#fCancel").checked = false;
+    renderRail(); renderTourist();
+  });
+  $("#depList").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-dep]");
+    if (!b) return;
+    tourist.dep = b.getAttribute("data-dep");
+    renderRail();
+    renderTourist();
+  });
+
+  function mine(p) { return p && p.owner && user && p.owner.id === user.id; }
+
+  function statusNote(s) {
+    if (s === "APPROVED") return "Aprobado. Ya podés publicar atracciones.";
+    if (s === "DENIED") return "Fue denegado. Podés registrar uno nuevo con los datos corregidos.";
+    return "El administrador está revisando tu solicitud.";
+  }
+
+  function renderFlow(providers) {
+    var hasApproved = providers.some(function (p) { return p.status === "APPROVED"; });
+    var hasPending = providers.some(function (p) { return p.status === "PENDING"; });
+    var st = hasApproved ? ["done", "done", "now"] : hasPending ? ["done", "now", "todo"] : ["now", "todo", "todo"];
+    var names = ["Registrá tu emprendimiento", "Revisión del administrador", "Publicá tus atracciones"];
+    var label = {done: "Completo", now: "En curso", todo: "Pendiente"};
+    $("#flow").innerHTML = names.map(function (n, i) {
+      return '<li class="' + st[i] + '"><small>Paso ' + (i + 1) + ", " + label[st[i]].toLowerCase() + "</small><b>" + n + "</b></li>";
+    }).join("");
+  }
 
   async function loadProvider() {
-    var all = await api("GET", "/api/providers");
-    var providers = all.filter(mine);
+    $("#provHello").textContent = "Hola, " + user.firstName;
+    $("#myAttractions").innerHTML = skeletons(3);
+    try {
+      providersAll = await api("GET", "/api/providers");
+      await loadAttractions();
+    } catch (e) {
+      toast(e.message, true);
+      return;
+    }
+    var providers = providersAll.filter(mine);
+    renderFlow(providers);
     $("#myProviders").innerHTML = providers.map(function (p) {
-      return '<div class="item"><div><strong>' + esc(p.name) + '</strong><span class="tag ' + p.status + '">' + (STATUS[p.status] || "") + "</span>"
-        + '<p class="meta">' + esc(p.locality) + ", " + esc(p.department) + "</p></div></div>";
+      return '<div class="rowitem"><div class="avatar">' + esc(initials(p.name)) + '</div><div class="main"><strong>' + esc(p.name)
+        + '</strong><span class="tag ' + esc(p.status) + '">' + (STATUS[p.status] || "") + "</span><p>" + esc(statusNote(p.status)) + "</p></div></div>";
     }).join("");
-    $("#providerForm").hidden = providers.length > 0 && $("#providerForm").dataset.open !== "1";
+    var form = $("#providerForm");
+    form.hidden = providers.length > 0 && form.getAttribute("data-open") !== "1";
     $("#toggleProvider").hidden = providers.length === 0;
+
     var approved = providers.filter(function (p) { return p.status === "APPROVED"; });
-    $("#prestadorId").innerHTML = approved.map(function (p) { return '<option value="' + p.id + '">' + esc(p.name) + "</option>"; }).join("");
-    $("#attractionSection").hidden = approved.length === 0;
-    await loadAttractions($("#myAttractions"), function (a) { return mine(a.prestador); });
+    $("#prestadorId").innerHTML = approved.map(function (p) { return '<option value="' + esc(p.id) + '">' + esc(p.name) + "</option>"; }).join("");
+    var ok = approved.length > 0;
+    $("#locked").hidden = ok;
+    $("#attrTools").hidden = !ok;
+    if (!ok) $("#attractionForm").hidden = true;
+
+    var own = attractions.filter(function (a) { return mine(a.prestador); });
+    $("#myAttractions").innerHTML = ok
+      ? (own.length ? own.map(cardHtml).join("") : emptyHtml("list", "Todavía no publicaste atracciones", "Usá el botón Nueva atracción para crear la primera."))
+      : "";
   }
 
   $("#toggleProvider").addEventListener("click", function () {
     var f = $("#providerForm");
-    f.dataset.open = f.hidden ? "1" : "0";
+    f.hidden = !f.hidden;
+    f.setAttribute("data-open", f.hidden ? "0" : "1");
+  });
+  $("#toggleAttraction").addEventListener("click", function () {
+    var f = $("#attractionForm");
     f.hidden = !f.hidden;
   });
-  $("#toggleAttraction").addEventListener("click", function () { $("#attractionForm").hidden = !$("#attractionForm").hidden; });
 
   function toggleLegal() {
     var legal = $("#personType").value === "LEGAL";
@@ -373,7 +927,9 @@
     if (d.personType !== "LEGAL") { delete d.rut; delete d.businessName; }
     d.owner = {id: user.id};
     await api("POST", "/api/providers", d);
-    f.reset(); toggleLegal(); f.dataset.open = "0";
+    f.reset();
+    toggleLegal();
+    f.setAttribute("data-open", "0");
     toast("Emprendimiento enviado. Queda pendiente de aprobación.");
     loadProvider();
   });
@@ -381,8 +937,12 @@
   onSubmit("#attractionForm", async function (d, box, f) {
     var cancel = !!d.allowsCancellation;
     await api("POST", "/api/attractions", {
-      name: d.name, description: d.description, department: d.department, locality: d.locality,
-      durationMinutes: Number(d.durationMinutes), price: Number(d.price),
+      name: d.name,
+      description: d.description,
+      department: d.department,
+      locality: d.locality,
+      durationMinutes: Number(d.durationMinutes),
+      price: Number(d.price),
       minimumAge: d.minimumAge === "" ? null : Number(d.minimumAge),
       requirements: d.requirements,
       allowsCancellation: cancel,
@@ -390,47 +950,123 @@
       refundPercentage: cancel ? Number(d.refundPercentage) : null,
       prestador: {id: Number(d.prestadorId)}
     });
-    f.reset(); toggleCancel(); f.hidden = true;
-    toast("Atracción creada.");
+    f.reset();
+    toggleCancel();
+    f.hidden = true;
+    toast("Atracción publicada.");
     loadProvider();
   });
 
-  async function loadAdmin() {
-    var list = await api("GET", "/api/providers");
+  function renderAdminProviders() {
+    var list = providersAll.filter(function (p) { return !adminStatus || p.status === adminStatus; });
     var order = {PENDING: 0, DENIED: 1, APPROVED: 2};
     list.sort(function (a, b) { return order[a.status] - order[b.status]; });
-    $("#stPending").textContent = list.filter(function (p) { return p.status === "PENDING"; }).length;
-    $("#stApproved").textContent = list.filter(function (p) { return p.status === "APPROVED"; }).length;
-    $("#adminProviders").innerHTML = list.map(function (p) {
-      var accept = p.status !== "APPROVED" ? '<button class="btn ok" data-id="' + p.id + '" data-act="approve">Aceptar</button>' : "";
-      var deny = p.status !== "DENIED" ? '<button class="btn danger" data-id="' + p.id + '" data-act="deny">Denegar</button>' : "";
-      return '<div class="item"><div><strong>' + esc(p.name) + '</strong><span class="tag ' + p.status + '">' + (STATUS[p.status] || "") + "</span>"
-        + '<details><summary>Detalles</summary><p class="meta">'
-        + (p.personType === "LEGAL" ? "Persona jurídica, RUT " + esc(p.rut) + ", " + esc(p.businessName) : "Persona física")
-        + '</p><p class="meta">' + esc(p.locality) + ", " + esc(p.department) + ". " + esc(p.email) + ", " + esc(p.phone)
-        + "</p><p>" + esc(p.description) + "</p></details></div>"
-        + '<div class="actions">' + accept + deny + "</div></div>";
-    }).join("") || '<p class="empty">Todavía no hay solicitudes.</p>';
-    var all = await loadAttractions($("#adminAttractions"), null, true);
-    $("#stAttr").textContent = all.length;
+    if (!list.length) {
+      $("#adminProviders").innerHTML = '<div class="grid">' + emptyHtml("list", "No hay solicitudes", adminStatus ? "No hay emprendimientos con ese estado." : "Cuando un emprendedor registre su emprendimiento va a aparecer acá.") + "</div>";
+      return;
+    }
+    var rows = list.map(function (p) {
+      var accept = p.status !== "APPROVED" ? '<button class="btn sm" type="button" data-id="' + esc(p.id) + '" data-act="approve">Aceptar</button>' : "";
+      var deny = p.status !== "DENIED" ? '<button class="btn danger sm" type="button" data-id="' + esc(p.id) + '" data-act="deny">Denegar</button>' : "";
+      var o = p.owner;
+      var owner = o ? esc(((o.firstName || "") + " " + (o.lastName || "")).trim()) + (o.email ? " (" + esc(o.email) + ")" : "") : "Sin dato";
+      return '<tr><td data-l="Emprendimiento"><strong>' + esc(p.name) + '</strong></td>'
+        + '<td data-l="Tipo">' + (p.personType === "LEGAL" ? "Persona jurídica" : "Persona física") + "</td>"
+        + '<td data-l="Ubicación">' + esc(p.locality) + ", " + esc(p.department) + "</td>"
+        + '<td data-l="Estado"><span class="tag ' + esc(p.status) + '">' + (STATUS[p.status] || "") + "</span></td>"
+        + '<td class="acts"><button class="btn ghost sm" type="button" data-toggle="' + esc(p.id) + '" aria-expanded="false">Detalles</button>' + accept + deny + "</td></tr>"
+        + '<tr class="more" id="more-' + esc(p.id) + '" hidden><td colspan="5"><dl class="dl">'
+        + (p.personType === "LEGAL" ? "<div><dt>RUT</dt><dd>" + esc(p.rut) + "</dd></div><div><dt>Razón social</dt><dd>" + esc(p.businessName) + "</dd></div>" : "")
+        + "<div><dt>Email de contacto</dt><dd>" + esc(p.email) + "</dd></div><div><dt>Teléfono</dt><dd>" + esc(p.phone) + "</dd></div>"
+        + "<div><dt>Dueño de la cuenta</dt><dd>" + owner + "</dd></div>"
+        + '<div class="wide"><dt>Descripción</dt><dd>' + esc(p.description) + "</dd></div></dl></td></tr>";
+    }).join("");
+    $("#adminProviders").innerHTML = '<div class="tblwrap"><table><thead><tr><th scope="col">Emprendimiento</th><th scope="col">Tipo</th><th scope="col">Ubicación</th><th scope="col">Estado</th><th scope="col"><span class="sr">Acciones</span></th></tr></thead><tbody>' + rows + "</tbody></table></div>";
+  }
+
+  function renderAdminAttractions() {
+    if (!attractions.length) {
+      $("#adminAttractions").innerHTML = '<div class="grid">' + emptyHtml("list", "Todavía no hay atracciones", "Se van a listar acá cuando los emprendedores las publiquen.") + "</div>";
+      return;
+    }
+    var rows = attractions.map(function (a) {
+      var p = a.prestador;
+      return '<tr><td data-l="Atracción"><strong>' + esc(a.name) + '</strong><span class="sec">' + esc(a.locality) + ", " + esc(a.department) + "</span></td>"
+        + '<td data-l="Prestador">' + esc(p ? p.name : "Sin dato") + "</td>"
+        + '<td data-l="Precio" class="num">' + money(a.price) + "</td>"
+        + '<td data-l="Cancelación">' + (a.allowsCancellation ? "Reembolso " + esc(a.refundPercentage) + "%" : "No permite") + "</td>"
+        + '<td class="acts"><button class="btn ghost sm" type="button" data-open="' + esc(a.id) + '">Detalles</button></td></tr>';
+    }).join("");
+    $("#adminAttractions").innerHTML = '<div class="tblwrap"><table><thead><tr><th scope="col">Atracción</th><th scope="col">Prestador</th><th scope="col">Precio</th><th scope="col">Cancelación</th><th scope="col"><span class="sr">Acciones</span></th></tr></thead><tbody>' + rows + "</tbody></table></div>";
+  }
+
+  async function loadAdmin() {
+    $("#adminProviders").innerHTML = '<div class="grid">' + skeletons(1) + "</div>";
+    try {
+      providersAll = await api("GET", "/api/providers");
+      await loadAttractions();
+    } catch (e) {
+      $("#adminProviders").innerHTML = '<div class="grid">' + emptyHtml("alert", "No pudimos cargar los datos", e.message) + "</div>";
+      return;
+    }
+    $("#stPending").textContent = providersAll.filter(function (p) { return p.status === "PENDING"; }).length;
+    $("#stApproved").textContent = providersAll.filter(function (p) { return p.status === "APPROVED"; }).length;
+    $("#stAttr").textContent = attractions.length;
+    renderAdminProviders();
+    renderAdminAttractions();
   }
 
   $("#adminProviders").addEventListener("click", async function (e) {
+    var t = e.target.closest("[data-toggle]");
+    if (t) {
+      var row = $("#more-" + t.getAttribute("data-toggle"));
+      row.hidden = !row.hidden;
+      t.setAttribute("aria-expanded", String(!row.hidden));
+      return;
+    }
     var b = e.target.closest("button[data-act]");
     if (!b) return;
+    b.disabled = true;
     try {
-      await api("PUT", "/api/providers/" + b.dataset.id + "/" + b.dataset.act);
-      toast(b.dataset.act === "approve" ? "Emprendimiento aprobado." : "Emprendimiento denegado.");
+      await api("PUT", "/api/providers/" + b.getAttribute("data-id") + "/" + b.getAttribute("data-act"));
+      toast(b.getAttribute("data-act") === "approve" ? "Emprendimiento aprobado." : "Emprendimiento denegado.");
       loadAdmin();
-    } catch (err) { toast(err.message, true); }
+    } catch (err) {
+      toast(err.message, true);
+      b.disabled = false;
+    }
+  });
+  $("#stFilter").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-st]");
+    if (!b) return;
+    adminStatus = b.getAttribute("data-st");
+    $$("#stFilter .pill").forEach(function (c) { c.setAttribute("aria-pressed", String(c === b)); });
+    renderAdminProviders();
+  });
+  $$("[data-atab]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      $$("[data-atab]").forEach(function (x) { x.setAttribute("aria-selected", String(x === b)); });
+      $("#atab-requests").hidden = b.getAttribute("data-atab") !== "requests";
+      $("#atab-attractions").hidden = b.getAttribute("data-atab") !== "attractions";
+    });
   });
 
-  var tabButtons = document.querySelectorAll(".tabs button");
-  tabButtons.forEach(function (b) {
+  $$(".utabs button").forEach(function (b) {
     b.addEventListener("click", function () {
-      tabButtons.forEach(function (x) { x.classList.toggle("on", x === b); });
-      $("#loginForm").hidden = b.dataset.tab !== "login";
-      $("#registerForm").hidden = b.dataset.tab !== "register";
+      var login = b.getAttribute("data-tab") === "login";
+      $("#tabLogin").setAttribute("aria-selected", String(login));
+      $("#tabRegister").setAttribute("aria-selected", String(!login));
+      $("#loginForm").hidden = !login;
+      $("#registerForm").hidden = login;
+    });
+  });
+  $$("[data-pw]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var input = b.parentNode.querySelector("input");
+      var show = input.type === "password";
+      input.type = show ? "text" : "password";
+      b.setAttribute("aria-label", show ? "Ocultar contraseña" : "Mostrar contraseña");
+      b.innerHTML = icon(show ? "eyeoff" : "eye");
     });
   });
 
@@ -445,22 +1081,27 @@
     msg(box, "Cuenta creada. Ya podés ingresar.", true);
   });
   $("#logout").addEventListener("click", function () {
-    user = null; sessionStorage.removeItem("user"); show();
+    user = null;
+    sessionStorage.removeItem("user");
+    show();
   });
 
   function show() {
     $("#auth").hidden = !!user;
     $("#app").hidden = !user;
-    $("#who").hidden = !user;
     Object.keys(ROLES).forEach(function (r) { $("#view-" + r).hidden = !user || user.role !== r; });
+    window.scrollTo(0, 0);
     if (!user) return;
-    $("#whoText").textContent = user.firstName + " " + user.lastName;
-    $("#whoRole").textContent = ROLES[user.role];
-    var run = function (p) { p.catch(function (e) { toast(e.message, true); }); };
-    if (user.role === "TOURIST") run(loadTourist());
-    if (user.role === "PROVIDER") run(loadProvider());
-    if (user.role === "ADMIN") run(loadAdmin());
+    var full = ((user.firstName || "") + " " + (user.lastName || "")).trim();
+    $("#avatar").textContent = initials(full);
+    $("#whoName").textContent = full;
+    $("#whoRole").textContent = ROLES[user.role] || "";
+    if (user.role === "TOURIST") loadTourist();
+    if (user.role === "PROVIDER") loadProvider();
+    if (user.role === "ADMIN") loadAdmin();
   }
+
+  paintHero();
   show();
 </script>
 </body>

@@ -23,9 +23,23 @@ public class BookingControl {
         return ResponseEntity.status(HttpStatus.CREATED).body(bookingService.createBooking(booking));
     }
 
-    // Lista las reservas de un turista concreto: /api/bookings/tourist/3
+    @PostMapping("/{id}/pay")
+    public ResponseEntity<Booking> pagar(@PathVariable Long id) {
+        return ResponseEntity.ok(bookingService.pay(id));
+    }
+
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<Booking> cancelar(@PathVariable Long id, @RequestParam Long touristId) {
+        return ResponseEntity.ok(bookingService.cancel(id, touristId));
+    }
+
     @GetMapping("/tourist/{touristId}")
     public ResponseEntity<List<Booking>> listarPorTurista(@PathVariable Long touristId) {
         return ResponseEntity.ok(bookingService.getBookingsByTourist(touristId));
+    }
+
+    @GetMapping("/provider/{ownerId}")
+    public ResponseEntity<List<Booking>> listarPorPrestador(@PathVariable Long ownerId) {
+        return ResponseEntity.ok(bookingService.getBookingsByProviderOwner(ownerId));
     }
 }

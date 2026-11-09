@@ -25,7 +25,8 @@ public class Booking {
     private LocalDateTime bookingDate;  // Fecha/hora en que se hizo la reserva
 
     @Enumerated(EnumType.STRING)
-    private BookingStatus status; // Estado de la reserva
+    private BookingStatus status;
+    private BigDecimal refundAmount;// Estado de la reserva
 
     public enum BookingStatus {
         PENDING_PAYMENT,
@@ -48,4 +49,6 @@ public class Booking {
     public void setBookingDate(LocalDateTime bookingDate) { this.bookingDate = bookingDate; }
     public BookingStatus getStatus() { return status; }
     public void setStatus(BookingStatus status) { this.status = status; }
+    public BigDecimal getRefundAmount() { return refundAmount; }
+    public void setRefundAmount(BigDecimal refundAmount) { this.refundAmount = refundAmount; }
 }
