@@ -338,6 +338,25 @@
     .help{right:0;bottom:0;left:0;width:auto;height:min(86dvh,640px);border-radius:14px 14px 0 0}
     .hfab{right:.9rem;bottom:.9rem}
   }
+  .langsw{display:inline-flex;gap:.25rem;align-items:center}
+  .langsw button{border:1px solid var(--line-strong);background:transparent;color:var(--muted);border-radius:99px;padding:.18rem .65rem;font:600 .78rem var(--font)}
+  .langsw button:hover{background:var(--sunken)}
+  .langsw button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+  .formside{position:relative}
+  .langsw.onauth{position:absolute;top:1.1rem;right:1.4rem}
+  .top .me .langsw{margin-right:.4rem}
+  @media (max-width:560px){.top .me{gap:.4rem}.top .me .avatar{display:none}.top .me .langsw{margin-right:0}.langsw button{padding:.15rem .45rem}.top .wordmark{font-size:1rem}}
+  .langgate{position:fixed;inset:0;z-index:300;background:#0e1a2a;color:#e8eef7;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+  .langgate[hidden]{display:none}
+  .langgate>svg.art{position:absolute;inset:0;width:100%;height:100%}
+  .langgate .box{position:relative;width:min(560px,100%);text-align:center}
+  .langgate .wordmark{justify-content:center;margin-bottom:2rem}
+  .langgate h1{font-size:clamp(1.5rem,4vw,2.1rem);font-weight:650;letter-spacing:-.02em}
+  .langgate p{margin-top:.6rem;color:#b9c6d8;font-size:.95rem}
+  .langgate .opts{margin-top:2rem;display:grid;gap:.7rem}
+  .langgate .opts button{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:58px;padding:0 1.3rem;border:1px solid rgba(255,255,255,.22);border-radius:var(--r2);background:rgba(255,255,255,.05);color:#fff;font:650 1.15rem var(--display);transition:background .15s,border-color .15s}
+  .langgate .opts button:hover,.langgate .opts button:focus-visible{background:rgba(106,166,242,.22);border-color:#6aa6f2}
+  .langgate .opts small{font:500 .8rem var(--font);color:#9fb3cc}
   footer{text-align:center;color:var(--faint);font-size:.82rem;padding:0 1rem 2.2rem}
 
   @media (max-width:1000px){
@@ -427,6 +446,7 @@
   </div>
 
   <div class="formside">
+    <div class="langsw onauth" id="langSwAuth" data-nolang role="group" aria-label="Idioma / Language"></div>
     <div class="formwrap">
       <div class="utabs" role="tablist" aria-label="Acceso">
         <button type="button" role="tab" id="tabLogin" aria-selected="true" data-tab="login">Ingresar</button>
@@ -480,6 +500,7 @@
     <div class="in">
       <div class="wordmark"><svg aria-hidden="true"><use href="#i-mark"/></svg>Uruguay Mnatural</div>
       <div class="me">
+        <div class="langsw" id="langSwTop" data-nolang role="group" aria-label="Idioma / Language"></div>
         <div class="avatar" id="avatar"></div>
         <div class="who"><b id="whoName"></b><small id="whoRole"></small></div>
         <button class="btn ghost sm" id="logout" type="button"><svg class="i"><use href="#i-logout"/></svg>Salir</button>
@@ -725,14 +746,1013 @@
     <button class="btn sm" type="submit">Buscar</button>
   </form>
 </section>
+<div class="langgate" id="langGate" data-nolang role="dialog" aria-modal="true" aria-label="Idioma / Idioma / Language" hidden>
+  <svg class="art" id="gateArt" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+  <div class="box">
+    <div class="wordmark"><svg aria-hidden="true"><use href="#i-mark"/></svg>Uruguay Mnatural</div>
+    <h1>Elegí tu idioma</h1>
+    <p>Escolha o idioma &middot; Choose your language</p>
+    <div class="opts">
+      <button type="button" data-lang="es" lang="es">Español<small>Continuar en español</small></button>
+      <button type="button" data-lang="pt" lang="pt">Português<small>Continuar em português</small></button>
+      <button type="button" data-lang="en" lang="en">English<small>Continue in English</small></button>
+    </div>
+  </div>
+</div>
 <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
 
 <script>
+  // ---------- Idiomas (es, pt, en) ----------
+  // El texto fuente esta en espanol. Para pt y en se busca la frase exacta en el diccionario.
+  var LANGS = {es: "es-UY", pt: "pt-BR", en: "en-US"};
+  var LANG = "es";
+  var LANG_SAVED = false;
+  (function () {
+    var fromUrl = null;
+    try { fromUrl = new URLSearchParams(location.search).get("lang"); } catch (e) { fromUrl = null; }
+    var saved = null;
+    try { saved = localStorage.getItem("lang"); } catch (e) { saved = null; }
+    if (LANGS[fromUrl]) {
+      LANG = fromUrl;
+      LANG_SAVED = true;
+      try {
+        localStorage.setItem("lang", fromUrl);
+        history.replaceState(null, "", location.pathname);
+      } catch (e) { }
+    } else if (LANGS[saved]) {
+      LANG = saved;
+      LANG_SAVED = true;
+    }
+    document.documentElement.lang = LANG;
+  })();
+  var LOC = LANGS[LANG];
+  var I18N = {
+"pt": {
+"Mapa de Uruguay": "Mapa do Uruguai",
+"Actividades al aire libre en todo Uruguay": "Atividades ao ar livre em todo o Uruguai",
+"Cabalgatas, trekking, kayak y enoturismo ofrecidos por emprendedores locales.": "Cavalgadas, trekking, caiaque e enoturismo oferecidos por empreendedores locais.",
+"Atracciones de todos los departamentos": "Atrações de todos os departamentos",
+"Emprendimientos revisados antes de publicarse": "Empreendimentos revisados antes de serem publicados",
+"Requerimientos y política de cancelación a la vista": "Requisitos e política de cancelamento à vista",
+"Acceso": "Acesso",
+"Proyecto TIC 2026": "Projeto TIC 2026",
+"Uruguay Mnatural, Proyecto TIC 2026": "Uruguay Mnatural, Projeto TIC 2026",
+"Ingresar": "Entrar",
+"Crear cuenta": "Criar conta",
+"Bienvenido de nuevo": "Bem-vindo de volta",
+"Ingresá con tu cuenta para continuar.": "Entre com a sua conta para continuar.",
+"Ingresar como": "Entrar como",
+"Emprendedor": "Empreendedor",
+"Contraseña": "Senha",
+"Mostrar contraseña": "Mostrar senha",
+"Ocultar contraseña": "Ocultar senha",
+"Creá tu cuenta": "Crie a sua conta",
+"Elegí cómo vas a usar Uruguay Mnatural.": "Escolha como você vai usar o Uruguay Mnatural.",
+"Quiero ser": "Quero ser",
+"Nombre": "Nome",
+"Apellido": "Sobrenome",
+"Mínimo 4 caracteres.": "Mínimo de 4 caracteres.",
+"Salir": "Sair",
+"Atracciones": "Atrações",
+"Abrí cada atracción para ver su descripción, los requerimientos para participar y la política de cancelación.": "Abra cada atração para ver a descrição, os requisitos para participar e a política de cancelamento.",
+"Mis reservas": "Minhas reservas",
+"Cancelación": "Cancelamento",
+"Solo con cancelación": "Somente com cancelamento",
+"Limpiar filtros": "Limpar filtros",
+"Buscar por nombre o localidad": "Buscar por nome ou localidade",
+"Más recientes": "Mais recentes",
+"Precio: menor a mayor": "Preço: menor para maior",
+"Precio: mayor a menor": "Preço: maior para menor",
+"Duración: más corta": "Duração: mais curta",
+"Panel del emprendedor": "Painel do empreendedor",
+"Registrá tu emprendimiento. Cuando el administrador lo apruebe, vas a poder publicar tus atracciones.": "Registre o seu empreendimento. Quando o administrador o aprovar, você poderá publicar as suas atrações.",
+"Tu emprendimiento": "O seu empreendimento",
+"Datos de identificación, ubicación y contacto. Las personas jurídicas deben informar RUT y razón social.": "Dados de identificação, localização e contato. As pessoas jurídicas devem informar RUT e razão social.",
+"Registrar otro emprendimiento": "Registrar outro empreendimento",
+"Datos del emprendimiento": "Dados do empreendimento",
+"Persona física": "Pessoa física",
+"Persona jurídica": "Pessoa jurídica",
+"Razón social": "Razão social",
+"Descripción": "Descrição",
+"Ubicación y contacto": "Localização e contato",
+"Localidad": "Localidade",
+"Teléfono": "Telefone",
+"Email de contacto": "E-mail de contato",
+"Enviar para aprobación": "Enviar para aprovação",
+"Tus atracciones": "Suas atrações",
+"Cada atracción puede indicar requerimientos para participar y si permite cancelación con reembolso.": "Cada atração pode indicar requisitos para participar e se permite cancelamento com reembolso.",
+"Todavía no podés publicar": "Você ainda não pode publicar",
+"Se habilita cuando el administrador apruebe tu emprendimiento.": "É liberado quando o administrador aprovar o seu empreendimento.",
+"Nueva atracción": "Nova atração",
+"Datos de la atracción": "Dados da atração",
+"Emprendimiento": "Empreendimento",
+"Foto de la actividad": "Foto da atividade",
+"Sin foto. Si no subís una, se muestra un diseño por defecto.": "Sem foto. Se você não enviar uma, é mostrado um desenho padrão.",
+"Elegir imagen": "Escolher imagem",
+"Cambiar imagen": "Trocar imagem",
+"Quitar": "Remover",
+"Opcional. JPG, PNG o WEBP. Se ajusta automáticamente al tamaño ideal.": "Opcional. JPG, PNG ou WEBP. É ajustada automaticamente ao tamanho ideal.",
+"Precio, requisitos y cancelación": "Preço, requisitos e cancelamento",
+"Duración (minutos)": "Duração (minutos)",
+"Precio ($)": "Preço ($)",
+"Edad mínima": "Idade mínima",
+"Requerimientos para participar": "Requisitos para participar",
+"Equipamiento, estado físico, documentos. El turista lo ve destacado.": "Equipamento, condição física, documentos. O turista vê isso em destaque.",
+"Esta actividad permite cancelación": "Esta atividade permite cancelamento",
+"Cancelar hasta (min antes)": "Cancelar até (min antes)",
+"Crear los horarios automáticamente": "Criar os horários automaticamente",
+"Publicar atracción": "Publicar atração",
+"Horarios y reservas": "Horários e reservas",
+"Publicá las fechas en las que ofrecés cada atracción, con su cupo, y mirá las reservas que reciben.": "Publique as datas em que você oferece cada atração, com a sua capacidade, e veja as reservas recebidas.",
+"Nuevo horario": "Novo horário",
+"Atracción": "Atração",
+"Frecuencia": "Frequência",
+"Un solo día": "Um único dia",
+"Todas las semanas": "Toda semana",
+"Fecha y hora de inicio": "Data e hora de início",
+"Cupo máximo (personas)": "Capacidade máxima (pessoas)",
+"Minutos antes del inicio hasta los que se puede reservar": "Minutos antes do início até os quais se pode reservar",
+"Con 0 se puede reservar hasta la hora de inicio.": "Com 0 é possível reservar até a hora de início.",
+"Publicar horario": "Publicar horário",
+"Horarios publicados": "Horários publicados",
+"Reservas recibidas": "Reservas recebidas",
+"Administración": "Administração",
+"Revisá las solicitudes de los emprendimientos, mirá sus detalles y controlá lo que se publica.": "Revise as solicitações dos empreendimentos, veja os detalhes e controle o que é publicado.",
+"Solicitudes pendientes": "Solicitações pendentes",
+"Emprendimientos aprobados": "Empreendimentos aprovados",
+"Atracciones publicadas": "Atrações publicadas",
+"Solicitudes": "Solicitações",
+"Filtrar por estado": "Filtrar por status",
+"Pendientes": "Pendentes",
+"Aprobadas": "Aprovadas",
+"Denegadas": "Negadas",
+"Pago de la reserva": "Pagamento da reserva",
+"Detalle de la atracción": "Detalhe da atração",
+"Ayuda": "Ajuda",
+"Centro de ayuda": "Central de ajuda",
+"Te guiamos paso a paso": "Guiamos você passo a passo",
+"Empezar de nuevo": "Recomeçar",
+"Cerrar la ayuda": "Fechar a ajuda",
+"Escribí tu consulta...": "Escreva a sua dúvida...",
+"Escribí tu consulta": "Escreva a sua dúvida",
+"Cerrar": "Fechar",
+"Horarios disponibles": "Horários disponíveis",
+"Hora de inicio": "Hora de início",
+"No se pudo conectar con el servidor.": "Não foi possível conectar ao servidor.",
+"Error {n}": "Erro {n}",
+"Podés cancelar hasta {d} antes de la actividad y se reembolsa el {p}% del pago total.": "Você pode cancelar até {d} antes da atividade e {p}% do pagamento total é reembolsado.",
+"Esta actividad no permite cancelación.": "Esta atividade não permite cancelamento.",
+"Persona jurídica, RUT {rut}, {name}": "Pessoa jurídica, RUT {rut}, {name}",
+"Precio": "Preço",
+"Duración": "Duração",
+"{n} años": "{n} anos",
+"Sin límite": "Sem limite",
+"Política de cancelación": "Política de cancelamento",
+"Desde {n} años": "A partir de {n} anos",
+"Cancelación con reembolso {p}%": "Cancelamento com reembolso de {p}%",
+"Sin cancelación": "Sem cancelamento",
+"{n} atracción": "{n} atração",
+"{n} atracciones": "{n} atrações",
+"No encontramos atracciones": "Não encontramos atrações",
+"Probá con otra búsqueda o limpiá los filtros.": "Tente outra busca ou limpe os filtros.",
+"Todavía no hay atracciones publicadas.": "Ainda não há atrações publicadas.",
+"No pudimos cargar las atracciones": "Não conseguimos carregar as atrações",
+"Aprobado. Ya podés publicar atracciones.": "Aprovado. Você já pode publicar atrações.",
+"Fue denegado. Podés registrar uno nuevo con los datos corregidos.": "Foi negado. Você pode registrar um novo com os dados corrigidos.",
+"El administrador está revisando tu solicitud.": "O administrador está analisando a sua solicitação.",
+"Registrá tu emprendimiento": "Registre o seu empreendimento",
+"Revisión del administrador": "Revisão do administrador",
+"Publicá tus atracciones": "Publique as suas atrações",
+"En curso": "Em andamento",
+"Pendiente": "Pendente",
+"Aprobado": "Aprovado",
+"Denegado": "Negado",
+"Paso {n}, {s}": "Passo {n}, {s}",
+"Hola, {name}": "Olá, {name}",
+"Todavía no publicaste atracciones": "Você ainda não publicou atrações",
+"Usá el botón Nueva atracción para crear la primera.": "Use o botão Nova atração para criar a primeira.",
+"Emprendimiento enviado. Queda pendiente de aprobación.": "Empreendimento enviado. Fica pendente de aprovação.",
+"Usá una imagen JPG, PNG o WEBP.": "Use uma imagem JPG, PNG ou WEBP.",
+"La imagen pesa demasiado (máximo 15 MB).": "A imagem é pesada demais (máximo de 15 MB).",
+"No se pudo leer la imagen.": "Não foi possível ler a imagem.",
+"Vista previa de la foto elegida": "Pré-visualização da foto escolhida",
+"La atracción se publicó, pero la foto no se pudo guardar: {e}": "A atração foi publicada, mas não foi possível salvar a foto: {e}",
+"La atracción se publicó, pero los horarios quedaron incompletos. {e}": "A atração foi publicada, mas os horários ficaram incompletos. {e}",
+"Atracción publicada con {n} horarios.": "Atração publicada com {n} horários.",
+"Atracción publicada.": "Atração publicada.",
+"No hay solicitudes": "Não há solicitações",
+"No hay emprendimientos con ese estado.": "Não há empreendimentos com esse status.",
+"Cuando un emprendedor registre su emprendimiento va a aparecer acá.": "Quando um empreendedor registrar o seu empreendimento, ele aparecerá aqui.",
+"Aceptar": "Aceitar",
+"Denegar": "Negar",
+"Detalles": "Detalhes",
+"Sin dato": "Sem dados",
+"Ubicación": "Localização",
+"Estado": "Status",
+"Acciones": "Ações",
+"Dueño de la cuenta": "Titular da conta",
+"Todavía no hay atracciones": "Ainda não há atrações",
+"Se van a listar acá cuando los emprendedores las publiquen.": "Serão listadas aqui quando os empreendedores as publicarem.",
+"Reembolso {p}%": "Reembolso de {p}%",
+"No permite": "Não permite",
+"No pudimos cargar los datos": "Não conseguimos carregar os dados",
+"Emprendimiento aprobado.": "Empreendimento aprovado.",
+"Emprendimiento denegado.": "Empreendimento negado.",
+"Cuenta creada. Ya podés ingresar.": "Conta criada. Agora você já pode entrar.",
+"Pendiente de pago": "Pagamento pendente",
+"Buscando horarios disponibles...": "Buscando horários disponíveis...",
+"No pudimos cargar los horarios. {e}": "Não conseguimos carregar os horários. {e}",
+"Por ahora no hay horarios con lugares disponibles.": "Por enquanto não há horários com vagas disponíveis.",
+"Quedan {n} lugar": "Resta {n} vaga",
+"Quedan {n} lugares": "Restam {n} vagas",
+"Personas": "Pessoas",
+"La reserva queda pendiente hasta que la pagues desde Mis reservas.": "A reserva fica pendente até você pagá-la em Minhas reservas.",
+"Elegí un horario.": "Escolha um horário.",
+"Indicá cuántas personas participan.": "Informe quantas pessoas participam.",
+"Reserva creada. Pagala para confirmarla.": "Reserva criada. Pague-a para confirmá-la.",
+"Reembolso {m}": "Reembolso de {m}",
+"Pagala antes del {d} (vence en {l})": "Pague antes de {d} (vence em {l})",
+"Actividad": "Atividade",
+"Fecha": "Data",
+"No pudimos cargar tus reservas": "Não conseguimos carregar as suas reservas",
+"Todavía no hiciste reservas": "Você ainda não fez reservas",
+"Elegí una atracción en Explorar y reservá un horario.": "Escolha uma atração em Explorar e reserve um horário.",
+"Aprobada": "Aprovada",
+"Rechazada por el banco": "Recusada pelo banco",
+"Fondos insuficientes": "Saldo insuficiente",
+"Servicio de pagos caído": "Serviço de pagamentos fora do ar",
+"Aleatoria (75, 20, 5)": "Aleatória (75, 20, 5)",
+"{n} persona": "{n} pessoa",
+"{n} personas": "{n} pessoas",
+"Modo de prueba (sandbox).": "Modo de teste (sandbox).",
+"No se cobra dinero real. Tocá una tarjeta de prueba para completar el formulario:": "Nenhum dinheiro real é cobrado. Toque em um cartão de teste para preencher o formulário:",
+"Número de tarjeta": "Número do cartão",
+"Nombre del titular": "Nome do titular",
+"Vencimiento": "Validade",
+"Código de seguridad": "Código de segurança",
+"Comprobante": "Comprovante",
+"Pago aprobado": "Pagamento aprovado",
+"Tu reserva quedó confirmada.": "A sua reserva foi confirmada.",
+"Referencia": "Referência",
+"Monto": "Valor",
+"Tarjeta": "Cartão",
+"Listo": "Pronto",
+"Primero publicá una atracción": "Primeiro publique uma atração",
+"Después vas a poder agregarle horarios.": "Depois você poderá adicionar horários a ela.",
+"Todavía no publicaste horarios": "Você ainda não publicou horários",
+"Sin horarios, los turistas no pueden reservar tus atracciones.": "Sem horários, os turistas não podem reservar as suas atrações.",
+"Fecha y hora": "Data e hora",
+"Lugares libres": "Vagas livres",
+"Se reserva hasta": "Reservas até",
+"La hora de inicio": "A hora de início",
+"Todavía no recibiste reservas": "Você ainda não recebeu reservas",
+"Van a aparecer acá cuando un turista reserve alguno de tus horarios.": "Aparecerão aqui quando um turista reservar algum dos seus horários.",
+"No pudimos cargar las reservas": "Não conseguimos carregar as reservas",
+"No pudimos cargar los horarios": "Não conseguimos carregar os horários",
+"{n} horario creado.": "{n} horário criado.",
+"{n} horarios creados.": "{n} horários criados.",
+"La fecha y hora tienen que ser futuras.": "A data e a hora devem ser futuras.",
+"Horario publicado.": "Horário publicado.",
+"Lun": "Seg",
+"Mar": "Ter",
+"Mié": "Qua",
+"Jue": "Qui",
+"Vie": "Sex",
+"Días de la semana": "Dias da semana",
+"Horas de inicio": "Horas de início",
+"Agregar hora": "Adicionar hora",
+"Desde": "De",
+"Hasta": "Até",
+"Reservable hasta (min antes)": "Reservável até (min antes)",
+"Quitar {x}": "Remover {x}",
+"Elegí al menos un día de la semana.": "Escolha pelo menos um dia da semana.",
+"Agregá al menos una hora de inicio.": "Adicione pelo menos uma hora de início.",
+"Indicá desde y hasta qué fecha se repite.": "Informe de que data até que data se repete.",
+"La fecha final es anterior a la inicial.": "A data final é anterior à inicial.",
+"El período no puede superar un año.": "O período não pode ultrapassar um ano.",
+"El cupo tiene que ser de al menos 1 persona.": "A capacidade deve ser de pelo menos 1 pessoa.",
+"No hay fechas futuras en ese período.": "Não há datas futuras nesse período.",
+"Son {n} horarios y el máximo es 120. Acortá el período.": "São {n} horários e o máximo é 120. Reduza o período.",
+"Se van a crear {n}. Primero: {a}. Último: {b}.": "Serão criados {n}. Primeiro: {a}. Último: {b}.",
+"{n} horario": "{n} horário",
+"{n} horarios": "{n} horários",
+"Se crearon {a} de {b} horarios. {e}": "Foram criados {a} de {b} horários. {e}",
+"Creando horarios: {a} de {b}...": "Criando horários: {a} de {b}...",
+"Crear los horarios": "Criar os horários",
+"Ver detalle de {n}": "Ver detalhes de {n}",
+"Falta el emprendimiento": "Falta o empreendimento",
+"Emprendimiento no encontrado": "Empreendimento não encontrado",
+"El emprendimiento todavía no fue aprobado": "O empreendimento ainda não foi aprovado",
+"Indicá el límite de cancelación y un reembolso entre 0 y 100": "Informe o limite de cancelamento e um reembolso entre 0 e 100",
+"Actividad no encontrada": "Atividade não encontrada",
+"Falta la imagen": "Falta a imagem",
+"Formato no permitido. Usa JPG, PNG o WEBP": "Formato não permitido. Use JPG, PNG ou WEBP",
+"La imagen es demasiado grande (maximo 3 MB)": "A imagem é grande demais (máximo de 3 MB)",
+"La imagen no es valida": "A imagem não é válida",
+"Falta indicar el turista.": "Falta indicar o turista.",
+"Falta indicar la fecha y horario de la actividad.": "Falta indicar a data e o horário da atividade.",
+"La cantidad de participantes debe ser al menos 1.": "A quantidade de participantes deve ser pelo menos 1.",
+"Solo los turistas registrados pueden reservar.": "Somente turistas cadastrados podem reservar.",
+"La fecha y horario de la actividad no existe.": "A data e o horário da atividade não existem.",
+"El tiempo límite para reservar esta actividad ya pasó.": "O prazo para reservar esta atividade já passou.",
+"No hay lugares suficientes. Quedan {n}.": "Não há vagas suficientes. Restam {n}.",
+"La reserva no existe.": "A reserva não existe.",
+"Esta reserva no está pendiente de pago.": "Esta reserva não está pendente de pagamento.",
+"La actividad ya comenzó, no se puede pagar.": "A atividade já começou, não é possível pagar.",
+"El servicio de pagos no está disponible. Tu reserva sigue pendiente, probá de nuevo en unos minutos.": "O serviço de pagamentos não está disponível. A sua reserva continua pendente, tente novamente em alguns minutos.",
+"Pago rechazado. Tu reserva sigue pendiente, podés intentar de nuevo.": "Pagamento recusado. A sua reserva continua pendente, você pode tentar novamente.",
+"Esta reserva no es tuya.": "Esta reserva não é sua.",
+"Esta reserva ya no se puede cancelar.": "Esta reserva não pode mais ser cancelada.",
+"Ya pasó el plazo para cancelar esta reserva.": "O prazo para cancelar esta reserva já passou.",
+"Falta el usuario dueño del emprendimiento": "Falta o usuário titular do empreendimento",
+"Una persona jurídica necesita RUT y razón social": "Uma pessoa jurídica precisa de RUT e razão social",
+"Prestador no encontrado": "Prestador não encontrado",
+"No se puede crear un administrador": "Não é possível criar um administrador",
+"El mail ya está registrado!": "Este e-mail já está cadastrado!",
+"Email, contraseña o rol incorrectos": "E-mail, senha ou perfil incorretos",
+"El servicio externo de pagos no responde.": "O serviço externo de pagamentos não responde.",
+"Volver al menú": "Voltar ao menu",
+"Revisemos:": "Vamos conferir:",
+"Hablar con una persona": "Falar com uma pessoa",
+"No puedo ingresar": "Não consigo entrar",
+"Quiero crear una cuenta": "Quero criar uma conta",
+"Quiero ofrecer mis actividades": "Quero oferecer as minhas atividades",
+"No me llegó el reembolso": "Não recebi o reembolso",
+"Quiero cancelar una reserva": "Quero cancelar uma reserva",
+"Mi reserva está pendiente de pago": "A minha reserva está pendente de pagamento",
+"Me rechazaron el pago": "O meu pagamento foi recusado",
+"No veo mi reserva": "Não vejo a minha reserva",
+"No encuentro actividades": "Não encontro atividades",
+"Requisitos y edad mínima": "Requisitos e idade mínima",
+"Mi emprendimiento sigue pendiente": "O meu empreendimento continua pendente",
+"No puedo crear una actividad": "Não consigo criar uma atividade",
+"Cargar horarios automáticos": "Carregar horários automáticos",
+"Agregar una foto a la actividad": "Adicionar uma foto à atividade",
+"Ver las reservas que recibí": "Ver as reservas que recebi",
+"Cómo apruebo emprendimientos": "Como aprovar empreendimentos",
+"¿Con qué te puedo ayudar? Elegí una opción o escribí tu consulta abajo.": "Com o que posso ajudar? Escolha uma opção ou escreva a sua dúvida abaixo.",
+"Probemos estos pasos, en orden:": "Vamos tentar estes passos, em ordem:",
+"Elegí en «Ingresar como» el mismo tipo de cuenta con el que te registraste (Turista, Emprendedor o Administrador). Si no coincide, no te deja entrar.": "Escolha em «Entrar como» o mesmo tipo de conta com o qual você se cadastrou (Turista, Empreendedor ou Administrador). Se não coincidir, o acesso não é permitido.",
+"Revisá que el email no tenga espacios ni errores de tipeo.": "Confira se o e-mail não tem espaços nem erros de digitação.",
+"Tocá el ojito del campo contraseña para ver lo que escribís y descartar errores o mayúsculas activadas.": "Toque no olhinho do campo senha para ver o que você digita e descartar erros ou letras maiúsculas ativadas.",
+"Si nunca creaste la cuenta, andá a la pestaña «Crear cuenta».": "Se você nunca criou a conta, vá para a aba «Criar conta».",
+"Por ahora la contraseña no se puede recuperar desde la página: si la olvidaste, una persona de soporte te puede ayudar.": "Por enquanto a senha não pode ser recuperada pela página: se você a esqueceu, uma pessoa do suporte pode ajudar.",
+"Ya probé todo": "Já tentei tudo",
+"Cómo creo una cuenta": "Como criar uma conta",
+"Crear la cuenta lleva un minuto:": "Criar a conta leva um minuto:",
+"Tocá la pestaña «Crear cuenta».": "Toque na aba «Criar conta».",
+"Elegí si sos turista o emprendedor y completá tus datos.": "Escolha se você é turista ou empreendedor e preencha os seus dados.",
+"Volvé a «Ingresar» y entrá con ese email y contraseña.": "Volte a «Entrar» e acesse com esse e-mail e senha.",
+"Soy emprendedor, ¿qué sigue?": "Sou empreendedor, e agora?",
+"Para publicar actividades:": "Para publicar atividades:",
+"Creá una cuenta como Emprendedor e ingresá.": "Crie uma conta como Empreendedor e entre.",
+"Cargá los datos de tu emprendimiento.": "Preencha os dados do seu empreendimento.",
+"Un administrador lo revisa y lo aprueba. Hasta entonces figura como pendiente.": "Um administrador o analisa e o aprova. Até lá ele aparece como pendente.",
+"Con el emprendimiento aprobado ya podés publicar actividades y sus horarios.": "Com o empreendimento aprovado, você já pode publicar atividades e os seus horários.",
+"No veo reservas canceladas en tu cuenta, por eso no hay nada para reembolsar.": "Não vejo reservas canceladas na sua conta, por isso não há nada para reembolsar.",
+"Si cancelaste desde otra cuenta o esperás una devolución de algo distinto, escribinos.": "Se você cancelou de outra conta ou espera uma devolução de algo diferente, escreva para nós.",
+"Elegí la reserva de la que esperás el reembolso:": "Escolha a reserva da qual você espera o reembolso:",
+"Tu reserva fue cancelada y se registró un reembolso de <strong>{m}</strong>. El dinero vuelve a la misma tarjeta con la que pagaste.": "A sua reserva foi cancelada e foi registrado um reembolso de <strong>{m}</strong>. O dinheiro volta para o mesmo cartão com o qual você pagou.",
+"Mirá el resumen de tu tarjeta: a veces figura como «devolución» y puede tardar unos días hábiles en verse reflejado.": "Confira a fatura do seu cartão: às vezes aparece como «estorno» e pode levar alguns dias úteis para ser exibido.",
+"Verificá que sea la tarjeta con la que pagaste esta reserva.": "Verifique se é o cartão com o qual você pagou esta reserva.",
+"Si pasó más de una semana desde la cancelación y no lo ves, escribinos con el resumen del caso.": "Se passou mais de uma semana desde o cancelamento e você não o vê, escreva para nós com o resumo do caso.",
+"Esta reserva está cancelada y <strong>no tiene reembolso registrado</strong>.": "Esta reserva está cancelada e <strong>não tem reembolso registrado</strong>.",
+"La actividad no permite cancelación con reembolso, por eso no corresponde devolución.": "A atividade não permite cancelamento com reembolso, por isso não há devolução.",
+"La política de esta actividad reembolsa el 0 %.": "A política desta atividade reembolsa 0 %.",
+"Esta actividad reembolsa el {p} % si se cancela hasta {d} antes. Si cancelaste después de ese límite, o si la reserva venció sin pagarse, no se genera reembolso.": "Esta atividade reembolsa {p} % se for cancelada até {d} antes. Se você cancelou depois desse limite, ou se a reserva venceu sem ser paga, não há reembolso.",
+"Si ya habías pagado y creés que debería haber un reembolso, escribinos con este caso.": "Se você já tinha pago e acha que deveria haver um reembolso, escreva para nós com este caso.",
+"Escribir a soporte con este caso": "Escrever ao suporte com este caso",
+"Elegir otra reserva": "Escolher outra reserva",
+"Para cancelar una reserva:": "Para cancelar uma reserva:",
+"Entrá a la pestaña «Mis reservas».": "Entre na aba «Minhas reservas».",
+"Buscá la reserva y tocá «Cancelar».": "Encontre a reserva e toque em «Cancelar».",
+"Si estaba pagada, el reembolso se calcula según la política de la actividad y se muestra en la misma fila.": "Se estava paga, o reembolso é calculado conforme a política da atividade e aparece na mesma linha.",
+"Si el botón no aparece o no te deja, puede ser porque:": "Se o botão não aparece ou não deixa você cancelar, pode ser porque:",
+"La reserva ya fue cancelada o la actividad ya se realizó.": "A reserva já foi cancelada ou a atividade já foi realizada.",
+"La actividad no permite cancelación o ya pasó el límite para cancelar. Lo ves en el detalle de la actividad.": "A atividade não permite cancelamento ou o limite para cancelar já passou. Você vê isso nos detalhes da atividade.",
+"No tenés reservas pendientes de pago ahora.": "Você não tem reservas pendentes de pagamento agora.",
+"Tenés {n} reserva pendiente:": "Você tem {n} reserva pendente:",
+"Tenés {n} reservas pendientes:": "Você tem {n} reservas pendentes:",
+"{b} (vence en {l})": "{b} (vence em {l})",
+"Cómo pagarla:": "Como pagá-la:",
+"Entrá a «Mis reservas» y tocá «Pagar» en la reserva.": "Entre em «Minhas reservas» e toque em «Pagar» na reserva.",
+"Completá los datos de la tarjeta y confirmá.": "Preencha os dados do cartão e confirme.",
+"Si el pago se aprueba, la reserva queda confirmada.": "Se o pagamento for aprovado, a reserva fica confirmada.",
+"Tenés 24 horas desde la reserva para pagar. Si vence, se cancela sola y se liberan los lugares.": "Você tem 24 horas a partir da reserva para pagar. Se vencer, ela é cancelada sozinha e as vagas são liberadas.",
+"Un pago rechazado no genera ningún cobro y tu reserva sigue pendiente hasta que venza el plazo. Según el mensaje que viste:": "Um pagamento recusado não gera nenhuma cobrança e a sua reserva continua pendente até o prazo vencer. Conforme a mensagem que você viu:",
+"<strong>Fondos insuficientes:</strong> probá con otra tarjeta o con otro saldo.": "<strong>Saldo insuficiente:</strong> tente com outro cartão ou com outro saldo.",
+"<strong>Tarjeta rechazada:</strong> revisá número, vencimiento y código de seguridad, o probá con otra tarjeta.": "<strong>Cartão recusado:</strong> confira número, validade e código de segurança, ou tente com outro cartão.",
+"<strong>Servicio no disponible:</strong> es un problema temporal, esperá unos minutos y reintentá desde «Mis reservas».": "<strong>Serviço indisponível:</strong> é um problema temporário, aguarde alguns minutos e tente novamente em «Minhas reservas».",
+"Si el problema se repite con distintas tarjetas, escribinos.": "Se o problema se repetir com cartões diferentes, escreva para nós.",
+"Hoy tu cuenta tiene <strong>{n}</strong> reserva.": "Hoje a sua conta tem <strong>{n}</strong> reserva.",
+"Hoy tu cuenta tiene <strong>{n}</strong> reservas.": "Hoje a sua conta tem <strong>{n}</strong> reservas.",
+"Si falta alguna:": "Se faltar alguma:",
+"Mirá en «Mis reservas»: las vencidas o canceladas siguen apareciendo con su estado.": "Veja em «Minhas reservas»: as vencidas ou canceladas continuam aparecendo com o seu status.",
+"Confirmá que estás ingresado con el mismo email con el que reservaste (arriba a la derecha ves tu nombre).": "Confirme que você entrou com o mesmo e-mail com o qual reservou (no canto superior direito você vê o seu nome).",
+"Si reservaste y nunca llegaste a confirmar el paso final, la reserva puede no haberse creado.": "Se você reservou e nunca chegou a confirmar a etapa final, a reserva pode não ter sido criada.",
+"Para encontrar actividades:": "Para encontrar atividades:",
+"Usá el buscador y los departamentos de la izquierda (en el celular, la fila de botones de arriba).": "Use a busca e os departamentos à esquerda (no celular, a fileira de botões de cima).",
+"Sacá los filtros activos, por ejemplo «Solo con cancelación», que ocultan resultados.": "Remova os filtros ativos, por exemplo «Somente com cancelamento», que escondem resultados.",
+"Ordená por precio o por novedad.": "Ordene por preço ou por novidade.",
+"Solo se muestran actividades de emprendimientos ya aprobados, y para reservar tiene que haber horarios cargados con cupo.": "Só são mostradas atividades de empreendimentos já aprovados, e para reservar é preciso haver horários cadastrados com vagas.",
+"Abrí la actividad desde el catálogo: en el detalle ves la edad mínima, los requerimientos para participar y la política de cancelación antes de reservar.": "Abra a atividade no catálogo: nos detalhes você vê a idade mínima, os requisitos para participar e a política de cancelamento antes de reservar.",
+"Todavía no tenés ningún emprendimiento cargado. Completá el formulario de «Tu emprendimiento» para enviarlo a revisión.": "Você ainda não tem nenhum empreendimento cadastrado. Preencha o formulário de «O seu empreendimento» para enviá-lo à análise.",
+"Estado de tus emprendimientos:": "Status dos seus empreendimentos:",
+"Pendiente significa que un administrador todavía no lo revisó. No tenés que hacer nada: cuando lo apruebe vas a poder publicar actividades.": "Pendente significa que um administrador ainda não o analisou. Você não precisa fazer nada: quando ele o aprovar, você poderá publicar atividades.",
+"Si fue rechazado, revisá que los datos (RUT, razón social, contacto) estén correctos y volvé a cargarlo.": "Se foi recusado, confira se os dados (RUT, razão social, contato) estão corretos e cadastre-o novamente.",
+"El emprendimiento tiene que estar <strong>aprobado</strong>. Mirá su estado arriba o en la opción «Mi emprendimiento sigue pendiente».": "O empreendimento precisa estar <strong>aprovado</strong>. Veja o status acima ou na opção «O meu empreendimento continua pendente».",
+"Completá todos los campos obligatorios del formulario.": "Preencha todos os campos obrigatórios do formulário.",
+"Si activás «permite cancelación», indicá el límite en minutos y un reembolso entre 0 y 100 %.": "Se você ativar «permite cancelamento», informe o limite em minutos e um reembolso entre 0 e 100 %.",
+"La foto es opcional: si falla, la actividad igual se publica.": "A foto é opcional: se falhar, a atividade é publicada mesmo assim.",
+"Podés cargar muchos horarios de una vez:": "Você pode cadastrar muitos horários de uma vez:",
+"Al crear la actividad, activá «Crear los horarios automáticamente».": "Ao criar a atividade, ative «Criar os horários automaticamente».",
+"Elegí los días de la semana, la hora, el cupo y el período.": "Escolha os dias da semana, a hora, a capacidade e o período.",
+"Mirá la vista previa y publicá. También lo podés hacer después, desde «Nuevo horario» con la frecuencia semanal.": "Veja a pré-visualização e publique. Você também pode fazer isso depois, em «Novo horário» com a frequência semanal.",
+"Al crear la actividad vas a ver «Foto de la actividad».": "Ao criar a atividade você verá «Foto da atividade».",
+"Tocá «Elegir imagen» y seleccioná un JPG, PNG o WEBP.": "Toque em «Escolher imagem» e selecione um JPG, PNG ou WEBP.",
+"Se ajusta sola al tamaño ideal y ves una vista previa.": "Ela se ajusta sozinha ao tamanho ideal e você vê uma pré-visualização.",
+"Publicá la actividad: la foto aparece en el catálogo y en el detalle.": "Publique a atividade: a foto aparece no catálogo e nos detalhes.",
+"Es opcional. Sin foto se muestra un diseño por defecto.": "É opcional. Sem foto, é mostrado um desenho padrão.",
+"En «Horarios y reservas» ves una tabla con las reservas que recibís: turista, fecha, personas, total y estado.": "Em «Horários e reservas» você vê uma tabela com as reservas que recebe: turista, data, pessoas, total e status.",
+"<strong>Pendiente de pago:</strong> el turista tiene 24 horas para pagar.": "<strong>Pagamento pendente:</strong> o turista tem 24 horas para pagar.",
+"<strong>Confirmada:</strong> el pago fue aprobado.": "<strong>Confirmada:</strong> o pagamento foi aprovado.",
+"<strong>Cancelada:</strong> la canceló el turista o venció el plazo de pago, y los lugares se liberan.": "<strong>Cancelada:</strong> o turista cancelou ou o prazo de pagamento venceu, e as vagas são liberadas.",
+"<strong>Realizada:</strong> la actividad ya ocurrió.": "<strong>Realizada:</strong> a atividade já aconteceu.",
+"Para revisar emprendimientos:": "Para analisar empreendimentos:",
+"En el panel de administración abrí la pestaña de solicitudes.": "No painel de administração, abra a aba de solicitações.",
+"Revisá los datos (RUT, razón social, contacto).": "Confira os dados (RUT, razão social, contato).",
+"Tocá «Aceptar» o «Denegar». Solo los aprobados pueden publicar actividades.": "Toque em «Aceitar» ou «Negar». Somente os aprovados podem publicar atividades.",
+"Si seguís con el problema, escribinos. Cuanto más claro el resumen, más rápido lo resolvemos.": "Se o problema continuar, escreva para nós. Quanto mais claro o resumo, mais rápido resolvemos.",
+"Tocá «Escribir por email» (se abre tu correo con los datos ya cargados), o copiá el resumen.": "Toque em «Escrever por e-mail» (abre o seu e-mail com os dados já preenchidos) ou copie o resumo.",
+"Contá qué pasó y qué esperabas que pasara.": "Conte o que aconteceu e o que você esperava que acontecesse.",
+"Respondemos por email.": "Respondemos por e-mail.",
+"Escribir por email": "Escrever por e-mail",
+"Copiar resumen": "Copiar resumo",
+"No pude consultar los datos de tu cuenta en este momento ({e}). Podés intentar de nuevo o escribirnos.": "Não consegui consultar os dados da sua conta neste momento ({e}). Você pode tentar novamente ou nos escrever.",
+"Hola {name}. Esta ayuda es guiada: elegís una opción y te muestro los pasos para resolverlo. No es una persona ni una IA.": "Olá {name}. Esta ajuda é guiada: você escolhe uma opção e eu mostro os passos para resolver. Não é uma pessoa nem uma IA.",
+"Hola. Esta ayuda es guiada: elegís una opción y te muestro los pasos para resolverlo. No es una persona ni una IA.": "Olá. Esta ajuda é guiada: você escolhe uma opção e eu mostro os passos para resolver. Não é uma pessoa nem uma IA.",
+"Esto puede ayudarte:": "Isto pode ajudar:",
+"No encontré una opción para eso. Probá con otras palabras o elegí del menú.": "Não encontrei uma opção para isso. Tente com outras palavras ou escolha no menu.",
+"Ver todas las opciones": "Ver todas as opções",
+"Un momento…": "Um momento…",
+"Resumen copiado.": "Resumo copiado.",
+"No se pudo copiar. Seleccioná el texto a mano.": "Não foi possível copiar. Selecione o texto manualmente."
+},
+"en": {
+"Mapa de Uruguay": "Map of Uruguay",
+"Actividades al aire libre en todo Uruguay": "Outdoor activities all across Uruguay",
+"Cabalgatas, trekking, kayak y enoturismo ofrecidos por emprendedores locales.": "Horseback riding, trekking, kayaking and wine tourism offered by local entrepreneurs.",
+"Atracciones de todos los departamentos": "Attractions from every department",
+"Emprendimientos revisados antes de publicarse": "Businesses reviewed before they are published",
+"Requerimientos y política de cancelación a la vista": "Requirements and cancellation policy up front",
+"Acceso": "Access",
+"Proyecto TIC 2026": "TIC Project 2026",
+"Uruguay Mnatural, Proyecto TIC 2026": "Uruguay Mnatural, TIC Project 2026",
+"Ingresar": "Log in",
+"Crear cuenta": "Create account",
+"Bienvenido de nuevo": "Welcome back",
+"Ingresá con tu cuenta para continuar.": "Log in with your account to continue.",
+"Ingresar como": "Log in as",
+"Turista": "Tourist",
+"Emprendedor": "Entrepreneur",
+"Administrador": "Administrator",
+"Contraseña": "Password",
+"Mostrar contraseña": "Show password",
+"Ocultar contraseña": "Hide password",
+"Creá tu cuenta": "Create your account",
+"Elegí cómo vas a usar Uruguay Mnatural.": "Choose how you will use Uruguay Mnatural.",
+"Quiero ser": "I want to be",
+"Nombre": "First name",
+"Apellido": "Last name",
+"Mínimo 4 caracteres.": "At least 4 characters.",
+"Salir": "Log out",
+"Atracciones": "Attractions",
+"Abrí cada atracción para ver su descripción, los requerimientos para participar y la política de cancelación.": "Open each attraction to see its description, the requirements to take part and the cancellation policy.",
+"Explorar": "Explore",
+"Mis reservas": "My bookings",
+"Filtros": "Filters",
+"Departamento": "Department",
+"Cancelación": "Cancellation",
+"Solo con cancelación": "Only with cancellation",
+"Limpiar filtros": "Clear filters",
+"Buscar": "Search",
+"Buscar por nombre o localidad": "Search by name or locality",
+"Ordenar por": "Sort by",
+"Más recientes": "Newest",
+"Precio: menor a mayor": "Price: low to high",
+"Precio: mayor a menor": "Price: high to low",
+"Duración: más corta": "Duration: shortest",
+"Panel del emprendedor": "Entrepreneur dashboard",
+"Registrá tu emprendimiento. Cuando el administrador lo apruebe, vas a poder publicar tus atracciones.": "Register your business. Once the administrator approves it, you will be able to publish your attractions.",
+"Tu emprendimiento": "Your business",
+"Datos de identificación, ubicación y contacto. Las personas jurídicas deben informar RUT y razón social.": "Identification, location and contact details. Legal entities must provide their RUT and business name.",
+"Registrar otro emprendimiento": "Register another business",
+"Datos del emprendimiento": "Business details",
+"Tipo de prestador": "Provider type",
+"Persona física": "Individual",
+"Persona jurídica": "Legal entity",
+"Razón social": "Business name",
+"Descripción": "Description",
+"Ubicación y contacto": "Location and contact",
+"Localidad": "Locality",
+"Teléfono": "Phone",
+"Email de contacto": "Contact email",
+"Enviar para aprobación": "Submit for approval",
+"Tus atracciones": "Your attractions",
+"Cada atracción puede indicar requerimientos para participar y si permite cancelación con reembolso.": "Each attraction can state requirements to take part and whether it allows cancellation with a refund.",
+"Todavía no podés publicar": "You can't publish yet",
+"Se habilita cuando el administrador apruebe tu emprendimiento.": "This unlocks once the administrator approves your business.",
+"Nueva atracción": "New attraction",
+"Datos de la atracción": "Attraction details",
+"Emprendimiento": "Business",
+"Foto de la actividad": "Activity photo",
+"Sin foto. Si no subís una, se muestra un diseño por defecto.": "No photo. If you don't upload one, a default design is shown.",
+"Elegir imagen": "Choose image",
+"Cambiar imagen": "Change image",
+"Quitar": "Remove",
+"Opcional. JPG, PNG o WEBP. Se ajusta automáticamente al tamaño ideal.": "Optional. JPG, PNG or WEBP. It is resized automatically to the ideal size.",
+"Precio, requisitos y cancelación": "Price, requirements and cancellation",
+"Duración (minutos)": "Duration (minutes)",
+"Precio ($)": "Price ($)",
+"Edad mínima": "Minimum age",
+"Opcional.": "Optional.",
+"Requerimientos para participar": "Requirements to take part",
+"Equipamiento, estado físico, documentos. El turista lo ve destacado.": "Equipment, fitness level, documents. Tourists see this highlighted.",
+"Esta actividad permite cancelación": "This activity allows cancellation",
+"Cancelar hasta (min antes)": "Cancel up to (min before)",
+"Reembolso (0 a 100 %)": "Refund (0 to 100 %)",
+"Crear los horarios automáticamente": "Create the schedules automatically",
+"Publicar atracción": "Publish attraction",
+"Horarios y reservas": "Schedules and bookings",
+"Publicá las fechas en las que ofrecés cada atracción, con su cupo, y mirá las reservas que reciben.": "Publish the dates on which you offer each attraction, with its capacity, and see the bookings they receive.",
+"Nuevo horario": "New schedule",
+"Atracción": "Attraction",
+"Frecuencia": "Frequency",
+"Un solo día": "A single day",
+"Todas las semanas": "Every week",
+"Fecha y hora de inicio": "Start date and time",
+"Cupo máximo (personas)": "Maximum capacity (people)",
+"Minutos antes del inicio hasta los que se puede reservar": "Minutes before the start until which bookings are allowed",
+"Con 0 se puede reservar hasta la hora de inicio.": "With 0, bookings are allowed until the start time.",
+"Publicar horario": "Publish schedule",
+"Horarios publicados": "Published schedules",
+"Reservas recibidas": "Bookings received",
+"Administración": "Administration",
+"Revisá las solicitudes de los emprendimientos, mirá sus detalles y controlá lo que se publica.": "Review business requests, check their details and control what gets published.",
+"Solicitudes pendientes": "Pending requests",
+"Emprendimientos aprobados": "Approved businesses",
+"Atracciones publicadas": "Published attractions",
+"Solicitudes": "Requests",
+"Filtrar por estado": "Filter by status",
+"Todas": "All",
+"Pendientes": "Pending",
+"Aprobadas": "Approved",
+"Denegadas": "Denied",
+"Pago de la reserva": "Booking payment",
+"Detalle de la atracción": "Attraction details",
+"Ayuda": "Help",
+"Centro de ayuda": "Help center",
+"Te guiamos paso a paso": "We guide you step by step",
+"Empezar de nuevo": "Start over",
+"Cerrar la ayuda": "Close help",
+"Escribí tu consulta...": "Type your question...",
+"Escribí tu consulta": "Type your question",
+"Cerrar": "Close",
+"Horarios disponibles": "Available times",
+"Hora de inicio": "Start time",
+"No se pudo conectar con el servidor.": "Could not connect to the server.",
+"Podés cancelar hasta {d} antes de la actividad y se reembolsa el {p}% del pago total.": "You can cancel up to {d} before the activity and {p}% of the total payment is refunded.",
+"Esta actividad no permite cancelación.": "This activity does not allow cancellation.",
+"Prestador": "Provider",
+"Persona jurídica, RUT {rut}, {name}": "Legal entity, RUT {rut}, {name}",
+"Precio": "Price",
+"Duración": "Duration",
+"{n} años": "{n} years",
+"Sin límite": "No limit",
+"Política de cancelación": "Cancellation policy",
+"Desde {n} años": "From {n} years old",
+"Cancelación con reembolso {p}%": "Cancellation with {p}% refund",
+"Sin cancelación": "No cancellation",
+"{n} atracción": "{n} attraction",
+"{n} atracciones": "{n} attractions",
+"Todos": "All",
+"No encontramos atracciones": "No attractions found",
+"Probá con otra búsqueda o limpiá los filtros.": "Try a different search or clear the filters.",
+"Todavía no hay atracciones publicadas.": "There are no published attractions yet.",
+"No pudimos cargar las atracciones": "We couldn't load the attractions",
+"Aprobado. Ya podés publicar atracciones.": "Approved. You can now publish attractions.",
+"Fue denegado. Podés registrar uno nuevo con los datos corregidos.": "It was denied. You can register a new one with the corrected details.",
+"El administrador está revisando tu solicitud.": "The administrator is reviewing your request.",
+"Registrá tu emprendimiento": "Register your business",
+"Revisión del administrador": "Administrator review",
+"Publicá tus atracciones": "Publish your attractions",
+"Completo": "Complete",
+"En curso": "In progress",
+"Pendiente": "Pending",
+"Aprobado": "Approved",
+"Denegado": "Denied",
+"Paso {n}, {s}": "Step {n}, {s}",
+"Hola, {name}": "Hello, {name}",
+"Todavía no publicaste atracciones": "You haven't published any attractions yet",
+"Usá el botón Nueva atracción para crear la primera.": "Use the New attraction button to create your first one.",
+"Emprendimiento enviado. Queda pendiente de aprobación.": "Business submitted. It is pending approval.",
+"Usá una imagen JPG, PNG o WEBP.": "Use a JPG, PNG or WEBP image.",
+"La imagen pesa demasiado (máximo 15 MB).": "The image is too large (maximum 15 MB).",
+"No se pudo leer la imagen.": "The image could not be read.",
+"Vista previa de la foto elegida": "Preview of the chosen photo",
+"La atracción se publicó, pero la foto no se pudo guardar: {e}": "The attraction was published, but the photo could not be saved: {e}",
+"La atracción se publicó, pero los horarios quedaron incompletos. {e}": "The attraction was published, but the schedules are incomplete. {e}",
+"Atracción publicada con {n} horarios.": "Attraction published with {n} schedules.",
+"Atracción publicada.": "Attraction published.",
+"No hay solicitudes": "No requests",
+"No hay emprendimientos con ese estado.": "There are no businesses with that status.",
+"Cuando un emprendedor registre su emprendimiento va a aparecer acá.": "When an entrepreneur registers a business, it will show up here.",
+"Aceptar": "Accept",
+"Denegar": "Deny",
+"Detalles": "Details",
+"Sin dato": "No data",
+"Tipo": "Type",
+"Ubicación": "Location",
+"Estado": "Status",
+"Acciones": "Actions",
+"Dueño de la cuenta": "Account owner",
+"Todavía no hay atracciones": "There are no attractions yet",
+"Se van a listar acá cuando los emprendedores las publiquen.": "They will be listed here once entrepreneurs publish them.",
+"Reembolso {p}%": "{p}% refund",
+"No permite": "Not allowed",
+"No pudimos cargar los datos": "We couldn't load the data",
+"Emprendimiento aprobado.": "Business approved.",
+"Emprendimiento denegado.": "Business denied.",
+"Cuenta creada. Ya podés ingresar.": "Account created. You can now log in.",
+"Pendiente de pago": "Payment pending",
+"Confirmada": "Confirmed",
+"Cancelada": "Cancelled",
+"Realizada": "Completed",
+"Buscando horarios disponibles...": "Looking for available times...",
+"Reservar": "Book",
+"No pudimos cargar los horarios. {e}": "We couldn't load the times. {e}",
+"Por ahora no hay horarios con lugares disponibles.": "There are no times with available spots right now.",
+"Quedan {n} lugar": "{n} spot left",
+"Quedan {n} lugares": "{n} spots left",
+"Personas": "People",
+"La reserva queda pendiente hasta que la pagues desde Mis reservas.": "The booking stays pending until you pay for it from My bookings.",
+"Elegí un horario.": "Choose a time.",
+"Indicá cuántas personas participan.": "Enter how many people are taking part.",
+"Reserva creada. Pagala para confirmarla.": "Booking created. Pay for it to confirm it.",
+"instantes": "moments",
+"Reembolso {m}": "Refund {m}",
+"Pagala antes del {d} (vence en {l})": "Pay before {d} (expires in {l})",
+"Actividad": "Activity",
+"Fecha": "Date",
+"Pagar": "Pay",
+"Cancelar": "Cancel",
+"No pudimos cargar tus reservas": "We couldn't load your bookings",
+"Todavía no hiciste reservas": "You haven't made any bookings yet",
+"Elegí una atracción en Explorar y reservá un horario.": "Choose an attraction in Explore and book a time.",
+"Reserva cancelada. Reembolso de {m}.": "Booking cancelled. Refund of {m}.",
+"Reserva cancelada.": "Booking cancelled.",
+"Aprobada": "Approved",
+"Rechazada por el banco": "Declined by the bank",
+"Fondos insuficientes": "Insufficient funds",
+"Servicio de pagos caído": "Payment service down",
+"Aleatoria (75, 20, 5)": "Random (75, 20, 5)",
+"Pagar reserva": "Pay for booking",
+"{n} persona": "{n} person",
+"{n} personas": "{n} people",
+"Modo de prueba (sandbox).": "Test mode (sandbox).",
+"No se cobra dinero real. Tocá una tarjeta de prueba para completar el formulario:": "No real money is charged. Tap a test card to fill in the form:",
+"Número de tarjeta": "Card number",
+"Nombre del titular": "Cardholder name",
+"Vencimiento": "Expiry",
+"MM/AA": "MM/YY",
+"Código de seguridad": "Security code",
+"Pagar {m}": "Pay {m}",
+"Comprobante": "Receipt",
+"Pago aprobado": "Payment approved",
+"Tu reserva quedó confirmada.": "Your booking is confirmed.",
+"Referencia": "Reference",
+"Monto": "Amount",
+"Tarjeta": "Card",
+"Listo": "Done",
+"Primero publicá una atracción": "Publish an attraction first",
+"Después vas a poder agregarle horarios.": "Then you will be able to add schedules to it.",
+"Todavía no publicaste horarios": "You haven't published any schedules yet",
+"Sin horarios, los turistas no pueden reservar tus atracciones.": "Without schedules, tourists can't book your attractions.",
+"Fecha y hora": "Date and time",
+"Lugares libres": "Free spots",
+"Se reserva hasta": "Bookable until",
+"{a} de {b}": "{a} of {b}",
+"La hora de inicio": "The start time",
+"{d} antes": "{d} before",
+"Todavía no recibiste reservas": "You haven't received any bookings yet",
+"Van a aparecer acá cuando un turista reserve alguno de tus horarios.": "They will appear here when a tourist books one of your schedules.",
+"No pudimos cargar las reservas": "We couldn't load the bookings",
+"No pudimos cargar los horarios": "We couldn't load the schedules",
+"{n} horario creado.": "{n} schedule created.",
+"{n} horarios creados.": "{n} schedules created.",
+"La fecha y hora tienen que ser futuras.": "The date and time must be in the future.",
+"Horario publicado.": "Schedule published.",
+"Lun": "Mon",
+"Mar": "Tue",
+"Mié": "Wed",
+"Jue": "Thu",
+"Vie": "Fri",
+"Sáb": "Sat",
+"Dom": "Sun",
+"Días de la semana": "Days of the week",
+"Horas de inicio": "Start times",
+"Agregar hora": "Add time",
+"Desde": "From",
+"Hasta": "To",
+"Reservable hasta (min antes)": "Bookable until (min before)",
+"Quitar {x}": "Remove {x}",
+"Elegí al menos un día de la semana.": "Choose at least one day of the week.",
+"Agregá al menos una hora de inicio.": "Add at least one start time.",
+"Indicá desde y hasta qué fecha se repite.": "Enter the dates from and until which it repeats.",
+"La fecha final es anterior a la inicial.": "The end date is before the start date.",
+"El período no puede superar un año.": "The period cannot exceed one year.",
+"El cupo tiene que ser de al menos 1 persona.": "Capacity must be at least 1 person.",
+"No hay fechas futuras en ese período.": "There are no future dates in that period.",
+"Son {n} horarios y el máximo es 120. Acortá el período.": "That is {n} schedules and the maximum is 120. Shorten the period.",
+"Se van a crear {n}. Primero: {a}. Último: {b}.": "{n} will be created. First: {a}. Last: {b}.",
+"{n} horario": "{n} schedule",
+"{n} horarios": "{n} schedules",
+"Se crearon {a} de {b} horarios. {e}": "{a} of {b} schedules were created. {e}",
+"Creando horarios: {a} de {b}...": "Creating schedules: {a} of {b}...",
+"Crear los horarios": "Create the schedules",
+"Ver detalle de {n}": "View details of {n}",
+"Falta el emprendimiento": "The business is missing",
+"Emprendimiento no encontrado": "Business not found",
+"El emprendimiento todavía no fue aprobado": "The business has not been approved yet",
+"Indicá el límite de cancelación y un reembolso entre 0 y 100": "Enter the cancellation limit and a refund between 0 and 100",
+"Actividad no encontrada": "Activity not found",
+"Falta la imagen": "The image is missing",
+"Formato no permitido. Usa JPG, PNG o WEBP": "Format not allowed. Use JPG, PNG or WEBP",
+"La imagen es demasiado grande (maximo 3 MB)": "The image is too large (maximum 3 MB)",
+"La imagen no es valida": "The image is not valid",
+"Falta indicar el turista.": "The tourist is missing.",
+"Falta indicar la fecha y horario de la actividad.": "The activity date and time are missing.",
+"La cantidad de participantes debe ser al menos 1.": "The number of participants must be at least 1.",
+"Solo los turistas registrados pueden reservar.": "Only registered tourists can book.",
+"La fecha y horario de la actividad no existe.": "The activity date and time do not exist.",
+"El tiempo límite para reservar esta actividad ya pasó.": "The deadline to book this activity has passed.",
+"No hay lugares suficientes. Quedan {n}.": "Not enough spots. {n} left.",
+"La reserva no existe.": "The booking does not exist.",
+"Esta reserva no está pendiente de pago.": "This booking is not pending payment.",
+"La actividad ya comenzó, no se puede pagar.": "The activity has already started, it can no longer be paid.",
+"El servicio de pagos no está disponible. Tu reserva sigue pendiente, probá de nuevo en unos minutos.": "The payment service is unavailable. Your booking is still pending, try again in a few minutes.",
+"Pago rechazado. Tu reserva sigue pendiente, podés intentar de nuevo.": "Payment declined. Your booking is still pending, you can try again.",
+"Esta reserva no es tuya.": "This booking is not yours.",
+"Esta reserva ya no se puede cancelar.": "This booking can no longer be cancelled.",
+"Ya pasó el plazo para cancelar esta reserva.": "The deadline to cancel this booking has passed.",
+"Falta el usuario dueño del emprendimiento": "The business owner is missing",
+"Una persona jurídica necesita RUT y razón social": "A legal entity needs a RUT and business name",
+"Prestador no encontrado": "Provider not found",
+"No se puede crear un administrador": "An administrator cannot be created",
+"El mail ya está registrado!": "This email is already registered!",
+"Email, contraseña o rol incorrectos": "Incorrect email, password or role",
+"El servicio externo de pagos no responde.": "The external payment service is not responding.",
+"Volver al menú": "Back to the menu",
+"Revisemos:": "Let's check:",
+"Hablar con una persona": "Talk to a person",
+"No puedo ingresar": "I can't log in",
+"Quiero crear una cuenta": "I want to create an account",
+"Quiero ofrecer mis actividades": "I want to offer my activities",
+"No me llegó el reembolso": "My refund hasn't arrived",
+"Quiero cancelar una reserva": "I want to cancel a booking",
+"Mi reserva está pendiente de pago": "My booking is pending payment",
+"Me rechazaron el pago": "My payment was declined",
+"No veo mi reserva": "I can't see my booking",
+"No encuentro actividades": "I can't find activities",
+"Requisitos y edad mínima": "Requirements and minimum age",
+"Mi emprendimiento sigue pendiente": "My business is still pending",
+"No puedo crear una actividad": "I can't create an activity",
+"Cargar horarios automáticos": "Load schedules automatically",
+"Agregar una foto a la actividad": "Add a photo to the activity",
+"Ver las reservas que recibí": "See the bookings I received",
+"Cómo apruebo emprendimientos": "How to approve businesses",
+"¿Con qué te puedo ayudar? Elegí una opción o escribí tu consulta abajo.": "What can I help you with? Choose an option or type your question below.",
+"Probemos estos pasos, en orden:": "Let's try these steps, in order:",
+"Elegí en «Ingresar como» el mismo tipo de cuenta con el que te registraste (Turista, Emprendedor o Administrador). Si no coincide, no te deja entrar.": "In «Log in as», choose the same type of account you signed up with (Tourist, Entrepreneur or Administrator). If it doesn't match, you can't log in.",
+"Revisá que el email no tenga espacios ni errores de tipeo.": "Check that the email has no spaces or typos.",
+"Tocá el ojito del campo contraseña para ver lo que escribís y descartar errores o mayúsculas activadas.": "Tap the eye icon in the password field to see what you type and rule out mistakes or caps lock.",
+"Si nunca creaste la cuenta, andá a la pestaña «Crear cuenta».": "If you never created the account, go to the «Create account» tab.",
+"Por ahora la contraseña no se puede recuperar desde la página: si la olvidaste, una persona de soporte te puede ayudar.": "For now the password can't be recovered from the site: if you forgot it, a support person can help you.",
+"Ya probé todo": "I already tried everything",
+"Cómo creo una cuenta": "How do I create an account",
+"Crear la cuenta lleva un minuto:": "Creating the account takes a minute:",
+"Tocá la pestaña «Crear cuenta».": "Tap the «Create account» tab.",
+"Elegí si sos turista o emprendedor y completá tus datos.": "Choose whether you are a tourist or an entrepreneur and fill in your details.",
+"Volvé a «Ingresar» y entrá con ese email y contraseña.": "Go back to «Log in» and sign in with that email and password.",
+"Soy emprendedor, ¿qué sigue?": "I'm an entrepreneur, what's next?",
+"Para publicar actividades:": "To publish activities:",
+"Creá una cuenta como Emprendedor e ingresá.": "Create an account as an Entrepreneur and log in.",
+"Cargá los datos de tu emprendimiento.": "Fill in your business details.",
+"Un administrador lo revisa y lo aprueba. Hasta entonces figura como pendiente.": "An administrator reviews and approves it. Until then it shows as pending.",
+"Con el emprendimiento aprobado ya podés publicar actividades y sus horarios.": "With the business approved, you can publish activities and their schedules.",
+"No veo reservas canceladas en tu cuenta, por eso no hay nada para reembolsar.": "I don't see any cancelled bookings in your account, so there is nothing to refund.",
+"Si cancelaste desde otra cuenta o esperás una devolución de algo distinto, escribinos.": "If you cancelled from another account or expect a refund for something else, write to us.",
+"Elegí la reserva de la que esperás el reembolso:": "Choose the booking you expect the refund for:",
+"Tu reserva fue cancelada y se registró un reembolso de <strong>{m}</strong>. El dinero vuelve a la misma tarjeta con la que pagaste.": "Your booking was cancelled and a refund of <strong>{m}</strong> was recorded. The money goes back to the same card you paid with.",
+"Mirá el resumen de tu tarjeta: a veces figura como «devolución» y puede tardar unos días hábiles en verse reflejado.": "Check your card statement: it sometimes shows as a «refund» and can take a few business days to appear.",
+"Verificá que sea la tarjeta con la que pagaste esta reserva.": "Make sure it is the card you paid this booking with.",
+"Si pasó más de una semana desde la cancelación y no lo ves, escribinos con el resumen del caso.": "If more than a week has passed since the cancellation and you don't see it, write to us with the case summary.",
+"Esta reserva está cancelada y <strong>no tiene reembolso registrado</strong>.": "This booking is cancelled and <strong>has no refund recorded</strong>.",
+"Motivo registrado: {r}": "Recorded reason: {r}",
+"La actividad no permite cancelación con reembolso, por eso no corresponde devolución.": "The activity does not allow cancellation with a refund, so no refund applies.",
+"La política de esta actividad reembolsa el 0 %.": "This activity's policy refunds 0 %.",
+"Esta actividad reembolsa el {p} % si se cancela hasta {d} antes. Si cancelaste después de ese límite, o si la reserva venció sin pagarse, no se genera reembolso.": "This activity refunds {p} % if cancelled up to {d} before. If you cancelled after that limit, or the booking expired without being paid, no refund is generated.",
+"Si ya habías pagado y creés que debería haber un reembolso, escribinos con este caso.": "If you had already paid and think there should be a refund, write to us with this case.",
+"Escribir a soporte con este caso": "Write to support about this case",
+"Elegir otra reserva": "Choose another booking",
+"Para cancelar una reserva:": "To cancel a booking:",
+"Entrá a la pestaña «Mis reservas».": "Go to the «My bookings» tab.",
+"Buscá la reserva y tocá «Cancelar».": "Find the booking and tap «Cancel».",
+"Si estaba pagada, el reembolso se calcula según la política de la actividad y se muestra en la misma fila.": "If it was paid, the refund is calculated according to the activity's policy and shown in the same row.",
+"Si el botón no aparece o no te deja, puede ser porque:": "If the button doesn't show up or doesn't let you, it may be because:",
+"La reserva ya fue cancelada o la actividad ya se realizó.": "The booking was already cancelled or the activity already took place.",
+"La actividad no permite cancelación o ya pasó el límite para cancelar. Lo ves en el detalle de la actividad.": "The activity doesn't allow cancellation or the cancellation limit has passed. You can see this in the activity details.",
+"No tenés reservas pendientes de pago ahora.": "You have no bookings pending payment right now.",
+"Tenés {n} reserva pendiente:": "You have {n} pending booking:",
+"Tenés {n} reservas pendientes:": "You have {n} pending bookings:",
+"{b} (vence en {l})": "{b} (expires in {l})",
+"Cómo pagarla:": "How to pay for it:",
+"Entrá a «Mis reservas» y tocá «Pagar» en la reserva.": "Go to «My bookings» and tap «Pay» on the booking.",
+"Completá los datos de la tarjeta y confirmá.": "Fill in the card details and confirm.",
+"Si el pago se aprueba, la reserva queda confirmada.": "If the payment is approved, the booking is confirmed.",
+"Tenés 24 horas desde la reserva para pagar. Si vence, se cancela sola y se liberan los lugares.": "You have 24 hours from the booking to pay. If it expires, it is cancelled automatically and the spots are released.",
+"Un pago rechazado no genera ningún cobro y tu reserva sigue pendiente hasta que venza el plazo. Según el mensaje que viste:": "A declined payment doesn't charge you anything and your booking stays pending until the deadline expires. Depending on the message you saw:",
+"<strong>Fondos insuficientes:</strong> probá con otra tarjeta o con otro saldo.": "<strong>Insufficient funds:</strong> try another card or another balance.",
+"<strong>Tarjeta rechazada:</strong> revisá número, vencimiento y código de seguridad, o probá con otra tarjeta.": "<strong>Card declined:</strong> check the number, expiry and security code, or try another card.",
+"<strong>Servicio no disponible:</strong> es un problema temporal, esperá unos minutos y reintentá desde «Mis reservas».": "<strong>Service unavailable:</strong> it's a temporary problem, wait a few minutes and try again from «My bookings».",
+"Si el problema se repite con distintas tarjetas, escribinos.": "If the problem repeats with different cards, write to us.",
+"Hoy tu cuenta tiene <strong>{n}</strong> reserva.": "Your account currently has <strong>{n}</strong> booking.",
+"Hoy tu cuenta tiene <strong>{n}</strong> reservas.": "Your account currently has <strong>{n}</strong> bookings.",
+"Si falta alguna:": "If one is missing:",
+"Mirá en «Mis reservas»: las vencidas o canceladas siguen apareciendo con su estado.": "Look in «My bookings»: expired or cancelled ones still appear with their status.",
+"Confirmá que estás ingresado con el mismo email con el que reservaste (arriba a la derecha ves tu nombre).": "Make sure you are logged in with the same email you booked with (you can see your name at the top right).",
+"Si reservaste y nunca llegaste a confirmar el paso final, la reserva puede no haberse creado.": "If you booked but never completed the final step, the booking may not have been created.",
+"Para encontrar actividades:": "To find activities:",
+"Usá el buscador y los departamentos de la izquierda (en el celular, la fila de botones de arriba).": "Use the search box and the departments on the left (on a phone, the row of buttons above).",
+"Sacá los filtros activos, por ejemplo «Solo con cancelación», que ocultan resultados.": "Remove active filters, for example «Only with cancellation», which hide results.",
+"Ordená por precio o por novedad.": "Sort by price or by newest.",
+"Solo se muestran actividades de emprendimientos ya aprobados, y para reservar tiene que haber horarios cargados con cupo.": "Only activities from approved businesses are shown, and to book there must be schedules with available capacity.",
+"Abrí la actividad desde el catálogo: en el detalle ves la edad mínima, los requerimientos para participar y la política de cancelación antes de reservar.": "Open the activity from the catalog: in the details you see the minimum age, the requirements to take part and the cancellation policy before booking.",
+"Todavía no tenés ningún emprendimiento cargado. Completá el formulario de «Tu emprendimiento» para enviarlo a revisión.": "You haven't registered any business yet. Fill in the «Your business» form to send it for review.",
+"Estado de tus emprendimientos:": "Status of your businesses:",
+"Pendiente significa que un administrador todavía no lo revisó. No tenés que hacer nada: cuando lo apruebe vas a poder publicar actividades.": "Pending means an administrator hasn't reviewed it yet. You don't need to do anything: once they approve it you'll be able to publish activities.",
+"Si fue rechazado, revisá que los datos (RUT, razón social, contacto) estén correctos y volvé a cargarlo.": "If it was rejected, check that the details (RUT, business name, contact) are correct and submit it again.",
+"El emprendimiento tiene que estar <strong>aprobado</strong>. Mirá su estado arriba o en la opción «Mi emprendimiento sigue pendiente».": "The business must be <strong>approved</strong>. Check its status above or in the option «My business is still pending».",
+"Completá todos los campos obligatorios del formulario.": "Fill in all the required fields of the form.",
+"Si activás «permite cancelación», indicá el límite en minutos y un reembolso entre 0 y 100 %.": "If you turn on «allows cancellation», enter the limit in minutes and a refund between 0 and 100 %.",
+"La foto es opcional: si falla, la actividad igual se publica.": "The photo is optional: if it fails, the activity is still published.",
+"Podés cargar muchos horarios de una vez:": "You can load many schedules at once:",
+"Al crear la actividad, activá «Crear los horarios automáticamente».": "When creating the activity, turn on «Create the schedules automatically».",
+"Elegí los días de la semana, la hora, el cupo y el período.": "Choose the days of the week, the time, the capacity and the period.",
+"Mirá la vista previa y publicá. También lo podés hacer después, desde «Nuevo horario» con la frecuencia semanal.": "Check the preview and publish. You can also do it later, from «New schedule» with the weekly frequency.",
+"Al crear la actividad vas a ver «Foto de la actividad».": "When creating the activity you will see «Activity photo».",
+"Tocá «Elegir imagen» y seleccioná un JPG, PNG o WEBP.": "Tap «Choose image» and select a JPG, PNG or WEBP.",
+"Se ajusta sola al tamaño ideal y ves una vista previa.": "It resizes itself to the ideal size and you see a preview.",
+"Publicá la actividad: la foto aparece en el catálogo y en el detalle.": "Publish the activity: the photo shows up in the catalog and in the details.",
+"Es opcional. Sin foto se muestra un diseño por defecto.": "It's optional. Without a photo a default design is shown.",
+"En «Horarios y reservas» ves una tabla con las reservas que recibís: turista, fecha, personas, total y estado.": "In «Schedules and bookings» you see a table with the bookings you receive: tourist, date, people, total and status.",
+"<strong>Pendiente de pago:</strong> el turista tiene 24 horas para pagar.": "<strong>Payment pending:</strong> the tourist has 24 hours to pay.",
+"<strong>Confirmada:</strong> el pago fue aprobado.": "<strong>Confirmed:</strong> the payment was approved.",
+"<strong>Cancelada:</strong> la canceló el turista o venció el plazo de pago, y los lugares se liberan.": "<strong>Cancelled:</strong> the tourist cancelled it or the payment deadline expired, and the spots are released.",
+"<strong>Realizada:</strong> la actividad ya ocurrió.": "<strong>Completed:</strong> the activity has already taken place.",
+"Para revisar emprendimientos:": "To review businesses:",
+"En el panel de administración abrí la pestaña de solicitudes.": "In the administration panel, open the requests tab.",
+"Revisá los datos (RUT, razón social, contacto).": "Check the details (RUT, business name, contact).",
+"Tocá «Aceptar» o «Denegar». Solo los aprobados pueden publicar actividades.": "Tap «Accept» or «Deny». Only approved businesses can publish activities.",
+"Si seguís con el problema, escribinos. Cuanto más claro el resumen, más rápido lo resolvemos.": "If the problem continues, write to us. The clearer the summary, the faster we solve it.",
+"Tocá «Escribir por email» (se abre tu correo con los datos ya cargados), o copiá el resumen.": "Tap «Write by email» (your email app opens with the details already filled in), or copy the summary.",
+"Contá qué pasó y qué esperabas que pasara.": "Tell us what happened and what you expected to happen.",
+"Respondemos por email.": "We reply by email.",
+"Escribir por email": "Write by email",
+"Copiar resumen": "Copy summary",
+"No pude consultar los datos de tu cuenta en este momento ({e}). Podés intentar de nuevo o escribirnos.": "I couldn't check your account data right now ({e}). You can try again or write to us.",
+"Hola {name}. Esta ayuda es guiada: elegís una opción y te muestro los pasos para resolverlo. No es una persona ni una IA.": "Hello {name}. This help is guided: you choose an option and I show you the steps to solve it. It is not a person or an AI.",
+"Hola. Esta ayuda es guiada: elegís una opción y te muestro los pasos para resolverlo. No es una persona ni una IA.": "Hello. This help is guided: you choose an option and I show you the steps to solve it. It is not a person or an AI.",
+"Esto puede ayudarte:": "This may help:",
+"No encontré una opción para eso. Probá con otras palabras o elegí del menú.": "I didn't find an option for that. Try other words or pick from the menu.",
+"Ver todas las opciones": "See all options",
+"Un momento…": "One moment…",
+"Resumen copiado.": "Summary copied.",
+"No se pudo copiar. Seleccioná el texto a mano.": "Could not copy. Select the text manually."
+}
+};
+  var I18N_PATTERNS = [["^No hay lugares suficientes\\. Quedan (\\d+)\\.$", "No hay lugares suficientes. Quedan {n}.", ["n"]]];
+  function tt(s, p) {
+    var d = I18N[LANG];
+    var r = d && d[s] !== undefined ? d[s] : s;
+    if (p) r = r.replace(/\{(\w+)\}/g, function (m, k) { return p[k] !== undefined && p[k] !== null ? p[k] : m; });
+    return r;
+  }
+  // Traduce mensajes que vienen del servidor (frase exacta o con un numero)
+  function tm(s) {
+    if (LANG === "es" || !s) return s;
+    var d = I18N[LANG];
+    if (d[s] !== undefined) return d[s];
+    for (var i = 0; i < I18N_PATTERNS.length; i++) {
+      var m = new RegExp(I18N_PATTERNS[i][0]).exec(s);
+      if (m) {
+        var params = {};
+        I18N_PATTERNS[i][2].forEach(function (name, j) { params[name] = m[j + 1]; });
+        return tt(I18N_PATTERNS[i][1], params);
+      }
+    }
+    return s;
+  }
+  var TR_ATTRS = ["placeholder", "aria-label", "title", "alt", "data-l"];
+  function trAttr(el) {
+    TR_ATTRS.forEach(function (a) {
+      var v = el.getAttribute(a);
+      if (v) {
+        var k = v.replace(/\s+/g, " ").trim();
+        var d = I18N[LANG];
+        if (d[k] !== undefined && d[k] !== v) el.setAttribute(a, d[k]);
+      }
+    });
+  }
+  function trText(node) {
+    var raw = node.nodeValue;
+    var k = raw.replace(/\s+/g, " ").trim();
+    if (!k) return;
+    var d = I18N[LANG];
+    if (d[k] !== undefined && d[k] !== k) {
+      node.nodeValue = raw.match(/^\s*/)[0] + d[k] + raw.match(/\s*$/)[0];
+    }
+  }
+  function trSkip(el) {
+    if (!el || el.nodeType !== 1) return false;
+    var tag = el.tagName;
+    return tag === "SCRIPT" || tag === "STYLE" || tag === "TEXTAREA" || (el.closest && el.closest("[data-nolang]") !== null);
+  }
+  function trDom(root) {
+    if (root.nodeType === 3) {
+      if (!trSkip(root.parentNode)) trText(root);
+      return;
+    }
+    if (root.nodeType !== 1 || trSkip(root)) return;
+    trAttr(root);
+    var w = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, null);
+    var n = w.nextNode();
+    while (n) {
+      if (n.nodeType === 3) {
+        if (!trSkip(n.parentNode)) trText(n);
+      } else if (!trSkip(n)) {
+        trAttr(n);
+      }
+      n = w.nextNode();
+    }
+  }
+  function startTranslator() {
+    if (LANG === "es") return;
+    trDom(document.body);
+    var obs = new MutationObserver(function (list) {
+      list.forEach(function (m) {
+        if (m.type === "attributes") {
+          if (!trSkip(m.target)) trAttr(m.target);
+          return;
+        }
+        Array.prototype.forEach.call(m.addedNodes, function (n) { trDom(n); });
+      });
+    });
+    obs.observe(document.body, {childList: true, subtree: true, attributes: true, attributeFilter: TR_ATTRS});
+  }
+  function goLang(code) {
+    try { localStorage.setItem("lang", code); } catch (e) { }
+    location.href = location.pathname + "?lang=" + code;
+  }
+  function renderLangSw(el, short) {
+    var names = {es: short ? "ES" : "Español", pt: short ? "PT" : "Português", en: short ? "EN" : "English"};
+    el.innerHTML = Object.keys(names).map(function (c) {
+      return '<button type="button" data-lang="' + c + '" lang="' + c + '" aria-pressed="' + (c === LANG) + '"' + (short ? ' title="' + names[c] + '"' : "") + ">" + names[c] + "</button>";
+    }).join("");
+  }
+  var _sw1 = document.getElementById("langSwAuth");
+  var _sw2 = document.getElementById("langSwTop");
+  renderLangSw(_sw1, false);
+  renderLangSw(_sw2, true);
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest("[data-lang]") : null;
+    if (!b) return;
+    var code = b.getAttribute("data-lang");
+    if (code === LANG && LANG_SAVED) return;
+    goLang(code);
+  });
+  if (!LANG_SAVED) {
+    document.getElementById("langGate").hidden = false;
+    document.getElementById("auth").inert = true;
+    var _first = document.querySelector("#langGate [data-lang=\"" + (LANGS[(navigator.language || "es").slice(0, 2)] ? (navigator.language || "es").slice(0, 2) : "es") + "\"]");
+    if (_first) setTimeout(function () { _first.focus(); }, 50);
+  }
+
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
 
-  var ROLES = {ADMIN: "Administrador", TOURIST: "Turista", PROVIDER: "Emprendedor"};
-  var STATUS = {PENDING: "Pendiente", APPROVED: "Aprobado", DENIED: "Denegado"};
+  var ROLES = {ADMIN: tt("Administrador"), TOURIST: tt("Turista"), PROVIDER: tt("Emprendedor")};
+  var STATUS = {PENDING: tt("Pendiente"), APPROVED: tt("Aprobado"), DENIED: tt("Denegado")};
   var TONES = [
     {bg: "#16314f", line: "#8db3dc"},
     {bg: "#173f3b", line: "#8cc7b6"},
@@ -757,7 +1777,7 @@
     });
   }
   function icon(n) { return '<svg class="i" aria-hidden="true"><use href="#i-' + n + '"/></svg>'; }
-  function money(n) { return "$ " + Number(n || 0).toLocaleString("es-UY", {maximumFractionDigits: 2}); }
+  function money(n) { return "$ " + Number(n || 0).toLocaleString(LOC, {maximumFractionDigits: 2}); }
   function dur(m) {
     m = Number(m || 0);
     if (m < 60) return m + " min";
@@ -904,6 +1924,8 @@
     $("#heroArt").setAttribute("viewBox", "0 0 900 1000");
     $("#heroArt").innerHTML = contourSvg(20262026, 900, 1000, 12, 20, {bg: "#0e1a2a", line: "#7f9fc6"}, true);
     $("#uyMap").innerHTML = uyMapSvg();
+    $("#gateArt").setAttribute("viewBox", "0 0 900 1000");
+    $("#gateArt").innerHTML = contourSvg(20262026, 900, 1000, 12, 20, {bg: "#0e1a2a", line: "#7f9fc6"}, true);
     // Si el equipo agrega una foto en static/img/uruguay.jpg, reemplaza al mapa
     var probe = new Image();
     probe.onload = function () {
@@ -917,10 +1939,10 @@
 
   function facts(a) {
     var f = "<li>" + icon("clock") + dur(a.durationMinutes) + "</li>";
-    if (a.minimumAge != null) f += "<li>" + icon("user") + "Desde " + esc(a.minimumAge) + " años</li>";
+    if (a.minimumAge != null) f += "<li>" + icon("user") + esc(tt("Desde {n} años", {n: a.minimumAge})) + "</li>";
     f += a.allowsCancellation
-      ? '<li class="yes">' + icon("shield") + "Cancelación con reembolso " + esc(a.refundPercentage) + "%</li>"
-      : "<li>" + icon("ban") + "Sin cancelación</li>";
+      ? '<li class="yes">' + icon("shield") + esc(tt("Cancelación con reembolso {p}%", {p: a.refundPercentage})) + "</li>"
+      : "<li>" + icon("ban") + esc(tt("Sin cancelación")) + "</li>";
     return '<ul class="facts">' + f + "</ul>";
   }
 
@@ -930,7 +1952,7 @@
   }
 
   function cardHtml(a) {
-    return '<article class="card" data-open="' + esc(a.id) + '" tabindex="0" role="button" aria-label="Ver detalle de ' + esc(a.name) + '">'
+    return '<article class="card" data-open="' + esc(a.id) + '"" tabindex="0" role="button" aria-label="' + esc(tt("Ver detalle de {n}", {n: a.name})) + '">'
       + '<div class="plate">' + plateSvg(a) + photoHtml(a) + '<span class="dept">' + esc(a.department) + "</span></div>"
       + '<div class="cb"><div class="l1"><h3 class="ttl">' + esc(a.name) + '</h3><span class="price">' + money(a.price) + "</span></div>"
       + '<p class="loc">' + icon("pin") + esc(a.locality) + "</p>"
@@ -958,9 +1980,9 @@
     var r;
     try {
       r = await fetch(url, {method: method, headers: {"Content-Type": "application/json"}, body: body ? JSON.stringify(body) : undefined});
-    } catch (e) { throw new Error("No se pudo conectar con el servidor."); }
+    } catch (e) { throw new Error(tt("No se pudo conectar con el servidor.")); }
     var data = await r.json().catch(function () { return null; });
-    if (!r.ok) throw new Error((data && (data.message || data.error)) || "Error " + r.status);
+    if (!r.ok) throw new Error(tm((data && (data.message || data.error)) || tt("Error {n}", {n: r.status})));
     return data;
   }
 
@@ -991,14 +2013,14 @@
     if (!a) return;
     var p = a.prestador;
     var cancel = a.allowsCancellation
-      ? "Podés cancelar hasta " + dur(a.cancellationDeadlineMinutes) + " antes de la actividad y se reembolsa el " + a.refundPercentage + "% del pago total."
-      : "Esta actividad no permite cancelación.";
+      ? tt("Podés cancelar hasta {d} antes de la actividad y se reembolsa el {p}% del pago total.", {d: dur(a.cancellationDeadlineMinutes), p: a.refundPercentage})
+      : tt("Esta actividad no permite cancelación.");
     var prov = "";
     if (p) {
       prov = '<div class="blk"><h4>Prestador</h4><p><strong style="color:var(--text)">' + esc(p.name) + "</strong><br>" + esc(p.locality) + ", " + esc(p.department)
         + (p.email ? "<br>" + esc(p.email) : "") + (p.phone ? "<br>" + esc(p.phone) : "");
       if (user && user.role === "ADMIN") {
-        prov += "<br>" + (p.personType === "LEGAL" ? "Persona jurídica, RUT " + esc(p.rut) + ", " + esc(p.businessName) : "Persona física") + " (" + (STATUS[p.status] || "-") + ")";
+        prov += "<br>" + (p.personType === "LEGAL" ? esc(tt("Persona jurídica, RUT {rut}, {name}", {rut: p.rut, name: p.businessName})) : esc(tt("Persona física"))) + " (" + (STATUS[p.status] || "-") + ")";
       }
       prov += "</p></div>";
     }
@@ -1007,7 +2029,7 @@
       + '<button class="x" type="button" aria-label="Cerrar" data-close>' + icon("x") + "</button></div>"
       + '<div class="body"><div><h3>' + esc(a.name) + '</h3><p class="loc" style="margin-top:.4rem">' + icon("pin") + esc(a.locality) + ", " + esc(a.department) + "</p></div>"
       + '<div class="keys"><div><small>Precio</small><b>' + money(a.price) + "</b></div><div><small>Duración</small><b>" + dur(a.durationMinutes) + "</b></div>"
-      + "<div><small>Edad mínima</small><b>" + (a.minimumAge != null ? esc(a.minimumAge) + " años" : "Sin límite") + "</b></div></div>"
+      + "<div><small>Edad mínima</small><b>" + (a.minimumAge != null ? esc(tt("{n} años", {n: a.minimumAge})) : esc(tt("Sin límite"))) + "</b></div></div>"
       + '<div class="blk"><h4>Descripción</h4><p>' + esc(a.description) + "</p></div>"
       + (a.requirements ? '<div class="note">' + icon("alert") + '<div class="blk"><h4>Requerimientos para participar</h4><p>' + esc(a.requirements) + "</p></div></div>" : "")
       + '<div class="blk"><h4>Política de cancelación</h4><p>' + esc(cancel) + "</p></div>" + reserveSlot + prov + "</div></div>";
@@ -1063,7 +2085,7 @@
     $("#touristList").innerHTML = list.length
       ? list.map(cardHtml).join("")
       : emptyHtml("search", "No encontramos atracciones", attractions.length ? "Probá con otra búsqueda o limpiá los filtros." : "Todavía no hay atracciones publicadas.");
-    $("#count").textContent = list.length + (list.length === 1 ? " atracción" : " atracciones");
+    $("#count").textContent = tt(list.length === 1 ? "{n} atracción" : "{n} atracciones", {n: list.length});
   }
 
   async function loadTourist() {
@@ -1109,12 +2131,12 @@
     var names = ["Registrá tu emprendimiento", "Revisión del administrador", "Publicá tus atracciones"];
     var label = {done: "Completo", now: "En curso", todo: "Pendiente"};
     $("#flow").innerHTML = names.map(function (n, i) {
-      return '<li class="' + st[i] + '"><small>Paso ' + (i + 1) + ", " + label[st[i]].toLowerCase() + "</small><b>" + n + "</b></li>";
+      return '<li class="' + st[i] + '"><small>' + esc(tt("Paso {n}, {s}", {n: i + 1, s: tt(label[st[i]]).toLowerCase()})) + "</small><b>" + n + "</b></li>";
     }).join("");
   }
 
   async function loadProvider() {
-    $("#provHello").textContent = "Hola, " + user.firstName;
+    $("#provHello").textContent = tt("Hola, {name}", {name: user.firstName});
     $("#myAttractions").innerHTML = skeletons(3);
     try {
       providersAll = await api("GET", "/api/providers");
@@ -1285,11 +2307,11 @@
     f.hidden = true;
     loadProvider();
     if (imgProblem) {
-      toast("La atracción se publicó, pero la foto no se pudo guardar: " + imgProblem, true);
+      toast(tt("La atracción se publicó, pero la foto no se pudo guardar: {e}", {e: imgProblem}), true);
     } else if (problem) {
-      toast("La atracción se publicó, pero los horarios quedaron incompletos. " + problem, true);
+      toast(tt("La atracción se publicó, pero los horarios quedaron incompletos. {e}", {e: problem}), true);
     } else {
-      toast(made > 0 ? "Atracción publicada con " + made + " horarios." : "Atracción publicada.");
+      toast(made > 0 ? tt("Atracción publicada con {n} horarios.", {n: made}) : tt("Atracción publicada."));
     }
   });
 
@@ -1330,7 +2352,7 @@
       return '<tr><td data-l="Atracción"><strong>' + esc(a.name) + '</strong><span class="sec">' + esc(a.locality) + ", " + esc(a.department) + "</span></td>"
         + '<td data-l="Prestador">' + esc(p ? p.name : "Sin dato") + "</td>"
         + '<td data-l="Precio" class="num">' + money(a.price) + "</td>"
-        + '<td data-l="Cancelación">' + (a.allowsCancellation ? "Reembolso " + esc(a.refundPercentage) + "%" : "No permite") + "</td>"
+        + '<td data-l="Cancelación">' + (a.allowsCancellation ? esc(tt("Reembolso {p}%", {p: a.refundPercentage})) : esc(tt("No permite"))) + "</td>"
         + '<td class="acts"><button class="btn ghost sm" type="button" data-open="' + esc(a.id) + '">Detalles</button></td></tr>';
     }).join("");
     $("#adminAttractions").innerHTML = '<div class="tblwrap"><table><thead><tr><th scope="col">Atracción</th><th scope="col">Prestador</th><th scope="col">Precio</th><th scope="col">Cancelación</th><th scope="col"><span class="sr">Acciones</span></th></tr></thead><tbody>' + rows + "</tbody></table></div>";
@@ -1439,7 +2461,7 @@
   }
 
 
-  var BSTATUS = {PENDING_PAYMENT: "Pendiente de pago", CONFIRMED: "Confirmada", CANCELLED: "Cancelada", COMPLETED: "Realizada"};
+  var BSTATUS = {PENDING_PAYMENT: tt("Pendiente de pago"), CONFIRMED: tt("Confirmada"), CANCELLED: tt("Cancelada"), COMPLETED: tt("Realizada")};
   var reserving = null;
   var myList = [];
   var payingId = null;
@@ -1447,8 +2469,8 @@
   function when(s) {
     var d = new Date(s);
     if (isNaN(d.getTime())) return "-";
-    return d.toLocaleDateString("es-UY", {weekday: "short", day: "numeric", month: "short", year: "numeric"})
-      + ", " + d.toLocaleTimeString("es-UY", {hour: "2-digit", minute: "2-digit"});
+    return d.toLocaleDateString(LOC, {weekday: "short", day: "numeric", month: "short", year: "numeric"})
+      + ", " + d.toLocaleTimeString(LOC, {hour: "2-digit", minute: "2-digit"});
   }
 
   async function loadReserve(a) {
@@ -1460,7 +2482,7 @@
     try {
       list = await api("GET", "/api/instances/attraction/" + a.id);
     } catch (e) {
-      box.innerHTML = '<h4>Reservar</h4><p class="muted" style="margin-top:.4rem">No pudimos cargar los horarios. ' + esc(e.message) + "</p>";
+      box.innerHTML = '<h4>Reservar</h4><p class="muted" style="margin-top:.4rem">' + esc(tt("No pudimos cargar los horarios. {e}", {e: e.message})) + "</p>";
       return;
     }
     var now = Date.now();
@@ -1472,7 +2494,7 @@
     }
     var slots = list.map(function (i, n) {
       return '<label class="slot"><input type="radio" name="slot" value="' + esc(i.id) + '" data-places="' + esc(i.availablePlaces) + '"' + (n === 0 ? " checked" : "") + '>'
-        + "<span><b>" + esc(when(i.dateTime)) + "</b><small>Quedan " + esc(i.availablePlaces) + (i.availablePlaces === 1 ? " lugar" : " lugares") + "</small></span></label>";
+        + "<span><b>" + esc(when(i.dateTime)) + "</b><small>" + esc(tt(i.availablePlaces === 1 ? "Quedan {n} lugar" : "Quedan {n} lugares", {n: i.availablePlaces})) + "</small></span></label>";
     }).join("");
     box.innerHTML = "<h4>Reservar</h4>"
       + '<div class="slots" role="radiogroup" aria-label="Horarios disponibles">' + slots + "</div>"
@@ -1543,7 +2565,7 @@
 
   function left(s) {
     var ms = new Date(s).getTime() - Date.now();
-    if (ms <= 0) return "instantes";
+    if (ms <= 0) return tt("instantes");
     var m = Math.floor(ms / 60000);
     if (m < 60) return m + " min";
     var h = Math.floor(m / 60);
@@ -1557,13 +2579,13 @@
     var who = ((t.firstName || "") + " " + (t.lastName || "")).trim();
     var state = '<span class="tag ' + esc(b.status) + '">' + (BSTATUS[b.status] || esc(b.status)) + "</span>";
     if (b.status === "CANCELLED" && b.refundAmount && Number(b.refundAmount) > 0) {
-      state += '<span class="sec">Reembolso ' + money(b.refundAmount) + "</span>";
+      state += '<span class="sec">' + esc(tt("Reembolso {m}", {m: money(b.refundAmount)})) + "</span>";
     }
     if (b.status === "PENDING_PAYMENT" && b.paymentDeadline) {
-      state += '<span class="sec">Pagala antes del ' + esc(when(b.paymentDeadline)) + " (vence en " + esc(left(b.paymentDeadline)) + ")</span>";
+      state += '<span class="sec">' + esc(tt("Pagala antes del {d} (vence en {l})", {d: when(b.paymentDeadline), l: left(b.paymentDeadline)})) + "</span>";
     }
     if (b.status === "CANCELLED" && b.cancelReason) {
-      state += '<span class="sec">' + esc(b.cancelReason) + "</span>";
+      state += '<span class="sec">' + esc(tm(b.cancelReason)) + "</span>";
     }
     var row = "<tr>";
     if (forProvider) row += '<td data-l="Turista"><strong>' + esc(who) + '</strong><span class="sec">' + esc(t.email) + "</span></td>";
@@ -1614,7 +2636,7 @@
     c.disabled = true;
     try {
       var res = await api("PUT", "/api/bookings/" + c.getAttribute("data-cancel") + "/cancel?touristId=" + user.id);
-      toast(res && res.refundAmount && Number(res.refundAmount) > 0 ? "Reserva cancelada. Reembolso de " + money(res.refundAmount) + "." : "Reserva cancelada.");
+      toast(res && res.refundAmount && Number(res.refundAmount) > 0 ? tt("Reserva cancelada. Reembolso de {m}.", {m: money(res.refundAmount)}) : tt("Reserva cancelada."));
     } catch (err) {
       toast(err.message, true);
     }
@@ -1643,7 +2665,7 @@
       return '<button type="button" class="chip" data-card="' + c.n + '" data-year="' + year + '">' + esc(c.t) + "</button>";
     }).join("");
     $("#payDlg").innerHTML = '<div class="mh"><h3>Pagar reserva</h3><button class="xb" type="button" data-close aria-label="Cerrar">' + icon("x") + "</button></div>"
-      + '<div class="mb"><div class="sum"><div><b>' + esc(att.name) + "</b><p>" + esc(when(inst.dateTime)) + "</p><p>" + esc(b.participantsCount) + (b.participantsCount === 1 ? " persona" : " personas") + "</p></div>"
+      + '<div class="mb"><div class="sum"><div><b>' + esc(att.name) + "</b><p>" + esc(when(inst.dateTime)) + "</p><p>" + esc(tt(b.participantsCount === 1 ? "{n} persona" : "{n} personas", {n: b.participantsCount})) + "</p></div>"
       + '<div class="big">' + money(b.totalPrice) + "</div></div>"
       + '<div class="sandbox">' + icon("alert") + "<div><b>Modo de prueba (sandbox).</b> No se cobra dinero real. Tocá una tarjeta de prueba para completar el formulario:"
       + '<div class="chips">' + chips + "</div></div></div>"
@@ -1653,7 +2675,7 @@
       + '<div class="three"><label class="field"><span>Vencimiento</span><input type="text" id="exp" name="expiry" inputmode="numeric" autocomplete="cc-exp" maxlength="5" placeholder="MM/AA" required></label>'
       + '<label class="field"><span>Código de seguridad</span><input type="text" name="cvv" inputmode="numeric" autocomplete="cc-csc" maxlength="4" placeholder="123" required></label></div>'
       + '<div class="msg" id="payMsg" role="status"></div>'
-      + '<div class="acts2"><button class="btn ghost" type="button" data-close>Cancelar</button><button class="btn" type="submit" id="payBtn">Pagar ' + money(b.totalPrice) + "</button></div></form></div>";
+      + '<div class="acts2"><button class="btn ghost" type="button" data-close>Cancelar</button><button class="btn" type="submit" id="payBtn">' + esc(tt("Pagar {m}", {m: money(b.totalPrice)})) + "</button></div></form></div>";
     $("#payDlg").showModal();
   }
 
@@ -1742,8 +2764,8 @@
           var m = r.inst.minutesBeforeBookingDeadline || 0;
           return '<tr><td data-l="Atracción"><strong>' + esc(r.att.name) + "</strong></td>"
             + '<td data-l="Fecha y hora">' + esc(when(r.inst.dateTime)) + "</td>"
-            + '<td data-l="Lugares libres" class="num">' + esc(r.inst.availablePlaces) + " de " + esc(r.inst.maxCapacity) + "</td>"
-            + '<td data-l="Se reserva hasta">' + (m === 0 ? "La hora de inicio" : dur(m) + " antes") + "</td></tr>";
+            + '<td data-l="Lugares libres" class="num">' + esc(tt("{a} de {b}", {a: r.inst.availablePlaces, b: r.inst.maxCapacity})) + "</td>"
+            + '<td data-l="Se reserva hasta">' + (m === 0 ? esc(tt("La hora de inicio")) : esc(tt("{d} antes", {d: dur(m)}))) + "</td></tr>";
         }).join("") + "</tbody></table></div>";
     }
     try {
@@ -1766,7 +2788,7 @@
       var n = await schedCreate("i", d.atraccionId, box);
       resetInstForm();
       f.hidden = true;
-      toast(n + (n === 1 ? " horario creado." : " horarios creados."));
+      toast(tt(n === 1 ? "{n} horario creado." : "{n} horarios creados.", {n: n}));
       loadProvider();
       return;
     }
@@ -1784,7 +2806,7 @@
   });
 
 
-  var DAYS = [{v: 1, l: "Lun"}, {v: 2, l: "Mar"}, {v: 3, l: "Mié"}, {v: 4, l: "Jue"}, {v: 5, l: "Vie"}, {v: 6, l: "Sáb"}, {v: 0, l: "Dom"}];
+  var DAYS = [{v: 1, l: tt("Lun")}, {v: 2, l: tt("Mar")}, {v: 3, l: tt("Mié")}, {v: 4, l: tt("Jue")}, {v: 5, l: tt("Vie")}, {v: 6, l: tt("Sáb")}, {v: 0, l: tt("Dom")}];
   var sched = {};
 
   function pad(n) { return n < 10 ? "0" + n : String(n); }
@@ -1822,8 +2844,8 @@
   function schedRender(p) {
     var root = $('[data-sched="' + p + '"]');
     sched[p].times.sort();
-    $("[data-times]", root).innerHTML = sched[p].times.map(function (t) {
-      return '<span class="tchip">' + esc(t) + '<button type="button" data-rmtime="' + esc(t) + '" aria-label="Quitar ' + esc(t) + '">' + icon("x") + "</button></span>";
+    $("[data-times]", root).innerHTML = sched[p].times.map(function (hh) {
+      return '<span class="tchip">' + esc(hh) + '<button type="button" data-rmtime="' + esc(hh) + '" aria-label="' + esc(tt("Quitar {x}", {x: hh})) + '">' + icon("x") + "</button></span>";
     }).join("");
     schedPreview(p);
   }
@@ -1857,7 +2879,7 @@
       d.setDate(d.getDate() + 1);
     }
     if (!dates.length) return {error: "No hay fechas futuras en ese período."};
-    if (dates.length > 120) return {error: "Son " + dates.length + " horarios y el máximo es 120. Acortá el período."};
+    if (dates.length > 120) return {error: tt("Son {n} horarios y el máximo es 120. Acortá el período.", {n: dates.length})};
     return {dates: dates, cap: cap, ded: ded};
   }
 
@@ -1871,7 +2893,11 @@
       return;
     }
     box.className = "preview";
-    box.innerHTML = "Se van a crear <b>" + g.dates.length + (g.dates.length === 1 ? " horario" : " horarios") + "</b>. Primero: <b>" + esc(when(g.dates[0])) + "</b>. Último: <b>" + esc(when(g.dates[g.dates.length - 1])) + "</b>.";
+    box.innerHTML = tt("Se van a crear {n}. Primero: {a}. Último: {b}.", {
+      n: "<b>" + esc(tt(g.dates.length === 1 ? "{n} horario" : "{n} horarios", {n: g.dates.length})) + "</b>",
+      a: "<b>" + esc(when(g.dates[0])) + "</b>",
+      b: "<b>" + esc(when(g.dates[g.dates.length - 1])) + "</b>"
+    });
   }
 
   async function schedCreate(p, atraccionId, box) {
@@ -1888,10 +2914,10 @@
           minutesBeforeBookingDeadline: g.ded
         });
       } catch (e) {
-        throw new Error("Se crearon " + done + " de " + g.dates.length + " horarios. " + e.message);
+        throw new Error(tt("Se crearon {a} de {b} horarios. {e}", {a: done, b: g.dates.length, e: e.message}));
       }
       done++;
-      if (box) msg(box, "Creando horarios: " + done + " de " + g.dates.length + "...", true);
+      if (box) msg(box, tt("Creando horarios: {a} de {b}...", {a: done, b: g.dates.length}), true);
     }
     return done;
   }
@@ -1953,23 +2979,23 @@
   var helpStarted = false;
   var HELP = {};
   var HELP_TOPICS = [
-    {id: "g_login", aud: "guest", kw: "ingresar entrar login sesion contrasena clave password email no puedo acceder"},
-    {id: "g_register", aud: "guest", kw: "crear cuenta registrar registro nueva alta"},
-    {id: "g_provider", aud: "guest", kw: "emprendedor emprendimiento ofrecer actividades vender publicar prestador"},
-    {id: "t_refund", aud: "tourist", kw: "reembolso reintegro devolucion devolver plata dinero cancele cancelacion no llego"},
-    {id: "t_cancel", aud: "tourist", kw: "cancelar cancelacion anular reserva no me deja"},
-    {id: "t_pending", aud: "tourist", kw: "pendiente pago pagar vence vencimiento 24 horas plazo"},
-    {id: "t_declined", aud: "tourist", kw: "rechazado rechazaron tarjeta pago fondos insuficientes error cobro"},
-    {id: "t_missing", aud: "tourist", kw: "reserva no aparece no veo mis reservas perdi"},
-    {id: "t_search", aud: "tourist", kw: "buscar actividades filtro no encuentro departamento catalogo"},
-    {id: "t_req", aud: "tourist", kw: "requisitos requerimientos edad minima menores equipamiento"},
-    {id: "p_status", aud: "provider", kw: "emprendimiento pendiente aprobado aprobacion rechazado estado administrador"},
-    {id: "p_blocked", aud: "provider", kw: "no puedo crear actividad atraccion publicar error"},
-    {id: "p_schedule", aud: "provider", kw: "horarios fechas cupo automatico semanal sabados crear horario"},
-    {id: "p_photo", aud: "provider", kw: "foto imagen subir actividad portada"},
-    {id: "p_bookings", aud: "provider", kw: "reservas recibidas turistas cobro estado cancelaron"},
-    {id: "a_approve", aud: "admin", kw: "aprobar rechazar emprendimientos solicitudes pendientes"},
-    {id: "human", aud: "all", kw: "persona humano soporte contacto hablar mail escribir"}
+    {id: "g_login", aud: "guest", kw: "ingresar entrar login log in sign in senha password sesion contrasena clave password email no puedo acceder"},
+    {id: "g_register", aud: "guest", kw: "crear cuenta registrar registro nueva alta criar conta sign up register account"},
+    {id: "g_provider", aud: "guest", kw: "emprendedor emprendimiento ofrecer actividades vender publicar prestador empreendedor entrepreneur business"},
+    {id: "t_refund", aud: "tourist", kw: "reembolso reintegro devolucion devolver plata dinero cancele cancelacion no llego refund money back reembolsar dinheiro estorno"},
+    {id: "t_cancel", aud: "tourist", kw: "cancelar cancelacion anular reserva no me deja cancel booking cancelamento"},
+    {id: "t_pending", aud: "tourist", kw: "pendiente pago pagar vence vencimiento 24 horas plazo pending pay payment pagamento pendente"},
+    {id: "t_declined", aud: "tourist", kw: "rechazado rechazaron tarjeta pago fondos insuficientes error cobro declined rejected card cartao recusado erro"},
+    {id: "t_missing", aud: "tourist", kw: "reserva no aparece no veo mis reservas perdi missing booking cannot see nao vejo minha reserva"},
+    {id: "t_search", aud: "tourist", kw: "buscar actividades filtro no encuentro departamento catalogo search find activities filter encontrar atividades"},
+    {id: "t_req", aud: "tourist", kw: "requisitos requerimientos edad minima menores equipamiento requirements minimum age idade"},
+    {id: "p_status", aud: "provider", kw: "emprendimiento pendiente aprobado aprobacion rechazado estado administrador approval approved status aprovacao"},
+    {id: "p_blocked", aud: "provider", kw: "no puedo crear actividad atraccion publicar error cannot create publish activity criar atividade"},
+    {id: "p_schedule", aud: "provider", kw: "horarios fechas cupo automatico semanal sabados crear horario schedules dates capacity weekly horarios"},
+    {id: "p_photo", aud: "provider", kw: "foto imagen subir actividad portada photo image upload imagem enviar"},
+    {id: "p_bookings", aud: "provider", kw: "reservas recibidas turistas cobro estado cancelaron bookings received tourists reservas recebidas"},
+    {id: "a_approve", aud: "admin", kw: "aprobar rechazar emprendimientos solicitudes pendientes approve reject requests aprovar recusar"},
+    {id: "human", aud: "all", kw: "persona humano soporte contacto hablar mail escribir person human support contact talk write pessoa suporte contato falar"}
   ];
 
   function helpAud() {
@@ -2051,18 +3077,18 @@
     helpCase = bookingSummary(b);
     var say = [];
     if (b.refundAmount && Number(b.refundAmount) > 0) {
-      say.push("Tu reserva fue cancelada y se registró un reembolso de <strong>" + esc(money(b.refundAmount)) + "</strong>. El dinero vuelve a la misma tarjeta con la que pagaste.");
+      say.push(tt("Tu reserva fue cancelada y se registró un reembolso de <strong>{m}</strong>. El dinero vuelve a la misma tarjeta con la que pagaste.", {m: esc(money(b.refundAmount))}));
       say.push(["Mirá el resumen de tu tarjeta: a veces figura como «devolución» y puede tardar unos días hábiles en verse reflejado.",
         "Verificá que sea la tarjeta con la que pagaste esta reserva.", "Si pasó más de una semana desde la cancelación y no lo ves, escribinos con el resumen del caso."]);
     } else {
       say.push("Esta reserva está cancelada y <strong>no tiene reembolso registrado</strong>.");
-      if (b.cancelReason) say.push("Motivo registrado: " + esc(b.cancelReason));
+      if (b.cancelReason) say.push(tt("Motivo registrado: {r}", {r: esc(tm(b.cancelReason))}));
       if (att.allowsCancellation === false) {
         say.push("La actividad no permite cancelación con reembolso, por eso no corresponde devolución.");
       } else if (att.allowsCancellation && Number(att.refundPercentage) === 0) {
         say.push("La política de esta actividad reembolsa el 0 %.");
       } else if (att.allowsCancellation) {
-        say.push("Esta actividad reembolsa el " + esc(att.refundPercentage) + " % si se cancela hasta " + esc(dur(att.cancellationDeadlineMinutes)) + " antes. Si cancelaste después de ese límite, o si la reserva venció sin pagarse, no se genera reembolso.");
+        say.push(tt("Esta actividad reembolsa el {p} % si se cancela hasta {d} antes. Si cancelaste después de ese límite, o si la reserva venció sin pagarse, no se genera reembolso.", {p: esc(att.refundPercentage), d: esc(dur(att.cancellationDeadlineMinutes))}));
       }
       say.push("Si ya habías pagado y creés que debería haber un reembolso, escribinos con este caso.");
     }
@@ -2081,9 +3107,9 @@
     if (pend.length === 0) {
       say.push("No tenés reservas pendientes de pago ahora.");
     } else {
-      say.push("Tenés " + pend.length + (pend.length === 1 ? " reserva pendiente:" : " reservas pendientes:"));
+      say.push(tt(pend.length === 1 ? "Tenés {n} reserva pendiente:" : "Tenés {n} reservas pendientes:", {n: pend.length}));
       say.push(pend.slice(0, 5).map(function (b) {
-        return esc(bookingLine(b)) + (b.paymentDeadline ? " (vence en " + esc(left(b.paymentDeadline)) + ")" : "");
+        return b.paymentDeadline ? tt("{b} (vence en {l})", {b: esc(bookingLine(b)), l: esc(left(b.paymentDeadline))}) : esc(bookingLine(b));
       }));
     }
     say.push("Cómo pagarla:");
@@ -2100,7 +3126,7 @@
   };
   HELP.t_missing = async function () {
     var list = await myBookingsList();
-    return {say: ["Hoy tu cuenta tiene <strong>" + list.length + "</strong> " + (list.length === 1 ? "reserva" : "reservas") + ".", "Si falta alguna:",
+    return {say: [tt(list.length === 1 ? "Hoy tu cuenta tiene <strong>{n}</strong> reserva." : "Hoy tu cuenta tiene <strong>{n}</strong> reservas.", {n: list.length}), "Si falta alguna:",
       ["Mirá en «Mis reservas»: las vencidas o canceladas siguen apareciendo con su estado.", "Confirmá que estás ingresado con el mismo email con el que reservaste (arriba a la derecha ves tu nombre).",
        "Si reservaste y nunca llegaste a confirmar el paso final, la reserva puede no haberse creado."]],
       opts: [o("Hablar con una persona", "human", null, true), o("Volver al menú", "menu")]};
@@ -2152,7 +3178,7 @@
   };
 
   HELP.a_approve = function () {
-    return {say: ["Para revisar emprendimientos:", ["En el panel de administración abrí la pestaña de solicitudes.", "Revisá los datos (RUT, razón social, contacto).", "Tocá «Aprobar» o «Rechazar». Solo los aprobados pueden publicar actividades."]],
+    return {say: ["Para revisar emprendimientos:", ["En el panel de administración abrí la pestaña de solicitudes.", "Revisá los datos (RUT, razón social, contacto).", "Tocá «Aceptar» o «Denegar». Solo los aprobados pueden publicar actividades."]],
       opts: backOpts()};
   };
 
@@ -2178,9 +3204,9 @@
     items.forEach(function (it) {
       var el;
       if (Array.isArray(it)) {
-        el = helpAdd("", "<ol>" + it.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ol>");
+        el = helpAdd("", "<ol>" + it.map(function (x) { return "<li>" + tt(x) + "</li>"; }).join("") + "</ol>");
       } else {
-        el = helpAdd("", it);
+        el = helpAdd("", tt(it));
       }
       if (!first) first = el;
     });
@@ -2195,11 +3221,11 @@
     box.className = "hopts";
     var html = "";
     (node.acts || []).forEach(function (a) {
-      if (a.href) html += '<a class="hopt main" href="' + esc(a.href) + '">' + esc(a.l) + "</a>";
-      else html += '<button type="button" class="hopt main" data-hcopy="' + a.copy + '">' + esc(a.l) + "</button>";
+      if (a.href) html += '<a class="hopt main" href="' + esc(a.href) + '">' + esc(tt(a.l)) + "</a>";
+      else html += '<button type="button" class="hopt main" data-hcopy="' + a.copy + '">' + esc(tt(a.l)) + "</button>";
     });
     (node.opts || []).forEach(function (op) {
-      html += '<button type="button" class="hopt' + (op.main ? " main" : "") + '" data-hgo="' + esc(op.go) + '" data-hi="' + op.i + '">' + esc(op.l) + "</button>";
+      html += '<button type="button" class="hopt' + (op.main ? " main" : "") + '" data-hgo="' + esc(op.go) + '" data-hi="' + op.i + '">' + esc(tt(op.l)) + "</button>";
     });
     box.innerHTML = html;
     log.appendChild(box);
@@ -2215,7 +3241,7 @@
     try {
       node = await HELP[id](arg);
     } catch (e) {
-      node = {say: ["No pude consultar los datos de tu cuenta en este momento (" + esc(e.message) + "). Podés intentar de nuevo o escribirnos."], opts: [o("Volver al menú", "menu"), o("Hablar con una persona", "human")]};
+      node = {say: [tt("No pude consultar los datos de tu cuenta en este momento ({e}). Podés intentar de nuevo o escribirnos.", {e: esc(e.message)})], opts: [o("Volver al menú", "menu"), o("Hablar con una persona", "human")]};
     }
     wait.remove();
     helpRender(node);
@@ -2225,8 +3251,9 @@
     helpArgs = [];
     helpCase = "";
     $("#helpLog").innerHTML = "";
-    var name = user && user.firstName ? " " + esc(user.firstName) : "";
-    helpAdd("", "Hola" + name + ". Esta ayuda es guiada: elegís una opción y te muestro los pasos para resolverlo. No es una persona ni una IA.");
+    helpAdd("", user && user.firstName
+      ? tt("Hola {name}. Esta ayuda es guiada: elegís una opción y te muestro los pasos para resolverlo. No es una persona ni una IA.", {name: esc(user.firstName)})
+      : tt("Hola. Esta ayuda es guiada: elegís una opción y te muestro los pasos para resolverlo. No es una persona ni una IA."));
     helpGo("menu");
   }
   function helpReset() {
@@ -2296,6 +3323,7 @@
     }
   });
 
+  startTranslator();
   paintHero();
   show();
 </script>
