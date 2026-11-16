@@ -51,7 +51,7 @@
   .field{display:block;margin-bottom:1rem}
   .field>span{display:block;font-size:.86rem;font-weight:600;margin-bottom:.3rem}
   .field small{display:block;color:var(--muted);font-size:.82rem;margin-top:.3rem}
-  input[type=text],input[type=email],input[type=password],input[type=number],input[type=search],input[type=datetime-local],select,textarea{width:100%;min-height:42px;padding:.55rem .75rem;font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r2);transition:border-color .15s,box-shadow .15s}
+  input[type=text],input[type=email],input[type=password],input[type=number],input[type=search],input[type=datetime-local],input[type=time],input[type=date],select,textarea{width:100%;min-height:42px;padding:.55rem .75rem;font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r2);transition:border-color .15s,box-shadow .15s}
   textarea{min-height:96px;resize:vertical}
   input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
   .two{display:grid;grid-template-columns:1fr 1fr;gap:0 1rem}
@@ -74,6 +74,14 @@
   .side{position:relative;overflow:hidden;background:var(--ink);color:#e8eef7;display:flex;flex-direction:column;justify-content:space-between;padding:2.2rem 3rem 2.6rem}
   .side>svg.art{position:absolute;inset:0;width:100%;height:100%}
   .side>*:not(svg.art){position:relative}
+  .side>svg.art.map{inset:0;width:100%;height:100%;pointer-events:none}
+  .side::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,17,28,.82) 0%,rgba(8,17,28,.4) 42%,rgba(8,17,28,0) 70%);pointer-events:none}
+  .side>*:not(svg.art){z-index:1}
+  .side.photo{background-size:cover;background-position:center}
+  .side.photo>svg.art{display:none}
+  .side.photo::after{background:linear-gradient(90deg,rgba(8,17,28,.82) 0%,rgba(8,17,28,.5) 55%,rgba(8,17,28,.25) 100%)}
+  .uy-pin{fill:#ffd9a0;stroke:#0e1a2a;stroke-width:2}
+  .uy-lbl{fill:#d7e3f4;font:600 15px var(--font);letter-spacing:.01em;paint-order:stroke;stroke:#0e1a2a;stroke-width:4px;stroke-linejoin:round}
   .wordmark{display:flex;align-items:center;gap:.65rem;font:650 1.1rem var(--display);letter-spacing:-.01em}
   .wordmark svg{width:28px;height:28px;flex:none}
   .statement{max-width:30rem}
@@ -137,6 +145,7 @@
   .card[data-open]:hover .ttl{color:var(--accent)}
   .plate{position:relative;aspect-ratio:8/5;background:var(--ink)}
   .plate svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .plate>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
   .plate .dept{position:absolute;left:.8rem;bottom:.7rem;color:#fff;font-size:.8rem;font-weight:600;background:rgba(8,17,28,.62);padding:.15rem .55rem;border-radius:var(--r1)}
   .cb{padding:1rem 1.1rem 1.1rem;display:flex;flex-direction:column;gap:.5rem;flex:1}
   .l1{display:flex;justify-content:space-between;align-items:baseline;gap:.8rem}
@@ -275,16 +284,40 @@
   .receipt dl div{display:flex;justify-content:space-between;gap:1rem;padding:.55rem 0;border-bottom:1px solid var(--line);font-size:.92rem}
   .receipt dt{color:var(--muted)}
   .receipt dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums}
+  .sched{border:1px solid var(--line);border-radius:var(--r2);padding:1.1rem 1.2rem;background:var(--sunken);margin-bottom:1rem}
+  .sched .field>span{font-size:.84rem}
+  .days{display:flex;flex-wrap:wrap;gap:.4rem}
+  .dchip{position:relative;display:block}
+  .dchip input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+  .dchip span{display:grid;place-items:center;min-width:52px;height:38px;padding:0 .7rem;border:1px solid var(--line-strong);border-radius:var(--r2);background:var(--surface);font-weight:600;font-size:.9rem}
+  .dchip input:checked+span{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+  .dchip input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+  .timesrow{display:flex;gap:.6rem;align-items:center}
+  .timesrow input{width:150px}
+  .tchips{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem}
+  .tchip{display:inline-flex;align-items:center;gap:.2rem;padding:.2rem .3rem .2rem .7rem;border-radius:99px;background:var(--surface);border:1px solid var(--line-strong);font-weight:600;font-size:.88rem;font-variant-numeric:tabular-nums}
+  .tchip button{width:24px;height:24px;border:0;border-radius:50%;background:transparent;color:var(--muted);display:grid;place-items:center;padding:0}
+  .tchip button:hover{background:var(--sunken);color:var(--text)}
+  .preview{margin-top:.2rem;padding:.7rem .9rem;border-radius:var(--r2);background:var(--surface);border:1px solid var(--line);font-size:.9rem}
+  .preview b{font-variant-numeric:tabular-nums}
+  .preview.bad{color:var(--err);border-color:var(--err)}
+  .autobox{margin:.2rem 0 1rem}
   .toasts{position:fixed;left:50%;bottom:1.4rem;transform:translateX(-50%);display:grid;gap:.5rem;z-index:100;width:min(420px,calc(100% - 2rem))}
   .toast{display:flex;gap:.6rem;align-items:center;background:var(--ink);color:#fff;padding:.75rem 1rem;border-radius:var(--r2);box-shadow:0 10px 28px rgba(0,0,0,.3);font-size:.92rem;animation:up .2s ease-out}
   .toast.bad{background:#8f2323}
   @keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .imgbox{position:relative;border:1px dashed var(--line-strong);border-radius:var(--r2);background:var(--sunken);aspect-ratio:16/8;overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.88rem;text-align:center;padding:.6rem}
+  .imgbox img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .imgbox.has{border-style:solid;padding:0}
+  .imgrow{display:flex;gap:.5rem;margin-top:.55rem;flex-wrap:wrap}
   footer{text-align:center;color:var(--faint);font-size:.82rem;padding:0 1rem 2.2rem}
 
   @media (max-width:1000px){
     .auth{grid-template-columns:1fr}
-    .side{min-height:300px;padding:1.6rem 1.5rem 1.8rem}
+    .side{min-height:360px;padding:1.6rem 1.5rem 1.8rem}
+    .uy-lbl{display:none}
     .facts3{display:none}
+    .side::after{background:linear-gradient(180deg,rgba(8,17,28,.2),rgba(8,17,28,.7))}
     .formside{padding:2rem 1.25rem 2.5rem}
     .sect{grid-template-columns:1fr;gap:1rem}
   }
@@ -351,6 +384,7 @@
 <div class="auth" id="auth">
   <div class="side">
     <svg class="art" id="heroArt" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+    <svg class="art map" id="uyMap" viewBox="0 0 1000 960" preserveAspectRatio="xMaxYMid meet" role="img" aria-label="Mapa de Uruguay"></svg>
     <div class="wordmark"><svg aria-hidden="true"><use href="#i-mark"/></svg>Uruguay Mnatural</div>
     <div class="statement">
       <h1>Actividades al aire libre en todo Uruguay</h1>
@@ -542,6 +576,16 @@
                   <label class="field"><span>Departamento</span><input type="text" name="department" required></label>
                   <label class="field"><span>Localidad</span><input type="text" name="locality" required></label>
                 </div>
+                <div class="field">
+                  <span id="capImg">Foto de la actividad</span>
+                  <div class="imgbox" id="imgBox"><span id="imgEmpty">Sin foto. Si no subís una, se muestra un diseño por defecto.</span></div>
+                  <input type="file" id="attrImage" accept="image/jpeg,image/png,image/webp" hidden>
+                  <div class="imgrow">
+                    <button class="btn ghost sm" type="button" id="imgChoose">Elegir imagen</button>
+                    <button class="btn ghost sm" type="button" id="imgClear" hidden>Quitar</button>
+                  </div>
+                  <small>Opcional. JPG, PNG o WEBP. Se ajusta automáticamente al tamaño ideal.</small>
+                </div>
               </div>
               <div>
                 <h4 class="sub">Precio, requisitos y cancelación</h4>
@@ -557,6 +601,10 @@
                   <label class="field"><span>Reembolso (0 a 100 %)</span><input type="number" name="refundPercentage" id="refund" min="0" max="100"></label>
                 </div>
               </div>
+            </div>
+            <div class="autobox">
+              <label class="switch"><input type="checkbox" id="autoSched"><span class="track"></span><span>Crear los horarios automáticamente</span></label>
+              <div id="aSched" hidden></div>
             </div>
             <button class="btn" type="submit">Publicar atracción</button>
             <div class="msg" role="status"></div>
@@ -575,12 +623,20 @@
           <form id="instanceForm" class="panel" hidden novalidate style="margin-top:1rem">
             <h4 class="sub">Nuevo horario</h4>
             <label class="field"><span>Atracción</span><select name="atraccionId" id="instAtt"></select></label>
-            <div class="two">
-              <label class="field"><span>Fecha y hora de inicio</span><input type="datetime-local" name="dateTime" required></label>
-              <label class="field"><span>Cupo máximo (personas)</span><input type="number" name="maxCapacity" min="1" required></label>
+            <span class="segcap" id="capMode">Frecuencia</span>
+            <div class="seg" role="radiogroup" aria-labelledby="capMode">
+              <label><input type="radio" name="mode" value="one" checked><span>Un solo día</span></label>
+              <label><input type="radio" name="mode" value="weekly"><span>Todas las semanas</span></label>
             </div>
-            <label class="field"><span>Minutos antes del inicio hasta los que se puede reservar</span><input type="number" name="minutesBeforeBookingDeadline" min="0" value="0"><small>Con 0 se puede reservar hasta la hora de inicio.</small></label>
-            <button class="btn" type="submit">Publicar horario</button>
+            <div id="instOne">
+              <div class="two">
+                <label class="field"><span>Fecha y hora de inicio</span><input type="datetime-local" name="dateTime" required></label>
+                <label class="field"><span>Cupo máximo (personas)</span><input type="number" name="maxCapacity" min="1" required></label>
+              </div>
+              <label class="field"><span>Minutos antes del inicio hasta los que se puede reservar</span><input type="number" name="minutesBeforeBookingDeadline" min="0" value="0"><small>Con 0 se puede reservar hasta la hora de inicio.</small></label>
+            </div>
+            <div id="iSched" hidden></div>
+            <button class="btn" type="submit" id="instSubmit">Publicar horario</button>
             <div class="msg" role="status"></div>
           </form>
           <h4 class="sub" style="margin-top:1.6rem">Horarios publicados</h4>
@@ -749,9 +805,72 @@
     return svg;
   }
 
+  // Contorno aproximado de Uruguay: [latitud, longitud], en sentido horario desde el noroeste
+  var UY_OUTLINE = [
+    [-30.14, -57.63], [-30.28, -57.50], [-30.22, -57.15], [-30.38, -56.80], [-30.40, -56.47],
+    [-30.15, -56.00], [-30.55, -55.60], [-30.90, -55.55], [-31.10, -55.00], [-31.45, -54.60],
+    [-31.87, -54.16], [-32.10, -53.80], [-32.57, -53.37], [-33.10, -53.52], [-33.69, -53.46],
+    [-33.92, -53.50], [-34.04, -53.55], [-34.40, -53.78], [-34.66, -54.14], [-34.84, -54.63],
+    [-34.97, -54.95], [-34.88, -55.27], [-34.77, -55.76], [-34.92, -56.17], [-34.80, -56.40],
+    [-34.70, -56.80], [-34.43, -57.43], [-34.47, -57.85], [-34.20, -58.15], [-33.98, -58.28],
+    [-33.87, -58.40], [-33.40, -58.25], [-33.12, -58.30], [-32.70, -58.10], [-32.32, -58.08],
+    [-31.85, -58.05], [-31.39, -57.97], [-30.78, -57.80], [-30.40, -57.65]
+  ];
+  var UY_PINS = [
+    {n: "Salto", lat: -31.39, lon: -57.97, dx: 14, dy: -8},
+    {n: "Valle Edén", lat: -31.88, lon: -56.10, dx: 14, dy: 5},
+    {n: "Cabo Polonio", lat: -34.40, lon: -53.78, dx: -14, dy: 5, end: true},
+    {n: "Punta del Este", lat: -34.97, lon: -54.95, dx: -14, dy: 22, end: true}
+  ];
+  var UY_K = 170, UY_OX = 235, UY_OY = 50;
+  function uyXY(lat, lon) {
+    return [UY_OX + (lon + 58.45) * 0.843 * UY_K, UY_OY + (-30.0 - lat) * UY_K];
+  }
+  function smoothClosed(pts) {
+    var n = pts.length, d = "M" + pts[0][0].toFixed(1) + " " + pts[0][1].toFixed(1);
+    for (var i = 0; i < n; i++) {
+      var p0 = pts[(i - 1 + n) % n], p1 = pts[i], p2 = pts[(i + 1) % n], p3 = pts[(i + 2) % n];
+      var c1x = p1[0] + (p2[0] - p0[0]) / 8, c1y = p1[1] + (p2[1] - p0[1]) / 8;
+      var c2x = p2[0] - (p3[0] - p1[0]) / 8, c2y = p2[1] - (p3[1] - p1[1]) / 8;
+      d += "C" + c1x.toFixed(1) + " " + c1y.toFixed(1) + " " + c2x.toFixed(1) + " " + c2y.toFixed(1) + " " + p2[0].toFixed(1) + " " + p2[1].toFixed(1);
+    }
+    return d + "Z";
+  }
+  function uyMapSvg() {
+    var pts = UY_OUTLINE.map(function (q) { return uyXY(q[0], q[1]); });
+    var d = smoothClosed(pts);
+    var c = contourPaths(7141, 1000, 960, 11, 18);
+    var out = '<defs><clipPath id="uyClip"><path d="' + d + '"/></clipPath>'
+      + '<linearGradient id="uyFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1c3556"/><stop offset="1" stop-color="#12233b"/></linearGradient>'
+      + '<filter id="uyGlow" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="7"/></filter></defs>';
+    out += '<path d="' + d + '" fill="none" stroke="#6aa6f2" stroke-opacity=".10" stroke-width="46" stroke-linejoin="round"/>';
+    out += '<path d="' + d + '" fill="none" stroke="#6aa6f2" stroke-opacity=".12" stroke-width="22" stroke-linejoin="round"/>';
+    out += '<path d="' + d + '" fill="none" stroke="#8fb9f0" stroke-opacity=".6" stroke-width="6" filter="url(#uyGlow)"/>';
+    out += '<path d="' + d + '" fill="url(#uyFill)"/>';
+    out += '<g clip-path="url(#uyClip)"><path d="' + c.minor + '" fill="none" stroke="#9db9de" stroke-opacity=".22" stroke-width="1"/>'
+      + '<path d="' + c.major + '" fill="none" stroke="#9db9de" stroke-opacity=".42" stroke-width="1.6"/></g>';
+    out += '<path d="' + d + '" fill="none" stroke="#b8d3f6" stroke-width="2.2" stroke-linejoin="round"/>';
+    UY_PINS.forEach(function (p) {
+      var xy = uyXY(p.lat, p.lon);
+      out += '<circle class="uy-pin" cx="' + xy[0].toFixed(1) + '" cy="' + xy[1].toFixed(1) + '" r="5.5"/>'
+        + '<text class="uy-lbl" x="' + (xy[0] + p.dx).toFixed(1) + '" y="' + (xy[1] + p.dy).toFixed(1) + '"' + (p.end ? ' text-anchor="end"' : "") + ">" + p.n + "</text>";
+    });
+    return out;
+  }
+
   function paintHero() {
     $("#heroArt").setAttribute("viewBox", "0 0 900 1000");
     $("#heroArt").innerHTML = contourSvg(20262026, 900, 1000, 12, 20, {bg: "#0e1a2a", line: "#7f9fc6"}, true);
+    $("#uyMap").innerHTML = uyMapSvg();
+    // Si el equipo agrega una foto en static/img/uruguay.jpg, reemplaza al mapa
+    var probe = new Image();
+    probe.onload = function () {
+      var side = document.querySelector(".side");
+      side.style.backgroundImage = 'url("img/uruguay.jpg")';
+      side.classList.add("photo");
+      $("#uyMap").style.display = "none";
+    };
+    probe.src = "img/uruguay.jpg";
   }
 
   function facts(a) {
@@ -763,9 +882,14 @@
     return '<ul class="facts">' + f + "</ul>";
   }
 
+  function photoHtml(a) {
+    if (!a.hasImage) return "";
+    return '<img src="/api/attractions/' + encodeURIComponent(a.id) + '/image" alt="" loading="lazy" onerror="this.remove()">';
+  }
+
   function cardHtml(a) {
     return '<article class="card" data-open="' + esc(a.id) + '" tabindex="0" role="button" aria-label="Ver detalle de ' + esc(a.name) + '">'
-      + '<div class="plate">' + plateSvg(a) + '<span class="dept">' + esc(a.department) + "</span></div>"
+      + '<div class="plate">' + plateSvg(a) + photoHtml(a) + '<span class="dept">' + esc(a.department) + "</span></div>"
       + '<div class="cb"><div class="l1"><h3 class="ttl">' + esc(a.name) + '</h3><span class="price">' + money(a.price) + "</span></div>"
       + '<p class="loc">' + icon("pin") + esc(a.locality) + "</p>"
       + '<p class="desc">' + esc(a.description) + "</p>" + facts(a) + "</div></article>";
@@ -837,7 +961,7 @@
       prov += "</p></div>";
     }
     var reserveSlot = user && user.role === "TOURIST" ? '<div class="reserve" id="reserveBox"></div>' : "";
-    $("#dlg").innerHTML = '<div class="dr"><div class="plate">' + plateSvg(a)
+    $("#dlg").innerHTML = '<div class="dr"><div class="plate">' + plateSvg(a) + photoHtml(a)
       + '<button class="x" type="button" aria-label="Cerrar" data-close>' + icon("x") + "</button></div>"
       + '<div class="body"><div><h3>' + esc(a.name) + '</h3><p class="loc" style="margin-top:.4rem">' + icon("pin") + esc(a.locality) + ", " + esc(a.department) + "</p></div>"
       + '<div class="keys"><div><small>Precio</small><b>' + money(a.price) + "</b></div><div><small>Duración</small><b>" + dur(a.durationMinutes) + "</b></div>"
@@ -1021,9 +1145,65 @@
     loadProvider();
   });
 
+  var pickedImage = null;
+  function resetImagePicker() {
+    pickedImage = null;
+    $("#attrImage").value = "";
+    $("#imgBox").className = "imgbox";
+    $("#imgBox").innerHTML = '<span id="imgEmpty">Sin foto. Si no subís una, se muestra un diseño por defecto.</span>';
+    $("#imgClear").hidden = true;
+    $("#imgChoose").textContent = "Elegir imagen";
+  }
+  function prepareImage(file) {
+    return new Promise(function (resolve, reject) {
+      var types = ["image/jpeg", "image/png", "image/webp"];
+      if (types.indexOf(file.type) < 0) { reject(new Error("Usá una imagen JPG, PNG o WEBP.")); return; }
+      if (file.size > 15 * 1024 * 1024) { reject(new Error("La imagen pesa demasiado (máximo 15 MB).")); return; }
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () {
+        var max = 1280, w = img.naturalWidth, h = img.naturalHeight;
+        var k = Math.min(1, max / Math.max(w, h));
+        var cv = document.createElement("canvas");
+        cv.width = Math.max(1, Math.round(w * k));
+        cv.height = Math.max(1, Math.round(h * k));
+        var ctx = cv.getContext("2d");
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, cv.width, cv.height);
+        ctx.drawImage(img, 0, 0, cv.width, cv.height);
+        URL.revokeObjectURL(url);
+        var dataUrl = cv.toDataURL("image/jpeg", 0.82);
+        resolve({contentType: "image/jpeg", data: dataUrl.split(",")[1], preview: dataUrl});
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error("No se pudo leer la imagen.")); };
+      img.src = url;
+    });
+  }
+  $("#imgChoose").addEventListener("click", function () { $("#attrImage").click(); });
+  $("#imgClear").addEventListener("click", resetImagePicker);
+  $("#attrImage").addEventListener("change", async function () {
+    var file = this.files && this.files[0];
+    if (!file) return;
+    try {
+      pickedImage = await prepareImage(file);
+      $("#imgBox").className = "imgbox has";
+      $("#imgBox").innerHTML = '<img alt="Vista previa de la foto elegida" src="' + pickedImage.preview + '">';
+      $("#imgClear").hidden = false;
+      $("#imgChoose").textContent = "Cambiar imagen";
+    } catch (err) {
+      resetImagePicker();
+      toast(err.message, true);
+    }
+  });
+
   onSubmit("#attractionForm", async function (d, box, f) {
     var cancel = !!d.allowsCancellation;
-    await api("POST", "/api/attractions", {
+    var auto = $("#autoSched").checked;
+    if (auto) {
+      var check = schedGet("a");
+      if (check.error) throw new Error(check.error);
+    }
+    var created = await api("POST", "/api/attractions", {
       name: d.name,
       description: d.description,
       department: d.department,
@@ -1037,11 +1217,38 @@
       refundPercentage: cancel ? Number(d.refundPercentage) : null,
       prestador: {id: Number(d.prestadorId)}
     });
+    var made = 0;
+    var problem = "";
+    var imgProblem = "";
+    if (pickedImage && created && created.id) {
+      try {
+        await api("PUT", "/api/attractions/" + created.id + "/image", {contentType: pickedImage.contentType, data: pickedImage.data});
+      } catch (err) {
+        imgProblem = err.message;
+      }
+    }
+    if (auto && created && created.id) {
+      try {
+        made = await schedCreate("a", created.id, box);
+      } catch (err) {
+        problem = err.message;
+      }
+    }
     f.reset();
     toggleCancel();
+    $("#autoSched").checked = false;
+    $("#aSched").hidden = true;
+    schedInit("a", $("#aSched"));
+    resetImagePicker();
     f.hidden = true;
-    toast("Atracción publicada.");
     loadProvider();
+    if (imgProblem) {
+      toast("La atracción se publicó, pero la foto no se pudo guardar: " + imgProblem, true);
+    } else if (problem) {
+      toast("La atracción se publicó, pero los horarios quedaron incompletos. " + problem, true);
+    } else {
+      toast(made > 0 ? "Atracción publicada con " + made + " horarios." : "Atracción publicada.");
+    }
   });
 
   function renderAdminProviders() {
@@ -1512,6 +1719,14 @@
     f.hidden = !f.hidden;
   });
   onSubmit("#instanceForm", async function (d, box, f) {
+    if (d.mode === "weekly") {
+      var n = await schedCreate("i", d.atraccionId, box);
+      resetInstForm();
+      f.hidden = true;
+      toast(n + (n === 1 ? " horario creado." : " horarios creados."));
+      loadProvider();
+      return;
+    }
     if (new Date(d.dateTime).getTime() <= Date.now()) throw new Error("La fecha y hora tienen que ser futuras.");
     await api("POST", "/api/instances", {
       atraccion: {id: Number(d.atraccionId)},
@@ -1519,11 +1734,174 @@
       maxCapacity: Number(d.maxCapacity),
       minutesBeforeBookingDeadline: Number(d.minutesBeforeBookingDeadline || 0)
     });
-    f.reset();
+    resetInstForm();
     f.hidden = true;
     toast("Horario publicado.");
     loadProvider();
   });
+
+
+  var DAYS = [{v: 1, l: "Lun"}, {v: 2, l: "Mar"}, {v: 3, l: "Mié"}, {v: 4, l: "Jue"}, {v: 5, l: "Vie"}, {v: 6, l: "Sáb"}, {v: 0, l: "Dom"}];
+  var sched = {};
+
+  function pad(n) { return n < 10 ? "0" + n : String(n); }
+  function isoDate(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+
+  function schedHtml(p) {
+    var days = DAYS.map(function (d) {
+      return '<label class="dchip"><input type="checkbox" data-sday="' + d.v + '"><span>' + d.l + "</span></label>";
+    }).join("");
+    return '<div class="sched" data-sched="' + p + '">'
+      + '<span class="segcap">Días de la semana</span><div class="days">' + days + "</div>"
+      + '<span class="segcap" style="margin-top:1rem">Horas de inicio</span>'
+      + '<div class="timesrow"><input type="time" data-stime value="09:00" aria-label="Hora de inicio"><button type="button" class="btn ghost sm" data-addtime>' + icon("plus") + "Agregar hora</button></div>"
+      + '<div class="tchips" data-times></div>'
+      + '<div class="two" style="margin-top:1rem"><label class="field"><span>Desde</span><input type="date" data-from></label>'
+      + '<label class="field"><span>Hasta</span><input type="date" data-until></label></div>'
+      + '<div class="two"><label class="field"><span>Cupo máximo (personas)</span><input type="number" data-cap min="1" value="10"></label>'
+      + '<label class="field"><span>Reservable hasta (min antes)</span><input type="number" data-ded min="0" value="0"></label></div>'
+      + '<div class="preview" data-preview aria-live="polite"></div></div>';
+  }
+
+  function schedInit(p, host) {
+    host.innerHTML = schedHtml(p);
+    sched[p] = {times: ["09:00"]};
+    var root = $('[data-sched="' + p + '"]');
+    var from = new Date();
+    from.setDate(from.getDate() + 1);
+    var until = new Date(from.getTime());
+    until.setDate(until.getDate() + 56);
+    $("[data-from]", root).value = isoDate(from);
+    $("[data-until]", root).value = isoDate(until);
+    schedRender(p);
+  }
+
+  function schedRender(p) {
+    var root = $('[data-sched="' + p + '"]');
+    sched[p].times.sort();
+    $("[data-times]", root).innerHTML = sched[p].times.map(function (t) {
+      return '<span class="tchip">' + esc(t) + '<button type="button" data-rmtime="' + esc(t) + '" aria-label="Quitar ' + esc(t) + '">' + icon("x") + "</button></span>";
+    }).join("");
+    schedPreview(p);
+  }
+
+  function schedGet(p) {
+    var root = $('[data-sched="' + p + '"]');
+    var days = $$("[data-sday]:checked", root).map(function (c) { return Number(c.getAttribute("data-sday")); });
+    var times = sched[p].times;
+    var from = $("[data-from]", root).value;
+    var until = $("[data-until]", root).value;
+    var cap = Number($("[data-cap]", root).value);
+    var ded = Number($("[data-ded]", root).value || 0);
+    if (!days.length) return {error: "Elegí al menos un día de la semana."};
+    if (!times.length) return {error: "Agregá al menos una hora de inicio."};
+    if (!from || !until) return {error: "Indicá desde y hasta qué fecha se repite."};
+    var start = new Date(from + "T00:00:00");
+    var end = new Date(until + "T00:00:00");
+    if (end < start) return {error: "La fecha final es anterior a la inicial."};
+    if ((end - start) / 86400000 > 366) return {error: "El período no puede superar un año."};
+    if (!cap || cap < 1) return {error: "El cupo tiene que ser de al menos 1 persona."};
+    var dates = [];
+    var d = new Date(start.getTime());
+    var now = Date.now();
+    while (d <= end) {
+      if (days.indexOf(d.getDay()) >= 0) {
+        times.forEach(function (t) {
+          var text = isoDate(d) + "T" + t + ":00";
+          if (new Date(text).getTime() > now) dates.push(text);
+        });
+      }
+      d.setDate(d.getDate() + 1);
+    }
+    if (!dates.length) return {error: "No hay fechas futuras en ese período."};
+    if (dates.length > 120) return {error: "Son " + dates.length + " horarios y el máximo es 120. Acortá el período."};
+    return {dates: dates, cap: cap, ded: ded};
+  }
+
+  function schedPreview(p) {
+    var root = $('[data-sched="' + p + '"]');
+    var box = $("[data-preview]", root);
+    var g = schedGet(p);
+    if (g.error) {
+      box.className = "preview bad";
+      box.textContent = g.error;
+      return;
+    }
+    box.className = "preview";
+    box.innerHTML = "Se van a crear <b>" + g.dates.length + (g.dates.length === 1 ? " horario" : " horarios") + "</b>. Primero: <b>" + esc(when(g.dates[0])) + "</b>. Último: <b>" + esc(when(g.dates[g.dates.length - 1])) + "</b>.";
+  }
+
+  async function schedCreate(p, atraccionId, box) {
+    var g = schedGet(p);
+    if (g.error) throw new Error(g.error);
+    var done = 0;
+    var i;
+    for (i = 0; i < g.dates.length; i++) {
+      try {
+        await api("POST", "/api/instances", {
+          atraccion: {id: Number(atraccionId)},
+          dateTime: g.dates[i],
+          maxCapacity: g.cap,
+          minutesBeforeBookingDeadline: g.ded
+        });
+      } catch (e) {
+        throw new Error("Se crearon " + done + " de " + g.dates.length + " horarios. " + e.message);
+      }
+      done++;
+      if (box) msg(box, "Creando horarios: " + done + " de " + g.dates.length + "...", true);
+    }
+    return done;
+  }
+
+  document.addEventListener("input", function (e) {
+    var root = e.target.closest ? e.target.closest("[data-sched]") : null;
+    if (root) schedPreview(root.getAttribute("data-sched"));
+  });
+  document.addEventListener("change", function (e) {
+    var root = e.target.closest ? e.target.closest("[data-sched]") : null;
+    if (root) schedPreview(root.getAttribute("data-sched"));
+  });
+  document.addEventListener("click", function (e) {
+    var root = e.target.closest("[data-sched]");
+    if (!root) return;
+    var p = root.getAttribute("data-sched");
+    var add = e.target.closest("[data-addtime]");
+    var rm = e.target.closest("[data-rmtime]");
+    if (add) {
+      var t = $("[data-stime]", root).value;
+      if (t && sched[p].times.indexOf(t) < 0) sched[p].times.push(t);
+      schedRender(p);
+    }
+    if (rm) {
+      sched[p].times = sched[p].times.filter(function (x) { return x !== rm.getAttribute("data-rmtime"); });
+      schedRender(p);
+    }
+  });
+
+  $("#autoSched").addEventListener("change", function () {
+    $("#aSched").hidden = !this.checked;
+  });
+
+  function setMode(m) {
+    var f = $("#instanceForm");
+    $("#instOne").hidden = m !== "one";
+    $("#iSched").hidden = m !== "weekly";
+    f.elements.dateTime.required = m === "one";
+    f.elements.maxCapacity.required = m === "one";
+    $("#instSubmit").textContent = m === "one" ? "Publicar horario" : "Crear los horarios";
+  }
+  function resetInstForm() {
+    $("#instanceForm").reset();
+    schedInit("i", $("#iSched"));
+    setMode("one");
+  }
+  $("#instanceForm").addEventListener("change", function (e) {
+    if (e.target.name === "mode") setMode(e.target.value);
+  });
+
+  schedInit("a", $("#aSched"));
+  schedInit("i", $("#iSched"));
+  setMode("one");
 
   paintHero();
   show();

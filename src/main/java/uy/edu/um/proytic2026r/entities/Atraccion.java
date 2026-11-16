@@ -1,5 +1,6 @@
 package uy.edu.um.proytic2026r.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
@@ -29,6 +30,15 @@ public class Atraccion {
     @JoinColumn(name = "prestador_id")
     private Prestador prestador;
 
+    // Imagen opcional de la actividad (base64). No se envia en el JSON de la actividad:
+    // se pide aparte en GET /api/attractions/{id}/image
+    @JsonIgnore
+    @Column(columnDefinition = "TEXT")
+    private String imageData;
+
+    @JsonIgnore
+    private String imageType;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getName() { return name; }
@@ -55,4 +65,16 @@ public class Atraccion {
     public void setRefundPercentage(Integer refundPercentage) { this.refundPercentage = refundPercentage; }
     public Prestador getPrestador() { return prestador; }
     public void setPrestador(Prestador prestador) { this.prestador = prestador; }
+
+    @JsonIgnore
+    public String getImageData() { return imageData; }
+    @JsonIgnore
+    public void setImageData(String imageData) { this.imageData = imageData; }
+    @JsonIgnore
+    public String getImageType() { return imageType; }
+    @JsonIgnore
+    public void setImageType(String imageType) { this.imageType = imageType; }
+
+    // Aparece en el JSON como "hasImage" para que la pagina sepa si hay foto
+    public boolean getHasImage() { return imageData != null && !imageData.isEmpty(); }
 }

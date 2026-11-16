@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,5 +56,29 @@ public class AtraccionServicio {
 
     public Optional<Atraccion> obtenerAtraccionPorId(Long id) {
         return atraccionrepositorio.findById(id);
+    }
+
+    public void guardarImagen(Long id, String contentType, String data) {
+        Atraccion a = atraccionrepositorio.findById(id).orElse(null);
+        if (a == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Actividad no encontrada");
+        }
+        if (contentType == null || data == null || data.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Falta la imagen");
+        }
+        if (!contentType.equals("image/jpeg") && !contentType.equals("image/png") && !contentType.equals("image/webp")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Formato no permitido. Usa JPG, PNG o WEBP");
+        }
+        if (data.length() > 4000000) {
+            throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE, "La imagen es demasiado grande (maximo 3 MB)");
+        }
+        try {
+            Base64.getDecoder().decode(data);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La imagen no es valida");
+        }
+        a.setImageType(contentType);
+        a.setImageData(data);
+        atraccionrepositorio.save(a);
     }
 }
