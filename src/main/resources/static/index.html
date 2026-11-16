@@ -310,6 +310,34 @@
   .imgbox img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .imgbox.has{border-style:solid;padding:0}
   .imgrow{display:flex;gap:.5rem;margin-top:.55rem;flex-wrap:wrap}
+  .hfab{position:fixed;right:1.2rem;bottom:1.2rem;z-index:60;display:inline-flex;align-items:center;gap:.5rem;min-height:46px;padding:0 1.1rem 0 .95rem;border:0;border-radius:99px;background:var(--ink);color:#fff;font-weight:600;box-shadow:0 8px 24px rgba(8,17,28,.35);transition:transform .15s}
+  .hfab:hover{transform:translateY(-2px)}
+  .hfab .i{width:20px;height:20px}
+  .help{position:fixed;right:1.2rem;bottom:5rem;z-index:70;width:min(390px,calc(100vw - 2rem));height:min(620px,calc(100dvh - 7rem));display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line-strong);border-radius:14px;box-shadow:0 20px 50px rgba(8,17,28,.3);overflow:hidden;animation:up .2s ease-out}
+  .help[hidden]{display:none}
+  .hhead{display:flex;align-items:center;gap:.6rem;padding:.8rem .9rem .8rem 1rem;background:var(--ink);color:#fff}
+  .hhead h2{font-size:1rem;flex:1}
+  .hhead small{display:block;font:500 .78rem var(--font);color:#b9c6d8;margin-top:.1rem}
+  .hhead button{border:0;background:transparent;color:#e8eef7;font-size:.82rem;font-weight:600;padding:.3rem .5rem;border-radius:6px}
+  .hhead button:hover{background:rgba(255,255,255,.12)}
+  .hhead .i{width:18px;height:18px}
+  .hlog{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.55rem;scroll-behavior:smooth}
+  .hmsg{max-width:90%;padding:.6rem .8rem;border-radius:12px 12px 12px 3px;background:var(--sunken);font-size:.92rem;line-height:1.45}
+  .hmsg ol{margin:.45rem 0 .1rem;padding:0 0 0 1.2rem;display:grid;gap:.3rem;list-style:decimal}
+  .hmsg li{display:list-item;list-style:decimal;padding-left:.15rem}
+  .hmsg.me{align-self:flex-end;border-radius:12px 12px 3px 12px;background:var(--accent);color:var(--on-accent)}
+  .hmsg.wait{color:var(--muted);font-style:italic}
+  .hopts{display:flex;flex-wrap:wrap;gap:.4rem;padding-top:.2rem}
+  .hopt{border:1px solid var(--line-strong);background:var(--surface);color:var(--text);border-radius:99px;padding:.4rem .85rem;font:600 .86rem var(--font);text-align:left;text-decoration:none;display:inline-block}
+  .hopt:hover{background:var(--sunken)}
+  .hopt.main{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+  .hopt.main:hover{background:var(--accent-h)}
+  .hsearch{display:flex;gap:.4rem;padding:.7rem;border-top:1px solid var(--line);background:var(--surface)}
+  .hsearch input{min-height:40px}
+  @media (max-width:560px){
+    .help{right:0;bottom:0;left:0;width:auto;height:min(86dvh,640px);border-radius:14px 14px 0 0}
+    .hfab{right:.9rem;bottom:.9rem}
+  }
   footer{text-align:center;color:var(--faint);font-size:.82rem;padding:0 1rem 2.2rem}
 
   @media (max-width:1000px){
@@ -378,6 +406,7 @@
   <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></symbol>
   <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/></symbol>
   <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9.5L5 20v-4H4z"/><path d="M8 9.5h8M8 12.5h5"/></symbol>
   <symbol id="i-mark" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.6"><ellipse cx="16" cy="16" rx="13" ry="8.5" transform="rotate(-24 16 16)"/><ellipse cx="16" cy="16" rx="8.5" ry="5" transform="rotate(-24 16 16)"/><ellipse cx="16" cy="16" rx="3.8" ry="2" transform="rotate(-24 16 16)"/></g></symbol>
 </svg>
 
@@ -683,6 +712,19 @@
 
 <dialog id="payDlg" class="modal" aria-label="Pago de la reserva"></dialog>
 <dialog id="dlg" class="drawer" aria-label="Detalle de la atracción"></dialog>
+<button class="hfab" id="helpFab" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="help"><svg class="i" aria-hidden="true"><use href="#i-chat"/></svg>Ayuda</button>
+<section class="help" id="help" role="dialog" aria-label="Centro de ayuda" hidden>
+  <div class="hhead">
+    <h2>Centro de ayuda<small>Te guiamos paso a paso</small></h2>
+    <button type="button" id="helpReset">Empezar de nuevo</button>
+    <button type="button" id="helpClose" aria-label="Cerrar la ayuda"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="hlog" id="helpLog" role="log" aria-live="polite"></div>
+  <form class="hsearch" id="helpForm" autocomplete="off">
+    <input type="search" id="helpQ" placeholder="Escribí tu consulta..." aria-label="Escribí tu consulta" maxlength="120">
+    <button class="btn sm" type="submit">Buscar</button>
+  </form>
+</section>
 <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
 
 <script>
@@ -1385,6 +1427,7 @@
     $("#app").hidden = !user;
     Object.keys(ROLES).forEach(function (r) { $("#view-" + r).hidden = !user || user.role !== r; });
     window.scrollTo(0, 0);
+    if (typeof helpReset === "function") helpReset();
     if (!user) return;
     var full = ((user.firstName || "") + " " + (user.lastName || "")).trim();
     $("#avatar").textContent = initials(full);
@@ -1902,6 +1945,356 @@
   schedInit("a", $("#aSched"));
   schedInit("i", $("#iSched"));
   setMode("one");
+
+  // ---------- Centro de ayuda: asistente guiado (sin IA) ----------
+  var SUPPORT_EMAIL = "soporte@uruguaymnatural.example";
+  var helpArgs = [];
+  var helpCase = "";
+  var helpStarted = false;
+  var HELP = {};
+  var HELP_TOPICS = [
+    {id: "g_login", aud: "guest", kw: "ingresar entrar login sesion contrasena clave password email no puedo acceder"},
+    {id: "g_register", aud: "guest", kw: "crear cuenta registrar registro nueva alta"},
+    {id: "g_provider", aud: "guest", kw: "emprendedor emprendimiento ofrecer actividades vender publicar prestador"},
+    {id: "t_refund", aud: "tourist", kw: "reembolso reintegro devolucion devolver plata dinero cancele cancelacion no llego"},
+    {id: "t_cancel", aud: "tourist", kw: "cancelar cancelacion anular reserva no me deja"},
+    {id: "t_pending", aud: "tourist", kw: "pendiente pago pagar vence vencimiento 24 horas plazo"},
+    {id: "t_declined", aud: "tourist", kw: "rechazado rechazaron tarjeta pago fondos insuficientes error cobro"},
+    {id: "t_missing", aud: "tourist", kw: "reserva no aparece no veo mis reservas perdi"},
+    {id: "t_search", aud: "tourist", kw: "buscar actividades filtro no encuentro departamento catalogo"},
+    {id: "t_req", aud: "tourist", kw: "requisitos requerimientos edad minima menores equipamiento"},
+    {id: "p_status", aud: "provider", kw: "emprendimiento pendiente aprobado aprobacion rechazado estado administrador"},
+    {id: "p_blocked", aud: "provider", kw: "no puedo crear actividad atraccion publicar error"},
+    {id: "p_schedule", aud: "provider", kw: "horarios fechas cupo automatico semanal sabados crear horario"},
+    {id: "p_photo", aud: "provider", kw: "foto imagen subir actividad portada"},
+    {id: "p_bookings", aud: "provider", kw: "reservas recibidas turistas cobro estado cancelaron"},
+    {id: "a_approve", aud: "admin", kw: "aprobar rechazar emprendimientos solicitudes pendientes"},
+    {id: "human", aud: "all", kw: "persona humano soporte contacto hablar mail escribir"}
+  ];
+
+  function helpAud() {
+    if (!user) return "guest";
+    return user.role === "TOURIST" ? "tourist" : user.role === "PROVIDER" ? "provider" : "admin";
+  }
+  function o(label, go, arg, main) {
+    helpArgs.push(arg === undefined ? null : arg);
+    return {l: label, go: go, i: helpArgs.length - 1, main: !!main};
+  }
+  function backOpts() { return [o("Volver al menú", "menu"), o("Hablar con una persona", "human")]; }
+  function norm(t) { return String(t || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); }
+  function bookingLine(b) {
+    var inst = b.activityInstance || {};
+    var att = inst.atraccion || {};
+    return (att.name || "Actividad") + ", " + when(inst.dateTime);
+  }
+  function bookingSummary(b) {
+    var inst = b.activityInstance || {};
+    var att = inst.atraccion || {};
+    return "Reserva #" + b.id + " | " + (att.name || "-") + " | " + when(inst.dateTime) + " | Estado: " + (BSTATUS[b.status] || b.status)
+      + " | Total: " + money(b.totalPrice) + " | Reembolso registrado: " + money(b.refundAmount);
+  }
+  async function myBookingsList() {
+    var list = await api("GET", "/api/bookings/tourist/" + user.id);
+    list.sort(function (a, b) { return b.id - a.id; });
+    return list;
+  }
+
+  HELP.menu = function () {
+    helpCase = "";
+    var a = helpAud();
+    var opts = [];
+    if (a === "guest") {
+      opts = [o("No puedo ingresar", "g_login"), o("Quiero crear una cuenta", "g_register"), o("Quiero ofrecer mis actividades", "g_provider")];
+    } else if (a === "tourist") {
+      opts = [o("No me llegó el reembolso", "t_refund"), o("Quiero cancelar una reserva", "t_cancel"), o("Mi reserva está pendiente de pago", "t_pending"),
+        o("Me rechazaron el pago", "t_declined"), o("No veo mi reserva", "t_missing"), o("No encuentro actividades", "t_search"), o("Requisitos y edad mínima", "t_req")];
+    } else if (a === "provider") {
+      opts = [o("Mi emprendimiento sigue pendiente", "p_status"), o("No puedo crear una actividad", "p_blocked"), o("Cargar horarios automáticos", "p_schedule"),
+        o("Agregar una foto a la actividad", "p_photo"), o("Ver las reservas que recibí", "p_bookings")];
+    } else {
+      opts = [o("Cómo apruebo emprendimientos", "a_approve")];
+    }
+    opts.push(o("Hablar con una persona", "human"));
+    return {say: ["¿Con qué te puedo ayudar? Elegí una opción o escribí tu consulta abajo."], opts: opts};
+  };
+
+  HELP.g_login = function () {
+    return {say: ["Probemos estos pasos, en orden:", ["Elegí en «Ingresar como» el mismo tipo de cuenta con el que te registraste (Turista, Emprendedor o Administrador). Si no coincide, no te deja entrar.",
+      "Revisá que el email no tenga espacios ni errores de tipeo.", "Tocá el ojito del campo contraseña para ver lo que escribís y descartar errores o mayúsculas activadas.",
+      "Si nunca creaste la cuenta, andá a la pestaña «Crear cuenta»."], "Por ahora la contraseña no se puede recuperar desde la página: si la olvidaste, una persona de soporte te puede ayudar."],
+      opts: [o("Ya probé todo", "human", null, true), o("Cómo creo una cuenta", "g_register"), o("Volver al menú", "menu")]};
+  };
+  HELP.g_register = function () {
+    return {say: ["Crear la cuenta lleva un minuto:", ["Tocá la pestaña «Crear cuenta».", "Elegí si sos turista o emprendedor y completá tus datos.", "Volvé a «Ingresar» y entrá con ese email y contraseña."]],
+      opts: [o("Soy emprendedor, ¿qué sigue?", "g_provider"), o("Volver al menú", "menu")]};
+  };
+  HELP.g_provider = function () {
+    return {say: ["Para publicar actividades:", ["Creá una cuenta como Emprendedor e ingresá.", "Cargá los datos de tu emprendimiento.",
+      "Un administrador lo revisa y lo aprueba. Hasta entonces figura como pendiente.", "Con el emprendimiento aprobado ya podés publicar actividades y sus horarios."]],
+      opts: [o("Volver al menú", "menu"), o("Hablar con una persona", "human")]};
+  };
+
+  HELP.t_refund = async function () {
+    var list = await myBookingsList();
+    var canc = list.filter(function (b) { return b.status === "CANCELLED"; });
+    if (canc.length === 0) {
+      return {say: ["No veo reservas canceladas en tu cuenta, por eso no hay nada para reembolsar.", "Si cancelaste desde otra cuenta o esperás una devolución de algo distinto, escribinos."],
+        opts: [o("Hablar con una persona", "human", null, true), o("Volver al menú", "menu")]};
+    }
+    var opts = canc.slice(0, 6).map(function (b) { return o(bookingLine(b), "t_refund_case", b); });
+    opts.push(o("Volver al menú", "menu"));
+    return {say: ["Elegí la reserva de la que esperás el reembolso:"], opts: opts};
+  };
+  HELP.t_refund_case = function (b) {
+    var inst = b.activityInstance || {};
+    var att = inst.atraccion || {};
+    helpCase = bookingSummary(b);
+    var say = [];
+    if (b.refundAmount && Number(b.refundAmount) > 0) {
+      say.push("Tu reserva fue cancelada y se registró un reembolso de <strong>" + esc(money(b.refundAmount)) + "</strong>. El dinero vuelve a la misma tarjeta con la que pagaste.");
+      say.push(["Mirá el resumen de tu tarjeta: a veces figura como «devolución» y puede tardar unos días hábiles en verse reflejado.",
+        "Verificá que sea la tarjeta con la que pagaste esta reserva.", "Si pasó más de una semana desde la cancelación y no lo ves, escribinos con el resumen del caso."]);
+    } else {
+      say.push("Esta reserva está cancelada y <strong>no tiene reembolso registrado</strong>.");
+      if (b.cancelReason) say.push("Motivo registrado: " + esc(b.cancelReason));
+      if (att.allowsCancellation === false) {
+        say.push("La actividad no permite cancelación con reembolso, por eso no corresponde devolución.");
+      } else if (att.allowsCancellation && Number(att.refundPercentage) === 0) {
+        say.push("La política de esta actividad reembolsa el 0 %.");
+      } else if (att.allowsCancellation) {
+        say.push("Esta actividad reembolsa el " + esc(att.refundPercentage) + " % si se cancela hasta " + esc(dur(att.cancellationDeadlineMinutes)) + " antes. Si cancelaste después de ese límite, o si la reserva venció sin pagarse, no se genera reembolso.");
+      }
+      say.push("Si ya habías pagado y creés que debería haber un reembolso, escribinos con este caso.");
+    }
+    return {say: say, opts: [o("Escribir a soporte con este caso", "human", null, true), o("Elegir otra reserva", "t_refund"), o("Volver al menú", "menu")]};
+  };
+
+  HELP.t_cancel = function () {
+    return {say: ["Para cancelar una reserva:", ["Entrá a la pestaña «Mis reservas».", "Buscá la reserva y tocá «Cancelar».", "Si estaba pagada, el reembolso se calcula según la política de la actividad y se muestra en la misma fila."],
+      "Si el botón no aparece o no te deja, puede ser porque:", ["La reserva ya fue cancelada o la actividad ya se realizó.", "La actividad no permite cancelación o ya pasó el límite para cancelar. Lo ves en el detalle de la actividad."]],
+      opts: [o("No me llegó el reembolso", "t_refund"), o("Volver al menú", "menu"), o("Hablar con una persona", "human")]};
+  };
+  HELP.t_pending = async function () {
+    var list = await myBookingsList();
+    var pend = list.filter(function (b) { return b.status === "PENDING_PAYMENT"; });
+    var say = [];
+    if (pend.length === 0) {
+      say.push("No tenés reservas pendientes de pago ahora.");
+    } else {
+      say.push("Tenés " + pend.length + (pend.length === 1 ? " reserva pendiente:" : " reservas pendientes:"));
+      say.push(pend.slice(0, 5).map(function (b) {
+        return esc(bookingLine(b)) + (b.paymentDeadline ? " (vence en " + esc(left(b.paymentDeadline)) + ")" : "");
+      }));
+    }
+    say.push("Cómo pagarla:");
+    say.push(["Entrá a «Mis reservas» y tocá «Pagar» en la reserva.", "Completá los datos de la tarjeta y confirmá.", "Si el pago se aprueba, la reserva queda confirmada."]);
+    say.push("Tenés 24 horas desde la reserva para pagar. Si vence, se cancela sola y se liberan los lugares.");
+    return {say: say, opts: [o("Me rechazaron el pago", "t_declined"), o("Volver al menú", "menu")]};
+  };
+  HELP.t_declined = function () {
+    return {say: ["Un pago rechazado no genera ningún cobro y tu reserva sigue pendiente hasta que venza el plazo. Según el mensaje que viste:",
+      ["<strong>Fondos insuficientes:</strong> probá con otra tarjeta o con otro saldo.", "<strong>Tarjeta rechazada:</strong> revisá número, vencimiento y código de seguridad, o probá con otra tarjeta.",
+       "<strong>Servicio no disponible:</strong> es un problema temporal, esperá unos minutos y reintentá desde «Mis reservas»."],
+      "Si el problema se repite con distintas tarjetas, escribinos."],
+      opts: [o("Mi reserva está pendiente de pago", "t_pending"), o("Hablar con una persona", "human", null, true), o("Volver al menú", "menu")]};
+  };
+  HELP.t_missing = async function () {
+    var list = await myBookingsList();
+    return {say: ["Hoy tu cuenta tiene <strong>" + list.length + "</strong> " + (list.length === 1 ? "reserva" : "reservas") + ".", "Si falta alguna:",
+      ["Mirá en «Mis reservas»: las vencidas o canceladas siguen apareciendo con su estado.", "Confirmá que estás ingresado con el mismo email con el que reservaste (arriba a la derecha ves tu nombre).",
+       "Si reservaste y nunca llegaste a confirmar el paso final, la reserva puede no haberse creado."]],
+      opts: [o("Hablar con una persona", "human", null, true), o("Volver al menú", "menu")]};
+  };
+  HELP.t_search = function () {
+    return {say: ["Para encontrar actividades:", ["Usá el buscador y los departamentos de la izquierda (en el celular, la fila de botones de arriba).", "Sacá los filtros activos, por ejemplo «Con cancelación», que ocultan resultados.",
+      "Ordená por precio o por novedad."], "Solo se muestran actividades de emprendimientos ya aprobados, y para reservar tiene que haber horarios cargados con cupo."],
+      opts: [o("Volver al menú", "menu"), o("Hablar con una persona", "human")]};
+  };
+  HELP.t_req = function () {
+    return {say: ["Abrí la actividad desde el catálogo: en el detalle ves la edad mínima, los requerimientos para participar y la política de cancelación antes de reservar."],
+      opts: backOpts()};
+  };
+
+  HELP.p_status = async function () {
+    var all = await api("GET", "/api/providers");
+    var mineList = all.filter(mine);
+    if (mineList.length === 0) {
+      return {say: ["Todavía no tenés ningún emprendimiento cargado. Completá el formulario de «Tu emprendimiento» para enviarlo a revisión."], opts: backOpts()};
+    }
+    var say = ["Estado de tus emprendimientos:"];
+    say.push(mineList.map(function (p) { return "<strong>" + esc(p.name) + ":</strong> " + esc(STATUS[p.status] || p.status); }));
+    if (mineList.some(function (p) { return p.status === "PENDING"; })) {
+      say.push("Pendiente significa que un administrador todavía no lo revisó. No tenés que hacer nada: cuando lo apruebe vas a poder publicar actividades.");
+    }
+    if (mineList.some(function (p) { return p.status === "DENIED"; })) {
+      say.push("Si fue rechazado, revisá que los datos (RUT, razón social, contacto) estén correctos y volvé a cargarlo.");
+    }
+    return {say: say, opts: [o("No puedo crear una actividad", "p_blocked"), o("Hablar con una persona", "human", null, true), o("Volver al menú", "menu")]};
+  };
+  HELP.p_blocked = function () {
+    return {say: ["Revisemos:", ["El emprendimiento tiene que estar <strong>aprobado</strong>. Mirá su estado arriba o en la opción «Mi emprendimiento sigue pendiente».", "Completá todos los campos obligatorios del formulario.",
+      "Si activás «permite cancelación», indicá el límite en minutos y un reembolso entre 0 y 100 %.", "La foto es opcional: si falla, la actividad igual se publica."]],
+      opts: [o("Mi emprendimiento sigue pendiente", "p_status"), o("Hablar con una persona", "human"), o("Volver al menú", "menu")]};
+  };
+  HELP.p_schedule = function () {
+    return {say: ["Podés cargar muchos horarios de una vez:", ["Al crear la actividad, activá «Crear los horarios automáticamente».", "Elegí los días de la semana, la hora, el cupo y el período.",
+      "Mirá la vista previa y publicá. También lo podés hacer después, desde «Nuevo horario» con la frecuencia semanal."]],
+      opts: backOpts()};
+  };
+  HELP.p_photo = function () {
+    return {say: ["Al crear la actividad vas a ver «Foto de la actividad».", ["Tocá «Elegir imagen» y seleccioná un JPG, PNG o WEBP.", "Se ajusta sola al tamaño ideal y ves una vista previa.", "Publicá la actividad: la foto aparece en el catálogo y en el detalle."],
+      "Es opcional. Sin foto se muestra un diseño por defecto."], opts: backOpts()};
+  };
+  HELP.p_bookings = function () {
+    return {say: ["En «Horarios y reservas» ves una tabla con las reservas que recibís: turista, fecha, personas, total y estado.", ["<strong>Pendiente de pago:</strong> el turista tiene 24 horas para pagar.", "<strong>Confirmada:</strong> el pago fue aprobado.",
+      "<strong>Cancelada:</strong> la canceló el turista o venció el plazo de pago, y los lugares se liberan.", "<strong>Realizada:</strong> la actividad ya ocurrió."]],
+      opts: backOpts()};
+  };
+
+  HELP.a_approve = function () {
+    return {say: ["Para revisar emprendimientos:", ["En el panel de administración abrí la pestaña de solicitudes.", "Revisá los datos (RUT, razón social, contacto).", "Tocá «Aprobar» o «Rechazar». Solo los aprobados pueden publicar actividades."]],
+      opts: backOpts()};
+  };
+
+  HELP.human = function () {
+    var who = user ? ((user.firstName || "") + " " + (user.lastName || "")).trim() + " (" + (user.email || "-") + ", " + (ROLES[user.role] || user.role) + ")" : "Sin sesión iniciada";
+    var text = "Consulta de soporte\nUsuario: " + who + "\n" + (helpCase ? "Caso: " + helpCase + "\n" : "") + "Descripción: ";
+    helpArgs.push(text);
+    var idx = helpArgs.length - 1;
+    var href = "mailto:" + SUPPORT_EMAIL + "?subject=" + encodeURIComponent("Consulta de soporte") + "&body=" + encodeURIComponent(text);
+    return {say: ["Si seguís con el problema, escribinos. Cuanto más claro el resumen, más rápido lo resolvemos.", ["Tocá «Escribir por email» (se abre tu correo con los datos ya cargados), o copiá el resumen.", "Contá qué pasó y qué esperabas que pasara.", "Respondemos por email."]],
+      acts: [{l: "Escribir por email", href: href}, {l: "Copiar resumen", copy: idx}], opts: [o("Volver al menú", "menu")]};
+  };
+
+  function helpAdd(cls, html) {
+    var d = document.createElement("div");
+    d.className = "hmsg" + (cls ? " " + cls : "");
+    d.innerHTML = html;
+    $("#helpLog").appendChild(d);
+    return d;
+  }
+  function helpSay(items) {
+    var first = null;
+    items.forEach(function (it) {
+      var el;
+      if (Array.isArray(it)) {
+        el = helpAdd("", "<ol>" + it.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ol>");
+      } else {
+        el = helpAdd("", it);
+      }
+      if (!first) first = el;
+    });
+    return first;
+  }
+  function helpRender(node) {
+    var log = $("#helpLog");
+    var old = log.querySelector(".hopts");
+    if (old) old.remove();
+    var first = helpSay(node.say || []);
+    var box = document.createElement("div");
+    box.className = "hopts";
+    var html = "";
+    (node.acts || []).forEach(function (a) {
+      if (a.href) html += '<a class="hopt main" href="' + esc(a.href) + '">' + esc(a.l) + "</a>";
+      else html += '<button type="button" class="hopt main" data-hcopy="' + a.copy + '">' + esc(a.l) + "</button>";
+    });
+    (node.opts || []).forEach(function (op) {
+      html += '<button type="button" class="hopt' + (op.main ? " main" : "") + '" data-hgo="' + esc(op.go) + '" data-hi="' + op.i + '">' + esc(op.l) + "</button>";
+    });
+    box.innerHTML = html;
+    log.appendChild(box);
+    if (first) log.scrollTop = Math.max(0, first.offsetTop - 12);
+  }
+  async function helpGo(id, arg, label) {
+    var log = $("#helpLog");
+    var old = log.querySelector(".hopts");
+    if (old) old.remove();
+    if (label) helpAdd("me", esc(label));
+    var wait = helpAdd("wait", "Un momento…");
+    var node;
+    try {
+      node = await HELP[id](arg);
+    } catch (e) {
+      node = {say: ["No pude consultar los datos de tu cuenta en este momento (" + esc(e.message) + "). Podés intentar de nuevo o escribirnos."], opts: [o("Volver al menú", "menu"), o("Hablar con una persona", "human")]};
+    }
+    wait.remove();
+    helpRender(node);
+  }
+  function helpStart() {
+    helpStarted = true;
+    helpArgs = [];
+    helpCase = "";
+    $("#helpLog").innerHTML = "";
+    var name = user && user.firstName ? " " + esc(user.firstName) : "";
+    helpAdd("", "Hola" + name + ". Esta ayuda es guiada: elegís una opción y te muestro los pasos para resolverlo. No es una persona ni una IA.");
+    helpGo("menu");
+  }
+  function helpReset() {
+    helpStarted = false;
+    $("#helpLog").innerHTML = "";
+    if (!$("#help").hidden) helpStart();
+  }
+  function helpToggle(open) {
+    $("#help").hidden = !open;
+    $("#helpFab").setAttribute("aria-expanded", open ? "true" : "false");
+    if (open && !helpStarted) helpStart();
+    if (open) $("#helpQ").focus();
+    else $("#helpFab").focus();
+  }
+  function helpSearch(q) {
+    var words = norm(q).split(/[^a-z0-9]+/).filter(function (w) { return w.length > 2; });
+    helpAdd("me", esc(q));
+    var aud = helpAud();
+    var scored = [];
+    HELP_TOPICS.forEach(function (t) {
+      if (t.aud !== "all" && t.aud !== aud) return;
+      var sc = 0;
+      words.forEach(function (w) { if (t.kw.indexOf(w) >= 0) sc++; });
+      if (sc > 0) scored.push({t: t, sc: sc});
+    });
+    scored.sort(function (a, b) { return b.sc - a.sc; });
+    var opts = [];
+    var labels = {};
+    var all = HELP.menu().opts;
+    all.forEach(function (op) { labels[op.go] = op.l; });
+    scored.slice(0, 3).forEach(function (r) { opts.push(o(labels[r.t.id] || "Hablar con una persona", r.t.id)); });
+    if (opts.length === 0) {
+      helpRender({say: ["No encontré una opción para eso. Probá con otras palabras o elegí del menú."], opts: all});
+    } else {
+      opts.push(o("Ver todas las opciones", "menu"));
+      helpRender({say: ["Esto puede ayudarte:"], opts: opts});
+    }
+  }
+  $("#helpFab").addEventListener("click", function () { helpToggle($("#help").hidden); });
+  $("#helpClose").addEventListener("click", function () { helpToggle(false); });
+  $("#helpReset").addEventListener("click", function () { helpStart(); });
+  $("#help").addEventListener("keydown", function (e) { if (e.key === "Escape") helpToggle(false); });
+  $("#helpForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var q = $("#helpQ").value.trim();
+    if (!q) return;
+    $("#helpQ").value = "";
+    var old = $("#helpLog").querySelector(".hopts");
+    if (old) old.remove();
+    helpSearch(q);
+  });
+  $("#helpLog").addEventListener("click", async function (e) {
+    var b = e.target.closest("button");
+    if (!b) return;
+    if (b.hasAttribute("data-hcopy")) {
+      var text = helpArgs[Number(b.getAttribute("data-hcopy"))];
+      try {
+        await navigator.clipboard.writeText(text);
+        toast("Resumen copiado.");
+      } catch (err) {
+        toast("No se pudo copiar. Seleccioná el texto a mano.", true);
+      }
+      return;
+    }
+    if (b.hasAttribute("data-hgo")) {
+      helpGo(b.getAttribute("data-hgo"), helpArgs[Number(b.getAttribute("data-hi"))], b.textContent);
+    }
+  });
 
   paintHero();
   show();
