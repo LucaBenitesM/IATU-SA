@@ -1255,7 +1255,22 @@
 "Esta reseña no es tuya.": "Esta avaliação não é sua.",
 "La reseña no existe.": "A avaliação não existe.",
 "La valoración tiene que ser de 1 a 5.": "A nota deve ser de 1 a 5.",
-"El comentario no puede superar los 1000 caracteres.": "O comentário não pode ultrapassar 1000 caracteres."
+"El comentario no puede superar los 1000 caracteres.": "O comentário não pode ultrapassar 1000 caracteres.",
+"Cargando…": "Carregando…",
+"No se pudo cargar Mercado Pago. Revisá tu conexión.": "Não foi possível carregar o Mercado Pago. Verifique sua conexão.",
+"No se pudo mostrar el formulario de pago.": "Não foi possível mostrar o formulário de pagamento.",
+"Modo de prueba de Mercado Pago.": "Modo de teste do Mercado Pago.",
+"No se cobra dinero real. Usá las tarjetas de prueba de Mercado Pago.": "Nenhum dinheiro real é cobrado. Use os cartões de teste do Mercado Pago.",
+"Pago en revisión": "Pagamento em análise",
+"Mercado Pago está revisando tu pago. Tu reserva sigue pendiente y se confirma cuando lo aprueben.": "O Mercado Pago está analisando seu pagamento. Sua reserva continua pendente e será confirmada quando for aprovado.",
+"En revisión": "Em análise",
+"Faltan los datos de la tarjeta.": "Faltam os dados do cartão.",
+"Pago rechazado: fondos insuficientes. Tu reserva sigue pendiente, podés intentar de nuevo.": "Pagamento recusado: saldo insuficiente. Sua reserva continua pendente, você pode tentar novamente.",
+"Pago rechazado: código de seguridad incorrecto. Tu reserva sigue pendiente, podés intentar de nuevo.": "Pagamento recusado: código de segurança incorreto. Sua reserva continua pendente, você pode tentar novamente.",
+"Pago rechazado: fecha de vencimiento incorrecta. Tu reserva sigue pendiente, podés intentar de nuevo.": "Pagamento recusado: data de validade incorreta. Sua reserva continua pendente, você pode tentar novamente.",
+"Pago rechazado: datos de la tarjeta incorrectos. Tu reserva sigue pendiente, podés intentar de nuevo.": "Pagamento recusado: dados do cartão incorretos. Sua reserva continua pendente, você pode tentar novamente.",
+"Pago rechazado: tu banco no autorizó la operación. Tu reserva sigue pendiente, podés intentar de nuevo.": "Pagamento recusado: seu banco não autorizou a operação. Sua reserva continua pendente, você pode tentar novamente.",
+"No pudimos procesar el reembolso. Tu reserva no se canceló, probá de nuevo en unos minutos.": "Não conseguimos processar o reembolso. Sua reserva não foi cancelada, tente novamente em alguns minutos."
 },
 "en": {
 "Mapa de Uruguay": "Map of Uruguay",
@@ -1730,7 +1745,22 @@
 "Esta reseña no es tuya.": "This review is not yours.",
 "La reseña no existe.": "The review does not exist.",
 "La valoración tiene que ser de 1 a 5.": "The rating must be from 1 to 5.",
-"El comentario no puede superar los 1000 caracteres.": "The comment cannot exceed 1000 characters."
+"El comentario no puede superar los 1000 caracteres.": "The comment cannot exceed 1000 characters.",
+"Cargando…": "Loading…",
+"No se pudo cargar Mercado Pago. Revisá tu conexión.": "Could not load Mercado Pago. Check your connection.",
+"No se pudo mostrar el formulario de pago.": "Could not show the payment form.",
+"Modo de prueba de Mercado Pago.": "Mercado Pago test mode.",
+"No se cobra dinero real. Usá las tarjetas de prueba de Mercado Pago.": "No real money is charged. Use the Mercado Pago test cards.",
+"Pago en revisión": "Payment under review",
+"Mercado Pago está revisando tu pago. Tu reserva sigue pendiente y se confirma cuando lo aprueben.": "Mercado Pago is reviewing your payment. Your booking stays pending and is confirmed once it is approved.",
+"En revisión": "Under review",
+"Faltan los datos de la tarjeta.": "Card details are missing.",
+"Pago rechazado: fondos insuficientes. Tu reserva sigue pendiente, podés intentar de nuevo.": "Payment declined: insufficient funds. Your booking is still pending, you can try again.",
+"Pago rechazado: código de seguridad incorrecto. Tu reserva sigue pendiente, podés intentar de nuevo.": "Payment declined: wrong security code. Your booking is still pending, you can try again.",
+"Pago rechazado: fecha de vencimiento incorrecta. Tu reserva sigue pendiente, podés intentar de nuevo.": "Payment declined: wrong expiry date. Your booking is still pending, you can try again.",
+"Pago rechazado: datos de la tarjeta incorrectos. Tu reserva sigue pendiente, podés intentar de nuevo.": "Payment declined: incorrect card details. Your booking is still pending, you can try again.",
+"Pago rechazado: tu banco no autorizó la operación. Tu reserva sigue pendiente, podés intentar de nuevo.": "Payment declined: your bank did not authorize the transaction. Your booking is still pending, you can try again.",
+"No pudimos procesar el reembolso. Tu reserva no se canceló, probá de nuevo en unos minutos.": "We couldn't process the refund. Your booking was not cancelled, try again in a few minutes."
 }
 };
   var I18N_PATTERNS = [["^No hay lugares suficientes\\. Quedan (\\d+)\\.$", "No hay lugares suficientes. Quedan {n}.", ["n"]]];
@@ -2911,25 +2941,110 @@
     {n: "4000000000000002", t: "Rechazada por el banco"},
     {n: "4000000000009995", t: "Fondos insuficientes"},
     {n: "4000000000000119", t: "Servicio de pagos caído"},
+    {n: "4000000000000077", t: "En revisión"},
     {n: "4111111111111111", t: "Aleatoria (75, 20, 5)"}
   ];
 
   function groups(n) { return n.replace(/(\d{4})(?=\d)/g, "$1 "); }
 
-  function openPay(id) {
+  var payMode = {mode: "simulado"};
+  var brickCtl = null;
+
+  function payHeader(title) {
+    return '<div class="mh"><h3>' + esc(title) + '</h3><button class="xb" type="button" data-close aria-label="Cerrar">' + icon("x") + "</button></div>";
+  }
+
+  function paySummary(b) {
+    var inst = b.activityInstance || {};
+    var att = inst.atraccion || {};
+    return '<div class="sum"><div><b>' + esc(att.name) + "</b><p>" + esc(when(inst.dateTime)) + "</p><p>" + esc(tt(b.participantsCount === 1 ? "{n} persona" : "{n} personas", {n: b.participantsCount})) + "</p></div>"
+      + '<div class="big">' + money(b.totalPrice) + "</div></div>";
+  }
+
+  function unmountBrick() {
+    if (brickCtl) {
+      try { brickCtl.unmount(); } catch (e) { }
+      brickCtl = null;
+    }
+  }
+
+  async function openPay(id) {
     var b = null;
     myList.forEach(function (x) { if (String(x.id) === String(id)) b = x; });
     if (!b) return;
     payingId = b.id;
-    var inst = b.activityInstance || {};
-    var att = inst.atraccion || {};
+    unmountBrick();
+    $("#payDlg").innerHTML = payHeader("Pagar reserva") + '<div class="mb"><p class="muted">' + esc(tt("Cargando…")) + "</p></div>";
+    $("#payDlg").showModal();
+    try { payMode = await api("GET", "/api/payments/config"); } catch (e) { payMode = {mode: "simulado"}; }
+    if (payMode.mode === "mercadopago") renderMpPay(b); else renderSimPay(b);
+  }
+
+  function loadMpSdk() {
+    return new Promise(function (resolve, reject) {
+      if (window.MercadoPago) { resolve(); return; }
+      var sc = document.createElement("script");
+      sc.src = "https://sdk.mercadopago.com/js/v2";
+      sc.onload = function () { resolve(); };
+      sc.onerror = function () { reject(new Error(tt("No se pudo cargar Mercado Pago. Revisá tu conexión."))); };
+      document.head.appendChild(sc);
+    });
+  }
+
+  async function renderMpPay(b) {
+    $("#payDlg").innerHTML = payHeader("Pagar reserva")
+      + '<div class="mb">' + paySummary(b)
+      + '<div class="sandbox">' + icon("alert") + "<div><b>Modo de prueba de Mercado Pago.</b> No se cobra dinero real. Usá las tarjetas de prueba de Mercado Pago.</div></div>"
+      + '<div id="mpBrick"></div><div class="msg" id="payMsg" role="status"></div></div>';
+    try {
+      await loadMpSdk();
+    } catch (e) {
+      msg($("#payMsg"), e.message, false);
+      return;
+    }
+    try {
+      var mp = new window.MercadoPago(payMode.publicKey, {locale: "es-UY"});
+      brickCtl = await mp.bricks().create("cardPayment", "mpBrick", {
+        initialization: {amount: Number(b.totalPrice), payer: {email: user.email}},
+        callbacks: {
+          onReady: function () { },
+          onSubmit: function (formData) { return submitMp(formData); },
+          onError: function () { msg($("#payMsg"), tt("No se pudo mostrar el formulario de pago."), false); }
+        }
+      });
+    } catch (e2) {
+      msg($("#payMsg"), tt("No se pudo mostrar el formulario de pago."), false);
+    }
+  }
+
+  function submitMp(formData) {
+    return new Promise(function (resolve, reject) {
+      payNow(formData).then(function () { resolve(); }, function (err) {
+        var box = $("#payMsg");
+        if (box) msg(box, err.message, false);
+        reject();
+      });
+    });
+  }
+
+  // Envia el pago al servidor. El monto no se manda: lo calcula el servidor desde la reserva.
+  async function payNow(body) {
+    try {
+      var res = await api("POST", "/api/bookings/" + payingId + "/pay?touristId=" + user.id, body);
+      unmountBrick();
+      if (res && res.status === "CONFIRMED") await showReceipt(payingId); else showPending();
+    } finally {
+      loadMyBookings();
+    }
+  }
+
+  function renderSimPay(b) {
     var year = String(new Date().getFullYear() + 4).slice(2);
     var chips = TEST_CARDS.map(function (c) {
       return '<button type="button" class="chip" data-card="' + c.n + '" data-year="' + year + '">' + esc(c.t) + "</button>";
     }).join("");
-    $("#payDlg").innerHTML = '<div class="mh"><h3>Pagar reserva</h3><button class="xb" type="button" data-close aria-label="Cerrar">' + icon("x") + "</button></div>"
-      + '<div class="mb"><div class="sum"><div><b>' + esc(att.name) + "</b><p>" + esc(when(inst.dateTime)) + "</p><p>" + esc(tt(b.participantsCount === 1 ? "{n} persona" : "{n} personas", {n: b.participantsCount})) + "</p></div>"
-      + '<div class="big">' + money(b.totalPrice) + "</div></div>"
+    $("#payDlg").innerHTML = payHeader("Pagar reserva")
+      + '<div class="mb">' + paySummary(b)
       + '<div class="sandbox">' + icon("alert") + "<div><b>Modo de prueba (sandbox).</b> No se cobra dinero real. Tocá una tarjeta de prueba para completar el formulario:"
       + '<div class="chips">' + chips + "</div></div></div>"
       + '<form id="payForm" novalidate>'
@@ -2939,7 +3054,6 @@
       + '<label class="field"><span>Código de seguridad</span><input type="text" name="cvv" inputmode="numeric" autocomplete="cc-csc" maxlength="4" placeholder="123" required></label></div>'
       + '<div class="msg" id="payMsg" role="status"></div>'
       + '<div class="acts2"><button class="btn ghost" type="button" data-close>Cancelar</button><button class="btn" type="submit" id="payBtn">' + esc(tt("Pagar {m}", {m: money(b.totalPrice)})) + "</button></div></form></div>";
-    $("#payDlg").showModal();
   }
 
   $("#payDlg").addEventListener("click", function (e) {
@@ -2965,22 +3079,29 @@
   $("#payDlg").addEventListener("submit", async function (e) {
     e.preventDefault();
     var f = $("#payForm");
+    if (!f) return;
     var box = $("#payMsg");
     var btn = $("#payBtn");
     if (!f.checkValidity()) { f.reportValidity(); return; }
-    var d = Object.fromEntries(new FormData(f));
+    var digits = f.elements.cardNumber.value.replace(/\D/g, "");
+    var d = {token: "SIM-" + digits, payment_method_id: "visa", installments: 1, payer: {email: user.email}};
     btn.disabled = true;
     box.className = "msg";
     box.textContent = "";
     try {
-      await api("POST", "/api/bookings/" + payingId + "/pay?touristId=" + user.id, d);
-      await showReceipt(payingId);
+      await payNow(d);
     } catch (err) {
       msg(box, err.message, false);
       btn.disabled = false;
     }
-    loadMyBookings();
   });
+  $("#payDlg").addEventListener("close", unmountBrick);
+
+  function showPending() {
+    $("#payDlg").innerHTML = payHeader("Comprobante")
+      + '<div class="mb"><div class="receipt"><div class="ok">' + icon("clock") + "</div><h3>Pago en revisión</h3><p class=\"muted\">Mercado Pago está revisando tu pago. Tu reserva sigue pendiente y se confirma cuando lo aprueben.</p></div>"
+      + '<div class="acts2"><button class="btn" type="button" data-close>Listo</button></div></div>';
+  }
 
   async function showReceipt(id) {
     var pay = null;

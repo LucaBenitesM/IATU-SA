@@ -6,7 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import uy.edu.um.proytic2026r.entities.Payment;
+
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -24,8 +27,14 @@ public class BookingControl {
     }
 
     @PostMapping("/{id}/pay")
-    public ResponseEntity<Booking> pagar(@PathVariable Long id) {
-        return ResponseEntity.ok(bookingService.pay(id));
+    public ResponseEntity<Booking> pagar(@PathVariable Long id, @RequestParam Long touristId,
+                                         @RequestBody Map<String, Object> datosPago) {
+        return ResponseEntity.ok(bookingService.pay(id, touristId, datosPago));
+    }
+
+    @GetMapping("/{id}/payments")
+    public ResponseEntity<List<Payment>> pagos(@PathVariable Long id) {
+        return ResponseEntity.ok(bookingService.getPayments(id));
     }
 
     @PutMapping("/{id}/cancel")

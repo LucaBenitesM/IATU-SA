@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -89,10 +90,13 @@ public class BookingService {
         return bookingRepository.save(nueva);
     }
 
-    public Booking pay(Long bookingId) {
+    public Booking pay(Long bookingId, Long touristId, Map<String, Object> datosPago) {
         Booking booking = bookingRepository.findById(bookingId).orElse(null);
         if (booking == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La reserva no existe.");
+        }
+        if (booking.getTourist() == null || touristId == null || !booking.getTourist().getId().equals(touristId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Esta reserva no es tuya.");
         }
         if (booking.getStatus() != Booking.BookingStatus.PENDING_PAYMENT) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Esta reserva no está pendiente de pago.");
@@ -100,34 +104,68 @@ public class BookingService {
         if (booking.getActivityInstance().getDateTime().isBefore(LocalDateTime.now())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "La actividad ya comenzó, no se puede pagar.");
         }
+        if (datosPago == null || datosPago.get("token") == null || datosPago.get("payment_method_id") == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Faltan los datos de la tarjeta.");
+        }
 
-        String resultado;
+        // El monto sale siempre de la reserva, nunca de lo que mande el navegador
+        String descripcion = "Reserva en Uruguay Mnatural: " + booking.getActivityInstance().getAtraccion().getName();
+        PaymentGatewayService.Resultado resultado;
         try {
-            resultado = pasarelaPago.cobrar(booking.getTotalPrice());
+            resultado = pasarelaPago.cobrar(booking.getTotalPrice(), descripcion, "reserva-" + booking.getId(), datosPago);
         } catch (PaymentGatewayService.NoDisponibleException e) {
-            guardarPago(booking, Payment.ERROR, null, e.getMessage());
+            guardarPago(booking, Payment.ERROR, null, null, e.getMessage());
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
                     "El servicio de pagos no está disponible. Tu reserva sigue pendiente, probá de nuevo en unos minutos.");
         }
 
-        if ("APPROVED".equals(resultado)) {
-            String referencia = "PAY-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-            guardarPago(booking, Payment.APPROVED, referencia, "Pago aprobado");
+        if (Payment.APPROVED.equals(resultado.getEstado())) {
+            guardarPago(booking, Payment.APPROVED, resultado.getIdExterno(), resultado.getUltimos4(), "Pago aprobado");
             booking.setStatus(Booking.BookingStatus.CONFIRMED);
             return bookingRepository.save(booking);
         }
 
-        guardarPago(booking, Payment.REJECTED, null, "Pago rechazado");
-        throw new ResponseStatusException(HttpStatus.PAYMENT_REQUIRED,
-                "Pago rechazado. Tu reserva sigue pendiente, podés intentar de nuevo.");
+        if (Payment.IN_PROCESS.equals(resultado.getEstado())) {
+            guardarPago(booking, Payment.IN_PROCESS, resultado.getIdExterno(), resultado.getUltimos4(), "Pago en revisión");
+            return booking;
+        }
+
+        guardarPago(booking, Payment.REJECTED, resultado.getIdExterno(), resultado.getUltimos4(),
+                "Pago rechazado: " + resultado.getDetalle());
+        throw new ResponseStatusException(HttpStatus.PAYMENT_REQUIRED, mensajeRechazo(resultado.getDetalle()));
     }
 
-    private void guardarPago(Booking booking, String estado, String referencia, String mensaje) {
+    private String mensajeRechazo(String detalle) {
+        String d = detalle == null ? "" : detalle;
+        if (d.contains("insufficient_amount")) {
+            return "Pago rechazado: fondos insuficientes. Tu reserva sigue pendiente, podés intentar de nuevo.";
+        }
+        if (d.contains("security_code")) {
+            return "Pago rechazado: código de seguridad incorrecto. Tu reserva sigue pendiente, podés intentar de nuevo.";
+        }
+        if (d.contains("bad_filled_date")) {
+            return "Pago rechazado: fecha de vencimiento incorrecta. Tu reserva sigue pendiente, podés intentar de nuevo.";
+        }
+        if (d.contains("bad_filled")) {
+            return "Pago rechazado: datos de la tarjeta incorrectos. Tu reserva sigue pendiente, podés intentar de nuevo.";
+        }
+        if (d.contains("card_disabled") || d.contains("call_for_authorize")) {
+            return "Pago rechazado: tu banco no autorizó la operación. Tu reserva sigue pendiente, podés intentar de nuevo.";
+        }
+        return "Pago rechazado. Tu reserva sigue pendiente, podés intentar de nuevo.";
+    }
+
+    public List<Payment> getPayments(Long bookingId) {
+        return pagoRepositorio.findByBookingId(bookingId);
+    }
+
+    private void guardarPago(Booking booking, String estado, String referencia, String ultimos4, String mensaje) {
         Payment pago = new Payment();
         pago.setBooking(booking);
         pago.setAmount(booking.getTotalPrice());
         pago.setStatus(estado);
         pago.setExternalReference(referencia);
+        pago.setCardLast4(ultimos4);
         pago.setMessage(mensaje);
         pago.setPaymentDate(LocalDateTime.now());
         pagoRepositorio.save(pago);
@@ -163,6 +201,9 @@ public class BookingService {
             BigDecimal reembolso = booking.getTotalPrice()
                     .multiply(BigDecimal.valueOf(porcentaje))
                     .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+            if (reembolso.compareTo(BigDecimal.ZERO) > 0) {
+                reembolsarEnPasarela(booking, reembolso);
+            }
             booking.setRefundAmount(reembolso);
         }
 
@@ -171,6 +212,21 @@ public class BookingService {
 
         booking.setStatus(Booking.BookingStatus.CANCELLED);
         return bookingRepository.save(booking);
+    }
+
+    // Devuelve el dinero al medio de pago original usando el pago aprobado de la reserva
+    private void reembolsarEnPasarela(Booking booking, BigDecimal monto) {
+        for (Payment pago : pagoRepositorio.findByBookingId(booking.getId())) {
+            if (Payment.APPROVED.equals(pago.getStatus()) && pago.getExternalReference() != null) {
+                try {
+                    pasarelaPago.reembolsar(pago.getExternalReference(), monto);
+                } catch (PaymentGatewayService.NoDisponibleException e) {
+                    throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
+                            "No pudimos procesar el reembolso. Tu reserva no se canceló, probá de nuevo en unos minutos.");
+                }
+                return;
+            }
+        }
     }
 
     public List<Booking> getBookingsByTourist(Long touristId) {

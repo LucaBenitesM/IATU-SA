@@ -1,0 +1,4 @@
+# Copiar este archivo como application-local.properties (queda ignorado por git) y completar.
+# Credenciales de PRUEBA de la aplicacion de Mercado Pago (empiezan con TEST-).
+mercadopago.access-token=TEST-xxxxxxxxxxxxxxxx-xxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-xxxxxxxxx
+mercadopago.public-key=TEST-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
