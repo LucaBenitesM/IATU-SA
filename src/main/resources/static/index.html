@@ -405,11 +405,36 @@
   @media (prefers-reduced-motion:reduce){
     *{animation:none!important;transition:none!important}
   }
+
+  .rate{display:inline-flex;align-items:center;gap:.3rem;font-size:.88rem;font-weight:600;color:var(--text)}
+  .rate .i{width:1em;height:1em;color:var(--warn);fill:currentColor;stroke:none}
+  .rate small{color:var(--muted);font-weight:500}
+  .rate .i.off{color:var(--line-strong)}
+  .stars{display:inline-flex;gap:.1rem}
+  .stars .i{width:.95em;height:.95em;fill:currentColor;stroke:none;color:var(--warn)}
+  .stars .i.off{color:var(--line-strong)}
+  .revsum{display:flex;align-items:center;gap:.8rem;margin:.3rem 0 .8rem}
+  .revsum b{font:650 1.7rem var(--display);line-height:1}
+  .revsum span{margin-left:.5rem;color:var(--muted);font-size:.86rem}
+  .revs{display:flex;flex-direction:column;gap:.7rem}
+  .rev{padding:.8rem .95rem;border:1px solid var(--line);border-radius:var(--r2);background:var(--surface)}
+  .rev .rtop{display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap}
+  .rev .who{font-weight:600;font-size:.9rem}
+  .rev .dt{color:var(--muted);font-size:.8rem}
+  .rev p{margin-top:.4rem;color:var(--text);font-size:.9rem;white-space:pre-line;word-break:break-word}
+  .picker{display:flex;gap:.25rem;margin:.1rem 0 1rem}
+  .picker button{width:44px;height:44px;border:1px solid var(--line-strong);border-radius:var(--r2);background:var(--surface);color:var(--line-strong);display:grid;place-items:center}
+  .picker button .i{width:22px;height:22px;fill:currentColor;stroke:none}
+  .picker button.on{color:var(--warn);border-color:var(--warn);background:var(--warn-bg)}
+  .picker button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .revhint{color:var(--muted);font-size:.8rem;font-weight:500}
+  .acts2 .spacer{margin-right:auto}
 </style>
 </head>
 <body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.8l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.7 6.1 20.8l1.2-6.5L2.5 9.7l6.6-.9z"/></symbol>
   <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-5.6-7-11a7 7 0 0 1 14 0c0 5.4-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
   <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></symbol>
@@ -732,6 +757,7 @@
 </div>
 
 <dialog id="payDlg" class="modal" aria-label="Pago de la reserva"></dialog>
+<dialog id="revDlg" class="modal" aria-label="Reseña de la actividad"></dialog>
 <dialog id="dlg" class="drawer" aria-label="Detalle de la atracción"></dialog>
 <button class="hfab" id="helpFab" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="help"><svg class="i" aria-hidden="true"><use href="#i-chat"/></svg>Ayuda</button>
 <section class="help" id="help" role="dialog" aria-label="Centro de ayuda" hidden>
@@ -1196,7 +1222,40 @@
 "Ver todas las opciones": "Ver todas as opções",
 "Un momento…": "Um momento…",
 "Resumen copiado.": "Resumo copiado.",
-"No se pudo copiar. Seleccioná el texto a mano.": "Não foi possível copiar. Selecione o texto manualmente."
+"No se pudo copiar. Seleccioná el texto a mano.": "Não foi possível copiar. Selecione o texto manualmente.",
+"Valorar": "Avaliar",
+"Mi reseña": "Minha avaliação",
+"Valorar actividad": "Avaliar atividade",
+"Tu reseña": "Sua avaliação",
+"Tu valoración": "Sua nota",
+"Comentario": "Comentário",
+"(opcional)": "(opcional)",
+"Contá cómo fue tu experiencia": "Conte como foi sua experiência",
+"Guardar reseña": "Salvar avaliação",
+"Publicar reseña": "Publicar avaliação",
+"Borrar reseña": "Excluir avaliação",
+"¿Seguro? Tocá de nuevo para borrar": "Tem certeza? Toque de novo para excluir",
+"Reseña publicada.": "Avaliação publicada.",
+"Reseña actualizada.": "Avaliação atualizada.",
+"Reseña borrada.": "Avaliação excluída.",
+"Reseñas": "Avaliações",
+"Todavía no hay reseñas. Solo pueden valorar quienes completaron la actividad.": "Ainda não há avaliações. Só podem avaliar quem concluiu a atividade.",
+"No pudimos cargar las reseñas.": "Não conseguimos carregar as avaliações.",
+"{n} reseña": "{n} avaliação",
+"{n} reseñas": "{n} avaliações",
+"editada": "editada",
+"Elegí una valoración de 1 a 5 estrellas.": "Escolha uma nota de 1 a 5 estrelas.",
+"{n} de 5 estrellas": "{n} de 5 estrelas",
+"Podrás valorar cuando termine la actividad.": "Você poderá avaliar quando a atividade terminar.",
+"Faltan datos para valorar.": "Faltam dados para avaliar.",
+"Solo quien hizo la reserva puede valorar la actividad.": "Somente quem fez a reserva pode avaliar a atividade.",
+"Solo podés valorar actividades de reservas confirmadas.": "Você só pode avaliar atividades de reservas confirmadas.",
+"Vas a poder valorar la actividad cuando la hayas completado.": "Você poderá avaliar a atividade quando a tiver concluído.",
+"Ya valoraste esta reserva. Podés editar tu reseña.": "Você já avaliou esta reserva. Pode editar sua avaliação.",
+"Esta reseña no es tuya.": "Esta avaliação não é sua.",
+"La reseña no existe.": "A avaliação não existe.",
+"La valoración tiene que ser de 1 a 5.": "A nota deve ser de 1 a 5.",
+"El comentario no puede superar los 1000 caracteres.": "O comentário não pode ultrapassar 1000 caracteres."
 },
 "en": {
 "Mapa de Uruguay": "Map of Uruguay",
@@ -1638,7 +1697,40 @@
 "Ver todas las opciones": "See all options",
 "Un momento…": "One moment…",
 "Resumen copiado.": "Summary copied.",
-"No se pudo copiar. Seleccioná el texto a mano.": "Could not copy. Select the text manually."
+"No se pudo copiar. Seleccioná el texto a mano.": "Could not copy. Select the text manually.",
+"Valorar": "Rate",
+"Mi reseña": "My review",
+"Valorar actividad": "Rate activity",
+"Tu reseña": "Your review",
+"Tu valoración": "Your rating",
+"Comentario": "Comment",
+"(opcional)": "(optional)",
+"Contá cómo fue tu experiencia": "Tell us about your experience",
+"Guardar reseña": "Save review",
+"Publicar reseña": "Post review",
+"Borrar reseña": "Delete review",
+"¿Seguro? Tocá de nuevo para borrar": "Sure? Tap again to delete",
+"Reseña publicada.": "Review posted.",
+"Reseña actualizada.": "Review updated.",
+"Reseña borrada.": "Review deleted.",
+"Reseñas": "Reviews",
+"Todavía no hay reseñas. Solo pueden valorar quienes completaron la actividad.": "There are no reviews yet. Only people who completed the activity can review it.",
+"No pudimos cargar las reseñas.": "We couldn't load the reviews.",
+"{n} reseña": "{n} review",
+"{n} reseñas": "{n} reviews",
+"editada": "edited",
+"Elegí una valoración de 1 a 5 estrellas.": "Choose a rating from 1 to 5 stars.",
+"{n} de 5 estrellas": "{n} out of 5 stars",
+"Podrás valorar cuando termine la actividad.": "You can review once the activity ends.",
+"Faltan datos para valorar.": "Missing data to submit the review.",
+"Solo quien hizo la reserva puede valorar la actividad.": "Only the person who made the booking can review the activity.",
+"Solo podés valorar actividades de reservas confirmadas.": "You can only review activities from confirmed bookings.",
+"Vas a poder valorar la actividad cuando la hayas completado.": "You will be able to review the activity once you have completed it.",
+"Ya valoraste esta reserva. Podés editar tu reseña.": "You already reviewed this booking. You can edit your review.",
+"Esta reseña no es tuya.": "This review is not yours.",
+"La reseña no existe.": "The review does not exist.",
+"La valoración tiene que ser de 1 a 5.": "The rating must be from 1 to 5.",
+"El comentario no puede superar los 1000 caracteres.": "The comment cannot exceed 1000 characters."
 }
 };
   var I18N_PATTERNS = [["^No hay lugares suficientes\\. Quedan (\\d+)\\.$", "No hay lugares suficientes. Quedan {n}.", ["n"]]];
@@ -1952,10 +2044,10 @@
   }
 
   function cardHtml(a) {
-    return '<article class="card" data-open="' + esc(a.id) + '"" tabindex="0" role="button" aria-label="' + esc(tt("Ver detalle de {n}", {n: a.name})) + '">'
+    return '<article class="card" data-open="' + esc(a.id) + '" tabindex="0" role="button" aria-label="' + esc(tt("Ver detalle de {n}", {n: a.name})) + '">'
       + '<div class="plate">' + plateSvg(a) + photoHtml(a) + '<span class="dept">' + esc(a.department) + "</span></div>"
       + '<div class="cb"><div class="l1"><h3 class="ttl">' + esc(a.name) + '</h3><span class="price">' + money(a.price) + "</span></div>"
-      + '<p class="loc">' + icon("pin") + esc(a.locality) + "</p>"
+      + '<p class="loc">' + icon("pin") + esc(a.locality) + "</p>" + rateHtml(a.id)
       + '<p class="desc">' + esc(a.description) + "</p>" + facts(a) + "</div></article>";
   }
 
@@ -2005,7 +2097,44 @@
     attractions = await api("GET", "/api/attractions");
     attractionById = {};
     attractions.forEach(function (a) { attractionById[a.id] = a; });
+    await loadRatings();
     return attractions;
+  }
+
+  var ratings = {};
+  var myReviews = {};
+
+  async function loadRatings() {
+    ratings = {};
+    try {
+      var rs = await api("GET", "/api/reviews/summary");
+      rs.forEach(function (r) { ratings[r.atraccionId] = r; });
+    } catch (e) { ratings = {}; }
+  }
+
+  function starsHtml(n) {
+    var h = '<span class="stars" role="img" aria-label="' + esc(tt("{n} de 5 estrellas", {n: n})) + '">';
+    for (var i = 1; i <= 5; i++) h += '<svg class="i' + (i <= n ? "" : " off") + '" aria-hidden="true"><use href="#i-star"/></svg>';
+    return h + "</span>";
+  }
+
+  function countText(n) {
+    return tt(n === 1 ? "{n} reseña" : "{n} reseñas", {n: n});
+  }
+
+  function rateHtml(id) {
+    var r = ratings[id];
+    if (!r || !r.count) return "";
+    return '<p class="rate"><svg class="i" aria-hidden="true"><use href="#i-star"/></svg>' + esc(Number(r.average).toLocaleString(LOC, {minimumFractionDigits: 1, maximumFractionDigits: 1}))
+      + " <small>(" + esc(r.count) + ")</small></p>";
+  }
+
+  // Una actividad esta terminada cuando paso su inicio mas su duracion
+  function finished(b) {
+    var inst = b.activityInstance || {};
+    var att = inst.atraccion || {};
+    var end = new Date(inst.dateTime).getTime() + Number(att.durationMinutes || 0) * 60000;
+    return !isNaN(end) && end <= Date.now();
   }
 
   function openDetail(id) {
@@ -2032,9 +2161,39 @@
       + "<div><small>Edad mínima</small><b>" + (a.minimumAge != null ? esc(tt("{n} años", {n: a.minimumAge})) : esc(tt("Sin límite"))) + "</b></div></div>"
       + '<div class="blk"><h4>Descripción</h4><p>' + esc(a.description) + "</p></div>"
       + (a.requirements ? '<div class="note">' + icon("alert") + '<div class="blk"><h4>Requerimientos para participar</h4><p>' + esc(a.requirements) + "</p></div></div>" : "")
-      + '<div class="blk"><h4>Política de cancelación</h4><p>' + esc(cancel) + "</p></div>" + reserveSlot + prov + "</div></div>";
+      + '<div class="blk"><h4>Política de cancelación</h4><p>' + esc(cancel) + "</p></div>" + reserveSlot
+      + '<div class="blk" id="revBox"><h4>Reseñas</h4></div>' + prov + "</div></div>";
     $("#dlg").showModal();
     if (reserveSlot) loadReserve(a);
+    loadReviews(a.id);
+  }
+
+  async function loadReviews(id) {
+    var box = $("#revBox");
+    if (!box) return;
+    var list;
+    try {
+      list = await api("GET", "/api/reviews/attraction/" + id);
+    } catch (e) {
+      box.innerHTML = "<h4>Reseñas</h4><p>" + esc(tt("No pudimos cargar las reseñas.")) + "</p>";
+      return;
+    }
+    if (!$("#revBox")) return;
+    if (!list.length) {
+      box.innerHTML = "<h4>Reseñas</h4><p>" + esc(tt("Todavía no hay reseñas. Solo pueden valorar quienes completaron la actividad.")) + "</p>";
+      return;
+    }
+    var sum = 0;
+    list.forEach(function (r) { sum += r.rating; });
+    var avg = Math.round(sum / list.length * 10) / 10;
+    var items = list.map(function (r) {
+      return '<div class="rev"><div class="rtop"><span class="who">' + esc(r.touristName) + "</span>" + starsHtml(r.rating) + "</div>"
+        + '<div class="dt">' + esc(when(r.createdAt)) + (r.updatedAt ? " · " + esc(tt("editada")) : "") + "</div>"
+        + (r.comment ? "<p>" + esc(r.comment) + "</p>" : "") + "</div>";
+    }).join("");
+    box.innerHTML = "<h4>Reseñas</h4>"
+      + '<div class="revsum"><b>' + esc(avg.toLocaleString(LOC, {minimumFractionDigits: 1, maximumFractionDigits: 1})) + "</b><div>" + starsHtml(Math.round(avg)) + "<span>" + esc(countText(list.length)) + "</span></div></div>"
+      + '<div class="revs">' + items + "</div>";
   }
 
   $("#dlg").addEventListener("click", function (e) {
@@ -2587,6 +2746,12 @@
     if (b.status === "CANCELLED" && b.cancelReason) {
       state += '<span class="sec">' + esc(tm(b.cancelReason)) + "</span>";
     }
+    var rv = myReviews[b.id];
+    if (!forProvider && rv) state += '<span class="sec">' + starsHtml(rv.rating) + "</span>";
+    var done = finished(b);
+    if (!forProvider && b.status === "CONFIRMED" && !done && !rv) {
+      state += '<span class="sec">' + esc(tt("Podrás valorar cuando termine la actividad.")) + "</span>";
+    }
     var row = "<tr>";
     if (forProvider) row += '<td data-l="Turista"><strong>' + esc(who) + '</strong><span class="sec">' + esc(t.email) + "</span></td>";
     row += '<td data-l="Actividad"><strong>' + esc(att.name) + '</strong><span class="sec">' + esc(att.locality) + ", " + esc(att.department) + "</span></td>"
@@ -2597,7 +2762,9 @@
     if (!forProvider) {
       var acts = "";
       if (b.status === "PENDING_PAYMENT") acts += '<button class="btn sm" type="button" data-pay="' + esc(b.id) + '">Pagar</button>';
-      if (b.status === "PENDING_PAYMENT" || b.status === "CONFIRMED") acts += '<button class="btn danger sm" type="button" data-cancel="' + esc(b.id) + '">Cancelar</button>';
+      if ((b.status === "CONFIRMED" || b.status === "COMPLETED") && rv) acts += '<button class="btn ghost sm" type="button" data-review="' + esc(b.id) + '">Mi reseña</button>';
+      else if ((b.status === "CONFIRMED" || b.status === "COMPLETED") && done) acts += '<button class="btn sm" type="button" data-review="' + esc(b.id) + '">Valorar</button>';
+      if (b.status === "PENDING_PAYMENT" || (b.status === "CONFIRMED" && !done)) acts += '<button class="btn danger sm" type="button" data-cancel="' + esc(b.id) + '">Cancelar</button>';
       row += '<td class="acts">' + acts + "</td>";
     }
     return row + "</tr>";
@@ -2623,6 +2790,11 @@
     }
     list.sort(function (a, b) { return b.id - a.id; });
     myList = list;
+    myReviews = {};
+    try {
+      var rvs = await api("GET", "/api/reviews/tourist/" + user.id);
+      rvs.forEach(function (r) { myReviews[r.bookingId] = r; });
+    } catch (e2) { myReviews = {}; }
     box.innerHTML = list.length
       ? bookingTable(list, false)
       : '<div class="grid">' + emptyHtml("list", "Todavía no hiciste reservas", "Elegí una atracción en Explorar y reservá un horario.") + "</div>";
@@ -2631,6 +2803,8 @@
   $("#myBookings").addEventListener("click", async function (e) {
     var p = e.target.closest("[data-pay]");
     var c = e.target.closest("[data-cancel]");
+    var rb = e.target.closest("[data-review]");
+    if (rb) { openReview(rb.getAttribute("data-review")); return; }
     if (p) { openPay(p.getAttribute("data-pay")); return; }
     if (!c) return;
     c.disabled = true;
@@ -2641,6 +2815,95 @@
       toast(err.message, true);
     }
     loadMyBookings();
+  });
+
+
+  var reviewing = null;
+  var rating = 0;
+  var confirmDel = false;
+
+  function pickerHtml() {
+    var h = "";
+    for (var i = 1; i <= 5; i++) {
+      h += '<button type="button" role="radio" data-star="' + i + '" aria-checked="' + (i === rating) + '" aria-label="' + esc(tt("{n} de 5 estrellas", {n: i})) + '" class="' + (i <= rating ? "on" : "") + '"><svg class="i" aria-hidden="true"><use href="#i-star"/></svg></button>';
+    }
+    return h;
+  }
+
+  function openReview(id) {
+    var b = null;
+    myList.forEach(function (x) { if (String(x.id) === String(id)) b = x; });
+    if (!b) return;
+    reviewing = b;
+    var rv = myReviews[b.id] || null;
+    rating = rv ? rv.rating : 0;
+    confirmDel = false;
+    var inst = b.activityInstance || {};
+    var att = inst.atraccion || {};
+    $("#revDlg").innerHTML = '<div class="mh"><h3>' + esc(rv ? tt("Tu reseña") : tt("Valorar actividad")) + '</h3><button class="xb" type="button" data-close aria-label="Cerrar">' + icon("x") + "</button></div>"
+      + '<div class="mb"><div class="sum"><div><b>' + esc(att.name) + "</b><p>" + esc(when(inst.dateTime)) + "</p></div></div>"
+      + '<form id="revForm" novalidate>'
+      + '<div class="field"><span id="revLbl">Tu valoración</span><div class="picker" role="radiogroup" aria-labelledby="revLbl" id="picker">' + pickerHtml() + "</div></div>"
+      + '<label class="field"><span>Comentario <span class="revhint">(opcional)</span></span><textarea name="comment" rows="4" maxlength="1000" placeholder="' + esc(tt("Contá cómo fue tu experiencia")) + '">' + esc(rv && rv.comment ? rv.comment : "") + "</textarea></label>"
+      + '<div class="msg" id="revMsg" role="status"></div>'
+      + '<div class="acts2">' + (rv ? '<button class="btn danger spacer" type="button" id="revDel">Borrar reseña</button>' : "")
+      + '<button class="btn ghost" type="button" data-close>Cancelar</button><button class="btn" type="submit" id="revBtn">' + esc(rv ? tt("Guardar reseña") : tt("Publicar reseña")) + "</button></div></form></div>";
+    $("#revDlg").showModal();
+  }
+
+  $("#revDlg").addEventListener("click", async function (e) {
+    if (e.target === this || e.target.closest("[data-close]")) { this.close(); return; }
+    var st = e.target.closest("[data-star]");
+    if (st) {
+      rating = Number(st.getAttribute("data-star"));
+      $("#picker").innerHTML = pickerHtml();
+      $("#picker").querySelector("[data-star=\"" + rating + "\"]").focus();
+      return;
+    }
+    var del = e.target.closest("#revDel");
+    if (!del) return;
+    var rv = myReviews[reviewing.id];
+    if (!confirmDel) {
+      confirmDel = true;
+      del.textContent = tt("¿Seguro? Tocá de nuevo para borrar");
+      return;
+    }
+    del.disabled = true;
+    try {
+      await api("DELETE", "/api/reviews/" + rv.id + "?touristId=" + user.id);
+      this.close();
+      toast(tt("Reseña borrada."));
+      await loadRatings();
+      loadMyBookings();
+      renderTourist();
+    } catch (err) {
+      msg($("#revMsg"), err.message, false);
+      del.disabled = false;
+    }
+  });
+
+  $("#revDlg").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    var box = $("#revMsg");
+    var btn = $("#revBtn");
+    if (!rating) { msg(box, tt("Elegí una valoración de 1 a 5 estrellas."), false); return; }
+    var comment = $("#revForm").elements.comment.value;
+    var rv = myReviews[reviewing.id];
+    btn.disabled = true;
+    box.className = "msg";
+    box.textContent = "";
+    try {
+      if (rv) await api("PUT", "/api/reviews/" + rv.id, {touristId: user.id, rating: rating, comment: comment});
+      else await api("POST", "/api/reviews", {bookingId: reviewing.id, touristId: user.id, rating: rating, comment: comment});
+      this.close();
+      toast(rv ? tt("Reseña actualizada.") : tt("Reseña publicada."));
+      await loadRatings();
+      loadMyBookings();
+      renderTourist();
+    } catch (err) {
+      msg(box, err.message, false);
+      btn.disabled = false;
+    }
   });
 
   var TEST_CARDS = [
