@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PrestadorRepositorio extends JpaRepository<Prestador, Long> {
+    java.util.List<Prestador> findByStatus(String status);
 }

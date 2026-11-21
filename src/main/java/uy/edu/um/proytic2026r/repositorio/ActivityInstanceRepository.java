@@ -19,6 +19,8 @@ public interface ActivityInstanceRepository extends JpaRepository<ActivityInstan
 
     List<ActivityInstance> findByDateTimeAfter(LocalDateTime desde);
 
+    List<ActivityInstance> findByDateTimeBetween(LocalDateTime desde, LocalDateTime hasta);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select i from ActivityInstance i where i.id = :id")
     Optional<ActivityInstance> findByIdForUpdate(@Param("id") Long id);
