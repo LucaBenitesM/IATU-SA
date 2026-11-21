@@ -50,7 +50,7 @@ public class ReviewService {
                     "Vas a poder valorar la actividad cuando la hayas completado.");
         }
         validar(rating, comment);
-        if (reviewRepository.findByBookingId(bookingId).isPresent()) {
+        if (reviewRepository.findByBooking_Id(bookingId).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Ya valoraste esta reserva. Podés editar tu reseña.");
         }
@@ -94,11 +94,11 @@ public class ReviewService {
     }
 
     public List<Review> getByAtraccion(Long atraccionId) {
-        return reviewRepository.findByAtraccionIdOrderByCreatedAtDesc(atraccionId);
+        return reviewRepository.findByAtraccion_IdOrderByCreatedAtDesc(atraccionId);
     }
 
     public List<Review> getByTourist(Long touristId) {
-        return reviewRepository.findByTouristId(touristId);
+        return reviewRepository.findByTourist_Id(touristId);
     }
 
     public Map<String, Object> getSummary(Long atraccionId) {
@@ -106,7 +106,7 @@ public class ReviewService {
         Double promedio = reviewRepository.averageByAtraccionId(atraccionId);
         resumen.put("atraccionId", atraccionId);
         resumen.put("average", promedio == null ? null : redondear(promedio));
-        resumen.put("count", reviewRepository.countByAtraccionId(atraccionId));
+        resumen.put("count", reviewRepository.countByAtraccion_Id(atraccionId));
         return resumen;
     }
 

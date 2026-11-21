@@ -12,13 +12,13 @@ import java.util.Optional;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    List<Review> findByAtraccionIdOrderByCreatedAtDesc(Long atraccionId);
+    List<Review> findByAtraccion_IdOrderByCreatedAtDesc(Long atraccionId);
 
-    List<Review> findByTouristId(Long touristId);
+    List<Review> findByTourist_Id(Long touristId);
 
-    Optional<Review> findByBookingId(Long bookingId);
+    Optional<Review> findByBooking_Id(Long bookingId);
 
-    long countByAtraccionId(Long atraccionId);
+    long countByAtraccion_Id(Long atraccionId);
 
     @Query("select avg(r.rating) from Review r where r.atraccion.id = :id")
     Double averageByAtraccionId(@Param("id") Long id);
