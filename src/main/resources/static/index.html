@@ -429,6 +429,23 @@
   .picker button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   .revhint{color:var(--muted);font-size:.8rem;font-weight:500}
   .acts2 .spacer{margin-right:auto}
+
+  .fgrid{margin-bottom:1rem}
+  .fl{display:block;margin-bottom:.9rem}
+  .fl>span{display:block;font:650 .8rem var(--font);color:var(--muted);margin-bottom:.35rem}
+  .pr{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+  .fmsg{margin:-.3rem 0 .9rem;font-size:.82rem;color:var(--err)}
+  .fmsg:empty{display:none}
+  .part{border:1px solid var(--line);border-radius:var(--r2);padding:.7rem .9rem .9rem;margin:0 0 .8rem}
+  .part legend{font:650 .86rem var(--font);padding:0 .35rem}
+  .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+  .pgrid .field{margin-bottom:0}
+  .partbtns{display:flex;gap:.6rem;justify-content:flex-end;margin-top:.4rem}
+  .plist{margin-top:.4rem;font-size:.82rem;color:var(--muted)}
+  .plist summary{cursor:pointer;font-weight:600;color:var(--text)}
+  .plist li{margin:.2rem 0 0 1rem;list-style:disc}
+  @media (max-width:860px){.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0 .8rem}}
+  @media (max-width:520px){.pgrid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -551,6 +568,12 @@
         <aside class="rail" aria-label="Filtros">
           <h3>Departamento</h3>
           <ul id="depList"></ul>
+          <div class="fgrid">
+            <label class="fl"><span>Localidad</span><select id="fLoc"><option value="">Todas las localidades</option></select></label>
+            <label class="fl"><span>Fecha de la actividad</span><input type="date" id="fDate"></label>
+            <div class="fl"><span>Precio</span><div class="pr"><input type="number" id="fMin" min="0" inputmode="numeric" placeholder="Mín." aria-label="Precio mínimo"><input type="number" id="fMax" min="0" inputmode="numeric" placeholder="Máx." aria-label="Precio máximo"></div></div>
+          </div>
+          <p class="fmsg" id="fMsg" role="status"></p>
           <h3>Cancelación</h3>
           <label class="check"><input type="checkbox" id="fCancel"><span>Solo con cancelación</span></label>
           <button type="button" class="link" id="clearF">Limpiar filtros</button>
@@ -1270,7 +1293,32 @@
 "Pago rechazado: fecha de vencimiento incorrecta. Tu reserva sigue pendiente, podés intentar de nuevo.": "Pagamento recusado: data de validade incorreta. Sua reserva continua pendente, você pode tentar novamente.",
 "Pago rechazado: datos de la tarjeta incorrectos. Tu reserva sigue pendiente, podés intentar de nuevo.": "Pagamento recusado: dados do cartão incorretos. Sua reserva continua pendente, você pode tentar novamente.",
 "Pago rechazado: tu banco no autorizó la operación. Tu reserva sigue pendiente, podés intentar de nuevo.": "Pagamento recusado: seu banco não autorizou a operação. Sua reserva continua pendente, você pode tentar novamente.",
-"No pudimos procesar el reembolso. Tu reserva no se canceló, probá de nuevo en unos minutos.": "Não conseguimos processar o reembolso. Sua reserva não foi cancelada, tente novamente em alguns minutos."
+"No pudimos procesar el reembolso. Tu reserva no se canceló, probá de nuevo en unos minutos.": "Não conseguimos processar o reembolso. Sua reserva não foi cancelada, tente novamente em alguns minutos.",
+"Todas las localidades": "Todas as localidades",
+"Fecha de la actividad": "Data da atividade",
+"Mín.": "Mín.",
+"Máx.": "Máx.",
+"Precio mínimo": "Preço mínimo",
+"Precio máximo": "Preço máximo",
+"Revisá el rango de precio: el mínimo supera al máximo.": "Revise a faixa de preço: o mínimo supera o máximo.",
+"Continuar": "Continuar",
+"Volver": "Voltar",
+"Participantes": "Participantes",
+"Completá los datos de la persona que va a la actividad.": "Preencha os dados da pessoa que vai à atividade.",
+"Completá los datos de las {n} personas que van a la actividad.": "Preencha os dados das {n} pessoas que vão à atividade.",
+"Participante {n}": "Participante {n}",
+"Cédula": "Documento (CI)",
+"Fecha de nacimiento": "Data de nascimento",
+"Participantes ({n})": "Participantes ({n})",
+"CI {c}": "CI {c}",
+"El plazo de pago de 24 horas venció.": "O prazo de pagamento de 24 horas venceu.",
+"El plazo para pagar esta reserva venció.": "O prazo para pagar esta reserva venceu.",
+"Los datos de los participantes no coinciden con la cantidad de personas.": "Os dados dos participantes não coincidem com o número de pessoas.",
+"Completá los datos de todos los participantes.": "Preencha os dados de todos os participantes.",
+"La cédula debe tener 7 u 8 dígitos.": "O documento deve ter 7 ou 8 dígitos.",
+"Hay cédulas repetidas entre los participantes.": "Há documentos repetidos entre os participantes.",
+"La fecha de nacimiento no es válida.": "A data de nascimento não é válida.",
+"{who} no cumple la edad mínima de {n} años.": "{who} não atinge a idade mínima de {n} anos."
 },
 "en": {
 "Mapa de Uruguay": "Map of Uruguay",
@@ -1760,10 +1808,36 @@
 "Pago rechazado: fecha de vencimiento incorrecta. Tu reserva sigue pendiente, podés intentar de nuevo.": "Payment declined: wrong expiry date. Your booking is still pending, you can try again.",
 "Pago rechazado: datos de la tarjeta incorrectos. Tu reserva sigue pendiente, podés intentar de nuevo.": "Payment declined: incorrect card details. Your booking is still pending, you can try again.",
 "Pago rechazado: tu banco no autorizó la operación. Tu reserva sigue pendiente, podés intentar de nuevo.": "Payment declined: your bank did not authorize the transaction. Your booking is still pending, you can try again.",
-"No pudimos procesar el reembolso. Tu reserva no se canceló, probá de nuevo en unos minutos.": "We couldn't process the refund. Your booking was not cancelled, try again in a few minutes."
+"No pudimos procesar el reembolso. Tu reserva no se canceló, probá de nuevo en unos minutos.": "We couldn't process the refund. Your booking was not cancelled, try again in a few minutes.",
+"Todas las localidades": "All localities",
+"Fecha de la actividad": "Activity date",
+"Mín.": "Min.",
+"Máx.": "Max.",
+"Precio mínimo": "Minimum price",
+"Precio máximo": "Maximum price",
+"Revisá el rango de precio: el mínimo supera al máximo.": "Check the price range: the minimum is higher than the maximum.",
+"Continuar": "Continue",
+"Volver": "Back",
+"Participantes": "Participants",
+"Completá los datos de la persona que va a la actividad.": "Fill in the details of the person attending the activity.",
+"Completá los datos de las {n} personas que van a la actividad.": "Fill in the details of the {n} people attending the activity.",
+"Participante {n}": "Participant {n}",
+"Cédula": "ID number (CI)",
+"Fecha de nacimiento": "Date of birth",
+"Participantes ({n})": "Participants ({n})",
+"CI {c}": "CI {c}",
+"El plazo de pago de 24 horas venció.": "The 24-hour payment period has expired.",
+"El plazo para pagar esta reserva venció.": "The payment period for this booking has expired.",
+"Los datos de los participantes no coinciden con la cantidad de personas.": "The participant details do not match the number of people.",
+"Completá los datos de todos los participantes.": "Fill in the details of all participants.",
+"La cédula debe tener 7 u 8 dígitos.": "The ID number must have 7 or 8 digits.",
+"Hay cédulas repetidas entre los participantes.": "There are repeated ID numbers among the participants.",
+"La fecha de nacimiento no es válida.": "The date of birth is not valid.",
+"{who} no cumple la edad mínima de {n} años.": "{who} does not meet the minimum age of {n}."
 }
 };
-  var I18N_PATTERNS = [["^No hay lugares suficientes\\. Quedan (\\d+)\\.$", "No hay lugares suficientes. Quedan {n}.", ["n"]]];
+  var I18N_PATTERNS = [["^No hay lugares suficientes\\. Quedan (\\d+)\\.$", "No hay lugares suficientes. Quedan {n}.", ["n"]],
+    ["^(.+) no cumple la edad mínima de (\\d+) años\\.$", "{who} no cumple la edad mínima de {n} años.", ["who", "n"]]];
   function tt(s, p) {
     var d = I18N[LANG];
     var r = d && d[s] !== undefined ? d[s] : s;
@@ -1890,7 +1964,7 @@
   var attractionById = {};
   var providersAll = [];
   var plateCache = {};
-  var tourist = {q: "", dep: "", cancel: false, sort: "new"};
+  var tourist = {q: "", dep: "", cancel: false, sort: "new", loc: "", date: "", pmin: "", pmax: ""};
   var adminStatus = "";
 
   function esc(s) {
@@ -2128,7 +2202,22 @@
     attractionById = {};
     attractions.forEach(function (a) { attractionById[a.id] = a; });
     await loadRatings();
+    await loadDates();
     return attractions;
+  }
+
+  var instDates = {};
+
+  // Fechas futuras con lugares libres de cada atraccion, para filtrar por fecha
+  async function loadDates() {
+    instDates = {};
+    try {
+      var rows = await api("GET", "/api/instances/upcoming");
+      rows.forEach(function (r) {
+        if (!instDates[r.atraccionId]) instDates[r.atraccionId] = [];
+        instDates[r.atraccionId].push(String(r.dateTime).slice(0, 10));
+      });
+    } catch (e) { instDates = {}; }
   }
 
   var ratings = {};
@@ -2240,12 +2329,45 @@
     }
   });
 
+  function priceRange() {
+    var min = tourist.pmin === "" ? null : Number(tourist.pmin);
+    var max = tourist.pmax === "" ? null : Number(tourist.pmax);
+    if (min !== null && max !== null && min > max) return {min: null, max: null, bad: true};
+    return {min: min, max: max, bad: false};
+  }
+
   function filtered() {
     var q = tourist.q.toLowerCase();
+    var pr = priceRange();
     return attractions.filter(function (a) {
       var text = (a.name + " " + a.description + " " + a.locality).toLowerCase();
-      return (!q || text.indexOf(q) >= 0) && (!tourist.dep || a.department === tourist.dep) && (!tourist.cancel || a.allowsCancellation);
+      var price = Number(a.price);
+      if (q && text.indexOf(q) < 0) return false;
+      if (tourist.dep && a.department !== tourist.dep) return false;
+      if (tourist.cancel && !a.allowsCancellation) return false;
+      if (tourist.loc && a.locality !== tourist.loc) return false;
+      if (pr.min !== null && price < pr.min) return false;
+      if (pr.max !== null && price > pr.max) return false;
+      if (tourist.date && (instDates[a.id] || []).indexOf(tourist.date) < 0) return false;
+      return true;
     });
+  }
+
+  // Localidades disponibles (solo las del departamento elegido, si hay uno)
+  function renderLocs() {
+    var locs = [];
+    attractions.forEach(function (a) {
+      if (!a.locality) return;
+      if (tourist.dep && a.department !== tourist.dep) return;
+      if (locs.indexOf(a.locality) < 0) locs.push(a.locality);
+    });
+    locs.sort();
+    if (tourist.loc && locs.indexOf(tourist.loc) < 0) tourist.loc = "";
+    var html = '<option value="">' + esc(tt("Todas las localidades")) + "</option>";
+    locs.forEach(function (l) {
+      html += '<option value="' + esc(l) + '"' + (tourist.loc === l ? " selected" : "") + ">" + esc(l) + "</option>";
+    });
+    $("#fLoc").innerHTML = html;
   }
 
   function renderRail() {
@@ -2261,6 +2383,7 @@
       html += '<li><button type="button" data-dep="' + esc(d) + '" aria-pressed="' + (tourist.dep === d) + '">' + esc(d) + " <small>" + counts[d] + "</small></button></li>";
     });
     $("#depList").innerHTML = html;
+    renderLocs();
   }
 
   function renderTourist() {
@@ -2275,6 +2398,7 @@
       ? list.map(cardHtml).join("")
       : emptyHtml("search", "No encontramos atracciones", attractions.length ? "Probá con otra búsqueda o limpiá los filtros." : "Todavía no hay atracciones publicadas.");
     $("#count").textContent = tt(list.length === 1 ? "{n} atracción" : "{n} atracciones", {n: list.length});
+    $("#fMsg").textContent = priceRange().bad ? tt("Revisá el rango de precio: el mínimo supera al máximo.") : "";
   }
 
   async function loadTourist() {
@@ -2292,9 +2416,15 @@
   $("#q").addEventListener("input", function () { tourist.q = this.value; renderTourist(); });
   $("#sort").addEventListener("change", function () { tourist.sort = this.value; renderTourist(); });
   $("#fCancel").addEventListener("change", function () { tourist.cancel = this.checked; renderTourist(); });
+  $("#fLoc").addEventListener("change", function () { tourist.loc = this.value; renderTourist(); });
+  $("#fDate").addEventListener("change", function () { tourist.date = this.value; renderTourist(); });
+  $("#fMin").addEventListener("input", function () { tourist.pmin = this.value; renderTourist(); });
+  $("#fMax").addEventListener("input", function () { tourist.pmax = this.value; renderTourist(); });
   $("#clearF").addEventListener("click", function () {
     tourist.q = ""; tourist.dep = ""; tourist.cancel = false;
+    tourist.loc = ""; tourist.date = ""; tourist.pmin = ""; tourist.pmax = "";
     $("#q").value = ""; $("#fCancel").checked = false;
+    $("#fDate").value = ""; $("#fMin").value = ""; $("#fMax").value = "";
     renderRail(); renderTourist();
   });
   $("#depList").addEventListener("click", function (e) {
@@ -2689,9 +2819,14 @@
       + '<div class="slots" role="radiogroup" aria-label="Horarios disponibles">' + slots + "</div>"
       + '<div class="qtyrow"><label class="field" style="margin:0"><span>Personas</span><input type="number" id="qty" min="1" value="1"></label>'
       + '<div class="tot"><span>Total</span><b id="total">' + money(a.price) + "</b></div></div>"
-      + '<button class="btn block" type="button" id="reserveBtn" style="margin-top:.6rem">Reservar</button>'
+      + '<button class="btn block" type="button" id="toPartsBtn" style="margin-top:.6rem">Continuar</button>'
       + '<div class="msg" id="reserveMsg" role="status"></div>'
       + '<p class="muted" style="font-size:.84rem;margin-top:.8rem">La reserva queda pendiente hasta que la pagues desde Mis reservas.</p>';
+    if (reserveDraft && reserveDraft.attId === a.id) {
+      var radios = $$("input[name=slot]", $("#dlg"));
+      radios.forEach(function (r) { if (r.value === String(reserveDraft.slot)) r.checked = true; });
+      $("#qty").value = String(reserveDraft.qty);
+    }
     updateReserve();
   }
 
@@ -2706,21 +2841,78 @@
     $("#total").textContent = money(Number(reserving.price) * n);
   }
 
-  async function doReserve(btn) {
+  var reserveDraft = null;
+
+  function goParts() {
     var box = $("#reserveMsg");
     var sel = $("input[name=slot]:checked", $("#dlg"));
     var n = Number($("#qty").value);
     if (!sel) { msg(box, "Elegí un horario.", false); return; }
     if (!n || n < 1) { msg(box, "Indicá cuántas personas participan.", false); return; }
+    var previa = reserveDraft && reserveDraft.attId === reserving.id ? reserveDraft.people : [];
+    reserveDraft = {attId: reserving.id, slot: sel.value, qty: n, people: previa};
+    renderParts();
+  }
+
+  function partField(i, key, label, type, extra) {
+    return '<label class="field"><span>' + esc(label) + '</span><input type="' + type + '" name="' + key + i + '" required ' + (extra || "") + "></label>";
+  }
+
+  function renderParts() {
+    var d = reserveDraft;
+    var today = new Date().toISOString().slice(0, 10);
+    var h = "<h4>Participantes</h4><p class=\"muted\" style=\"margin:.4rem 0 .8rem\">"
+      + esc(tt(d.qty === 1 ? "Completá los datos de la persona que va a la actividad." : "Completá los datos de las {n} personas que van a la actividad.", {n: d.qty})) + "</p>"
+      + '<form id="partForm" novalidate>';
+    for (var i = 0; i < d.qty; i++) {
+      h += '<fieldset class="part"><legend>' + esc(tt("Participante {n}", {n: i + 1})) + '</legend><div class="pgrid">'
+        + partField(i, "fn", "Nombre", "text", 'autocomplete="off" maxlength="60"')
+        + partField(i, "ln", "Apellido", "text", 'autocomplete="off" maxlength="60"')
+        + partField(i, "id", "Cédula", "text", 'inputmode="numeric" maxlength="12" placeholder="1.234.567-8"')
+        + partField(i, "bd", "Fecha de nacimiento", "date", 'max="' + today + '"')
+        + "</div></fieldset>";
+    }
+    h += '<div class="msg" id="reserveMsg" role="status"></div>'
+      + '<div class="partbtns"><button class="btn ghost" type="button" id="partsBack">Volver</button><button class="btn" type="submit" id="reserveBtn">Reservar</button></div></form>';
+    $("#reserveBox").innerHTML = h;
+    var f = $("#partForm");
+    for (var j = 0; j < d.qty; j++) {
+      var p = d.people[j] || (j === 0 && user ? {firstName: user.firstName, lastName: user.lastName} : {});
+      f.elements["fn" + j].value = p.firstName || "";
+      f.elements["ln" + j].value = p.lastName || "";
+      f.elements["id" + j].value = p.documentId || "";
+      f.elements["bd" + j].value = p.birthDate || "";
+    }
+    $("#reserveBox").scrollIntoView({block: "start", behavior: "smooth"});
+  }
+
+  function readParts() {
+    var f = $("#partForm");
+    var out = [];
+    for (var i = 0; i < reserveDraft.qty; i++) {
+      out.push({firstName: f.elements["fn" + i].value.trim(), lastName: f.elements["ln" + i].value.trim(),
+        documentId: f.elements["id" + i].value.trim(), birthDate: f.elements["bd" + i].value});
+    }
+    reserveDraft.people = out;
+    return out;
+  }
+
+  async function doReserve(btn) {
+    var box = $("#reserveMsg");
+    var f = $("#partForm");
+    var people = readParts();
+    if (!f.checkValidity()) { f.reportValidity(); return; }
     btn.disabled = true;
     box.className = "msg";
     box.textContent = "";
     try {
       await api("POST", "/api/bookings", {
         tourist: {id: user.id},
-        activityInstance: {id: Number(sel.value)},
-        participantsCount: n
+        activityInstance: {id: Number(reserveDraft.slot)},
+        participantsCount: reserveDraft.qty,
+        participants: people
       });
+      reserveDraft = null;
       $("#dlg").close();
       toast("Reserva creada. Pagala para confirmarla.");
       switchT("mine");
@@ -2738,7 +2930,12 @@
     if (e.target.id === "qty") updateReserve();
   });
   $("#dlg").addEventListener("click", function (e) {
-    var b = e.target.closest("#reserveBtn");
+    if (e.target.closest("#toPartsBtn")) { goParts(); return; }
+    if (e.target.closest("#partsBack")) { readParts(); loadReserve(reserving); }
+  });
+  $("#dlg").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var b = e.target.querySelector("#reserveBtn");
     if (b) doReserve(b);
   });
 
@@ -2783,7 +2980,17 @@
       state += '<span class="sec">' + esc(tt("Podrás valorar cuando termine la actividad.")) + "</span>";
     }
     var row = "<tr>";
-    if (forProvider) row += '<td data-l="Turista"><strong>' + esc(who) + '</strong><span class="sec">' + esc(t.email) + "</span></td>";
+    if (forProvider) {
+      var plist = "";
+      if (b.participants && b.participants.length) {
+        plist = '<details class="plist"><summary>' + esc(tt("Participantes ({n})", {n: b.participants.length})) + "</summary><ul>"
+          + b.participants.map(function (p) {
+            var nac = p.birthDate ? new Date(p.birthDate + "T00:00:00").toLocaleDateString(LOC) : "-";
+            return "<li>" + esc(p.firstName + " " + p.lastName) + " · " + esc(tt("CI {c}", {c: p.documentId})) + " · " + esc(nac) + "</li>";
+          }).join("") + "</ul></details>";
+      }
+      row += '<td data-l="Turista"><strong>' + esc(who) + '</strong><span class="sec">' + esc(t.email) + "</span>" + plist + "</td>";
+    }
     row += '<td data-l="Actividad"><strong>' + esc(att.name) + '</strong><span class="sec">' + esc(att.locality) + ", " + esc(att.department) + "</span></td>"
       + '<td data-l="Fecha">' + esc(when(inst.dateTime)) + "</td>"
       + '<td data-l="Personas" class="num">' + esc(b.participantsCount) + "</td>"

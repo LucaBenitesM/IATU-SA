@@ -3,6 +3,7 @@ package uy.edu.um.proytic2026r.servicio;
 import uy.edu.um.proytic2026r.entities.ActivityInstance;
 import uy.edu.um.proytic2026r.entities.Atraccion;
 import uy.edu.um.proytic2026r.entities.Booking;
+import uy.edu.um.proytic2026r.entities.Participant;
 import uy.edu.um.proytic2026r.entities.Payment;
 import uy.edu.um.proytic2026r.entities.Usuario;
 import uy.edu.um.proytic2026r.repositorio.ActivityInstanceRepository;
@@ -10,14 +11,20 @@ import uy.edu.um.proytic2026r.repositorio.BookingRepository;
 import uy.edu.um.proytic2026r.repositorio.PaymentRepository;
 import uy.edu.um.proytic2026r.repositorio.UsuarioRepositorio;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
 import java.util.UUID;
 
@@ -77,6 +84,9 @@ public class BookingService {
                     "No hay lugares suficientes. Quedan " + instance.getAvailablePlaces() + ".");
         }
 
+        List<Participant> participantes = validarParticipantes(booking.getParticipants(), cantidad,
+                instance.getAtraccion(), instance.getDateTime());
+
         instance.setAvailablePlaces(instance.getAvailablePlaces() - cantidad);
         activityInstanceRepository.save(instance);
 
@@ -87,7 +97,76 @@ public class BookingService {
         nueva.setTotalPrice(instance.getAtraccion().getPrice().multiply(BigDecimal.valueOf(cantidad)));
         nueva.setBookingDate(LocalDateTime.now());
         nueva.setStatus(Booking.BookingStatus.PENDING_PAYMENT);
+        // 24 horas para pagar, pero nunca despues del inicio de la actividad
+        LocalDateTime plazo = LocalDateTime.now().plusHours(24);
+        if (instance.getDateTime().isBefore(plazo)) {
+            plazo = instance.getDateTime();
+        }
+        nueva.setPaymentDeadline(plazo);
+        for (Participant p : participantes) {
+            p.setBooking(nueva);
+        }
+        nueva.setParticipants(participantes);
         return bookingRepository.save(nueva);
+    }
+
+    private List<Participant> validarParticipantes(List<Participant> recibidos, int cantidad, Atraccion atraccion, LocalDateTime inicio) {
+        if (recibidos == null || recibidos.size() != cantidad) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Los datos de los participantes no coinciden con la cantidad de personas.");
+        }
+        List<Participant> limpios = new ArrayList<Participant>();
+        Set<String> cedulas = new HashSet<String>();
+        for (Participant p : recibidos) {
+            if (vacio(p.getFirstName()) || vacio(p.getLastName()) || vacio(p.getDocumentId()) || p.getBirthDate() == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Completá los datos de todos los participantes.");
+            }
+            String cedula = p.getDocumentId().replaceAll("\\D", "");
+            if (cedula.length() < 7 || cedula.length() > 8) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La cédula debe tener 7 u 8 dígitos.");
+            }
+            if (!cedulas.add(cedula)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Hay cédulas repetidas entre los participantes.");
+            }
+            if (p.getBirthDate().isAfter(LocalDate.now())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La fecha de nacimiento no es válida.");
+            }
+            Integer minima = atraccion.getMinimumAge();
+            if (minima != null && Period.between(p.getBirthDate(), inicio.toLocalDate()).getYears() < minima) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        p.getFirstName().trim() + " " + p.getLastName().trim() + " no cumple la edad mínima de " + minima + " años.");
+            }
+            Participant limpio = new Participant();
+            limpio.setFirstName(p.getFirstName().trim());
+            limpio.setLastName(p.getLastName().trim());
+            limpio.setDocumentId(cedula);
+            limpio.setBirthDate(p.getBirthDate());
+            limpios.add(limpio);
+        }
+        return limpios;
+    }
+
+    private boolean vacio(String texto) {
+        return texto == null || texto.trim().isEmpty();
+    }
+
+    // Cada minuto: las reservas que siguen pendientes pasado su plazo de pago se cancelan y liberan los lugares
+    @Scheduled(fixedDelay = 60000)
+    @Transactional
+    public void cancelarReservasVencidas() {
+        List<Booking> vencidas = bookingRepository.findByStatusAndPaymentDeadlineBefore(
+                Booking.BookingStatus.PENDING_PAYMENT, LocalDateTime.now());
+        for (Booking b : vencidas) {
+            ActivityInstance instance = activityInstanceRepository
+                    .findByIdForUpdate(b.getActivityInstance().getId()).orElse(null);
+            if (instance != null) {
+                instance.setAvailablePlaces(instance.getAvailablePlaces() + b.getParticipantsCount());
+                activityInstanceRepository.save(instance);
+            }
+            b.setStatus(Booking.BookingStatus.CANCELLED);
+            b.setCancelReason("El plazo de pago de 24 horas venció.");
+            bookingRepository.save(b);
+        }
     }
 
     public Booking pay(Long bookingId, Long touristId, Map<String, Object> datosPago) {
@@ -103,6 +182,9 @@ public class BookingService {
         }
         if (booking.getActivityInstance().getDateTime().isBefore(LocalDateTime.now())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "La actividad ya comenzó, no se puede pagar.");
+        }
+        if (booking.getPaymentDeadline() != null && booking.getPaymentDeadline().isBefore(LocalDateTime.now())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "El plazo para pagar esta reserva venció.");
         }
         if (datosPago == null || datosPago.get("token") == null || datosPago.get("payment_method_id") == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Faltan los datos de la tarjeta.");
@@ -120,6 +202,20 @@ public class BookingService {
         }
 
         if (Payment.APPROVED.equals(resultado.getEstado())) {
+            Booking actual = bookingRepository.findById(bookingId).orElse(booking);
+            if (actual.getStatus() != Booking.BookingStatus.PENDING_PAYMENT) {
+                // La reserva venció mientras se procesaba el pago: se devuelve el dinero
+                try {
+                    pasarelaPago.reembolsar(resultado.getIdExterno(), booking.getTotalPrice());
+                } catch (PaymentGatewayService.NoDisponibleException e) {
+                    guardarPago(booking, Payment.ERROR, resultado.getIdExterno(), resultado.getUltimos4(),
+                            "Pago aprobado sobre una reserva vencida: falta reembolsar. " + e.getMessage());
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "El plazo para pagar esta reserva venció.");
+                }
+                guardarPago(booking, Payment.REJECTED, resultado.getIdExterno(), resultado.getUltimos4(),
+                        "Pago reembolsado: la reserva venció durante el pago");
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "El plazo para pagar esta reserva venció.");
+            }
             guardarPago(booking, Payment.APPROVED, resultado.getIdExterno(), resultado.getUltimos4(), "Pago aprobado");
             booking.setStatus(Booking.BookingStatus.CONFIRMED);
             return bookingRepository.save(booking);

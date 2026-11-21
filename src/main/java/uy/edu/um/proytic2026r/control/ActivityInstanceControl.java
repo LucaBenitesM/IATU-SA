@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/instances")
@@ -21,6 +22,12 @@ public class ActivityInstanceControl {
     @PostMapping
     public ResponseEntity<ActivityInstance> crearInstancia(@RequestBody ActivityInstance instance) {
         return ResponseEntity.status(HttpStatus.CREATED).body(activityInstanceService.createInstance(instance));
+    }
+
+    // Fechas futuras con lugares libres de todas las atracciones
+    @GetMapping("/upcoming")
+    public ResponseEntity<List<Map<String, Object>>> proximas() {
+        return ResponseEntity.ok(activityInstanceService.getUpcoming());
     }
 
     @GetMapping("/{id}")

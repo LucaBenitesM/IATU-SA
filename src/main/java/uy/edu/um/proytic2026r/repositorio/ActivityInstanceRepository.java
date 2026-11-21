@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +16,8 @@ import java.util.Optional;
 public interface ActivityInstanceRepository extends JpaRepository<ActivityInstance, Long> {
 
     List<ActivityInstance> findByAtraccionId(Long atraccionId);
+
+    List<ActivityInstance> findByDateTimeAfter(LocalDateTime desde);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select i from ActivityInstance i where i.id = :id")

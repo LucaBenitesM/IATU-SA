@@ -3,6 +3,7 @@ package uy.edu.um.proytic2026r.config;
 import uy.edu.um.proytic2026r.entities.ActivityInstance;
 import uy.edu.um.proytic2026r.entities.Atraccion;
 import uy.edu.um.proytic2026r.entities.Booking;
+import uy.edu.um.proytic2026r.entities.Participant;
 import uy.edu.um.proytic2026r.entities.Prestador;
 import uy.edu.um.proytic2026r.entities.Usuario;
 import uy.edu.um.proytic2026r.repositorio.ActivityInstanceRepository;
@@ -18,6 +19,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 // Carga datos de ejemplo al arrancar, pero SOLO si la base de datos no tiene ningun usuario.
 // Asi quien abre el proyecto con una base vacia encuentra un administrador, un emprendedor
@@ -114,9 +117,23 @@ public class DatosIniciales implements CommandLineRunner {
         reserva.setTotalPrice(cabalgata.getPrice().multiply(BigDecimal.valueOf(2)));
         reserva.setBookingDate(LocalDateTime.now().minusDays(7));
         reserva.setStatus(Booking.BookingStatus.CONFIRMED);
+        List<Participant> personas = new ArrayList<Participant>();
+        personas.add(participante(reserva, "Ana", "Pérez", "12345672", LocalDate.of(1995, 4, 12)));
+        personas.add(participante(reserva, "Lucía", "Pérez", "23456781", LocalDate.of(1998, 9, 3)));
+        reserva.setParticipants(personas);
         reservas.save(reserva);
 
         System.out.println("Datos iniciales cargados: admin@iatu.uy / admin123, ana@iatu.uy / ana123, martin@iatu.uy / martin123");
+    }
+
+    private Participant participante(Booking reserva, String nombre, String apellido, String cedula, LocalDate nacimiento) {
+        Participant p = new Participant();
+        p.setBooking(reserva);
+        p.setFirstName(nombre);
+        p.setLastName(apellido);
+        p.setDocumentId(cedula);
+        p.setBirthDate(nacimiento);
+        return p;
     }
 
     private Usuario usuario(String nombre, String apellido, String email, String clave, String rol) {
