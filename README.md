@@ -6,7 +6,7 @@ IATU-SA es el emprendimiento de software del equipo en el marco del Proyecto TIC
 
 La solución responde a la propuesta de **Uruguay Mnatural (UM)**, una organización vinculada al Ministerio de Turismo en el contexto del proyecto académico. Su propósito es conectar a turistas con empresas y prestadores particulares, facilitando la búsqueda de experiencias, las reservas y los pagos desde un único lugar.
 
-> **Alcance de este README:** describe los requisitos y objetivos previstos en la consigna. Las funcionalidades aquí mencionadas no implican que ya estén implementadas. Las decisiones técnicas y reglas de negocio pendientes se concretarán durante el análisis con el cliente.
+> **Alcance de este README:** las secciones de requisitos describen lo previsto en la consigna. El estado real de cada requisito está en la sección *Estado de los requisitos*, al final de *Ejecución y pruebas*. Las decisiones técnicas y reglas de negocio pendientes se concretarán durante el análisis con el cliente.
 
 ## Problema y objetivo
 
@@ -101,7 +101,7 @@ Los endpoints, parámetros, respuestas, permisos y criterios de cálculo deberá
 | Área | Requerimiento de la propuesta |
 | --- | --- |
 | Backend | Java, Spring y Spring Boot. |
-| Gestión del proyecto | Maven. |
+| Gestión del proyecto | Maven (el docente aceptó usar Gradle). |
 | Frontend | A elección del equipo: HTML, CSS, Thymeleaf, JavaScript, React u otro framework. |
 | Persistencia | Base de datos SQL: PostgreSQL o MySQL. |
 | Arquitectura | Patrón MVC y organización en capas. |
@@ -142,7 +142,82 @@ La documentación y los enlaces correspondientes se incorporarán a medida que s
 
 ## Ejecución y pruebas
 
-Las instrucciones de instalación, configuración de la base de datos, ejecución y pruebas se agregarán cuando se defina la estructura técnica del proyecto. También deberán documentarse las variables de entorno y la configuración de las integraciones externas, sin publicar credenciales en el repositorio.
+### Requisitos
+
+- Java 25 (el proyecto usa una *toolchain* de Gradle, que lo descarga si hace falta).
+- PostgreSQL en el puerto **5433** con una base vacía llamada `proytic2026r`.
+- No hace falta instalar Gradle: se usa el *wrapper* incluido (`gradlew` / `gradlew.bat`).
+
+### Configuración de la base de datos
+
+Por defecto la aplicación se conecta a `jdbc:postgresql://localhost:5433/proytic2026r` con usuario y contraseña `postgres`. Se puede cambiar sin tocar el código con las variables de entorno `DB_URL`, `DB_USER` y `DB_PASSWORD`.
+
+Las tablas **se crean solas** al arrancar (Hibernate, `spring.jpa.hibernate.ddl-auto=update`): no hay que ejecutar ningún script SQL.
+
+### Cómo ejecutar
+
+```
+# Windows
+.\gradlew.bat bootRun
+
+# Linux / macOS
+./gradlew bootRun
+```
+
+Luego abrir <http://localhost:8080/>. El frontend (`src/main/resources/static/index.html`) lo sirve la propia aplicación.
+
+### Cuentas de prueba (ya creadas)
+
+Al arrancar con la base **vacía**, la aplicación carga automáticamente datos de ejemplo (clase `DatosIniciales`, que actúa como script de carga). Si la base ya tiene usuarios, no modifica nada.
+
+| Rol | Email | Contraseña |
+| --- | --- | --- |
+| Administrador | `admin@iatu.uy` | `admin123` |
+| Turista | `ana@iatu.uy` | `ana123` |
+| Prestador | `martin@iatu.uy` | `martin123` |
+
+También carga dos emprendimientos aprobados, cinco actividades con horarios para los próximos días, categorías y tipos de equipamiento, y una reserva pasada confirmada de la turista (sirve para probar las reseñas). Se puede desactivar con `app.datos-iniciales=false`.
+
+Estas contraseñas son solo de demostración.
+
+### Pagos (Mercado Pago)
+
+- **Sin configurar nada**, los pagos usan un **simulador interno** (`/mock-mercadopago`). Tarjetas de prueba: `4242 4242 4242 4242` (aprobada), `4000 0000 0000 0002` (rechazada), `4000 0000 0000 9995` (fondos insuficientes), `4000 0000 0000 0077` (en revisión) y `4000 0000 0000 0119` (servicio no disponible).
+- **Con Mercado Pago de pruebas**: definir las variables de entorno `MP_ACCESS_TOKEN` y `MP_PUBLIC_KEY`, o crear un archivo `application-local.properties` (puede copiarse de `application-local.properties.example`). Ese archivo está en `.gitignore` y **no debe subirse al repositorio**.
+
+### Pruebas automáticas
+
+```
+.\gradlew.bat test
+```
+
+Son pruebas unitarias de los servicios (JUnit 5 y Mockito) sobre reservas, pagos, reseñas, categorías, equipamiento, actividades y la API pública. El test `Proytic2026rApplicationTests` arranca el contexto de Spring y necesita PostgreSQL levantado.
+
+### API pública (solo lectura, sin sesión)
+
+| Endpoint | Descripción |
+| --- | --- |
+| `GET /api/public/providers` | Emprendimientos verificados |
+| `GET /api/public/activities?date=AAAA-MM-DD&department=&locality=` | Actividades con lugares libres de un día |
+| `GET /api/public/top-rated?month=AAAA-MM` | Las tres actividades mejor valoradas del mes por departamento |
+| `GET /api/public/providers/{id}/verification` | Estado de verificación de un emprendimiento |
+| `GET /api/public/activities/search?q=texto` | Búsqueda por palabra clave |
+
+### Estado de los requisitos
+
+**Implementado:** catálogo público sin sesión, registro e inicio de sesión con tres roles, alta y aprobación de prestadores, publicación de actividades con categoría y equipamiento, múltiples fechas y horarios con cupos, reservas con datos de participantes y plazo de pago de 24 horas, pago con Mercado Pago (o simulador) con manejo de rechazos y de servicio no disponible, cancelación con reembolso, reseñas de 1 a 5, administración de categorías y tipos de equipamiento, API pública y pruebas unitarias.
+
+**No implementado:**
+
+- Integración con una API pública de clima (se evaluó y se decidió no incluirla).
+- Modificar una actividad ya publicada.
+- Envío de email de confirmación.
+- Autenticación con Spring Security y contraseñas con hash (el inicio de sesión actual es básico).
+
+### Decisiones técnicas
+
+- **Gradle** en lugar de Maven (confirmado por el docente).
+- Frontend en HTML, CSS y JavaScript puro, en un único archivo.
 
 ## Metodología de trabajo
 
