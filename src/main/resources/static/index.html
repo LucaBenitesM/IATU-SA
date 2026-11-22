@@ -480,6 +480,12 @@
   .crudrow .btn{margin-bottom:1rem}
   .crudin{min-height:38px}
   @media (max-width:700px){.crudrow,.crudrow.nod{grid-template-columns:1fr}}
+  .guestlink{margin-top:1.4rem;text-align:center;color:var(--muted);font-size:.9rem}
+  .guestlink .link{margin-left:.25rem}
+  .gslots{display:grid;gap:.4rem;margin:.6rem 0 1rem}
+  .gslots li{display:flex;justify-content:space-between;align-items:baseline;gap:.8rem;padding:.55rem .85rem;border:1px solid var(--line);border-radius:var(--r2);font-size:.92rem}
+  .gslots b{text-transform:capitalize}
+  .gslots small{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -566,6 +572,7 @@
         <button class="btn block" type="submit">Crear cuenta</button>
         <div class="msg" role="status"></div>
       </form>
+      <p class="guestlink">¿Solo querés mirar? <button type="button" class="link" id="guestBtn">Explorar actividades sin ingresar</button></p>
       <p class="legal">Proyecto TIC 2026</p>
     </div>
   </div>
@@ -577,9 +584,15 @@
       <div class="wordmark"><svg aria-hidden="true"><use href="#i-mark"/></svg>Uruguay Mnatural</div>
       <div class="me">
         <div class="langsw" id="langSwTop" data-nolang role="group" aria-label="Idioma / Language"></div>
-        <div class="avatar" id="avatar"></div>
-        <div class="who"><b id="whoName"></b><small id="whoRole"></small></div>
-        <button class="btn ghost sm" id="logout" type="button"><svg class="i"><use href="#i-logout"/></svg>Salir</button>
+        <div id="userBar" style="display:contents">
+          <div class="avatar" id="avatar"></div>
+          <div class="who"><b id="whoName"></b><small id="whoRole"></small></div>
+          <button class="btn ghost sm" id="logout" type="button"><svg class="i"><use href="#i-logout"/></svg>Salir</button>
+        </div>
+        <div id="guestBar" style="display:contents" hidden>
+          <button class="btn ghost sm" id="guestLogin" type="button">Ingresar</button>
+          <button class="btn sm" id="guestRegister" type="button">Crear cuenta</button>
+        </div>
       </div>
     </div>
   </header>
@@ -1407,7 +1420,11 @@
 "Ya existe un tipo de equipamiento con ese nombre.": "Já existe um tipo de equipamento com esse nome.",
 "No se puede eliminar: hay actividades que usan esta categoría.": "Não é possível excluir: há atividades que usam esta categoria.",
 "No se puede eliminar: hay actividades que usan este equipamiento.": "Não é possível excluir: há atividades que usam este equipamento.",
-"Solo los administradores pueden hacer esto.": "Somente os administradores podem fazer isso."
+"Solo los administradores pueden hacer esto.": "Somente os administradores podem fazer isso.",
+"¿Solo querés mirar?": "Só quer dar uma olhada?",
+"Explorar actividades sin ingresar": "Explorar atividades sem entrar",
+"Próximos horarios": "Próximos horários",
+"Ingresá o creá una cuenta para reservar esta actividad.": "Entre ou crie uma conta para reservar esta atividade."
 },
 "en": {
 "Mapa de Uruguay": "Map of Uruguay",
@@ -1964,7 +1981,11 @@
 "Ya existe un tipo de equipamiento con ese nombre.": "An equipment type with that name already exists.",
 "No se puede eliminar: hay actividades que usan esta categoría.": "Cannot delete: some activities use this category.",
 "No se puede eliminar: hay actividades que usan este equipamiento.": "Cannot delete: some activities use this equipment.",
-"Solo los administradores pueden hacer esto.": "Only administrators can do this."
+"Solo los administradores pueden hacer esto.": "Only administrators can do this.",
+"¿Solo querés mirar?": "Just want to look around?",
+"Explorar actividades sin ingresar": "Browse activities without signing in",
+"Próximos horarios": "Upcoming times",
+"Ingresá o creá una cuenta para reservar esta actividad.": "Sign in or create an account to book this activity."
 }
 };
   var I18N_PATTERNS = [["^No hay lugares suficientes\\. Quedan (\\d+)\\.$", "No hay lugares suficientes. Quedan {n}.", ["n"]],
@@ -2090,6 +2111,9 @@
   ];
   var user = null;
   try { user = JSON.parse(sessionStorage.getItem("user")); } catch (e) { user = null; }
+  // Visitante: explora el catalogo sin iniciar sesion (RF-01)
+  var guest = false;
+  try { guest = sessionStorage.getItem("guest") === "1"; } catch (e) { guest = false; }
 
   var attractions = [];
   var attractionById = {};
@@ -2405,6 +2429,29 @@
     } catch (e) { categories = []; equipmentTypes = []; }
   }
 
+  // Un visitante ve los proximos horarios, pero para reservar tiene que ingresar
+  async function loadGuestSlots(a) {
+    var box = $("#guestBox");
+    if (!box) return;
+    var list = [];
+    try { list = await api("GET", "/api/instances/attraction/" + a.id); } catch (e) { list = []; }
+    var now = Date.now();
+    list = list.filter(function (i) { return new Date(i.dateTime).getTime() > now && i.availablePlaces > 0; });
+    list.sort(function (x, y) { return new Date(x.dateTime) - new Date(y.dateTime); });
+    var html = "<h4>Próximos horarios</h4>";
+    if (list.length) {
+      html += '<ul class="gslots">' + list.map(function (i) {
+        return "<li><b>" + esc(when(i.dateTime)) + "</b><small>" + esc(tt(i.availablePlaces === 1 ? "Quedan {n} lugar" : "Quedan {n} lugares", {n: i.availablePlaces})) + "</small></li>";
+      }).join("") + "</ul>";
+    } else {
+      html += '<p class="muted" style="margin:.4rem 0 1rem">Por ahora no hay horarios con lugares disponibles.</p>';
+    }
+    html += '<p class="muted" style="margin-bottom:.7rem">Ingresá o creá una cuenta para reservar esta actividad.</p>'
+      + '<div class="acts2" style="justify-content:flex-start"><button class="btn ghost sm" type="button" data-guest="login">Ingresar</button>'
+      + '<button class="btn sm" type="button" data-guest="register">Crear cuenta</button></div>';
+    box.innerHTML = html;
+  }
+
   function openDetail(id) {
     var a = attractionById[id];
     if (!a) return;
@@ -2421,7 +2468,7 @@
       }
       prov += "</p></div>";
     }
-    var reserveSlot = user && user.role === "TOURIST" ? '<div class="reserve" id="reserveBox"></div>' : "";
+    var reserveSlot = user && user.role === "TOURIST" ? '<div class="reserve" id="reserveBox"></div>' : (!user ? '<div class="reserve" id="guestBox"></div>' : "");
     $("#dlg").innerHTML = '<div class="dr"><div class="plate">' + plateSvg(a) + photoHtml(a)
       + '<button class="x" type="button" aria-label="Cerrar" data-close>' + icon("x") + "</button></div>"
       + '<div class="body"><div>' + (a.category ? '<span class="eyebrow">' + esc(a.category.name) + "</span>" : "") + '<h3>' + esc(a.name) + '</h3><p class="loc" style="margin-top:.4rem">' + icon("pin") + esc(a.locality) + ", " + esc(a.department) + "</p></div>"
@@ -2432,7 +2479,8 @@
       + '<div class="blk"><h4>Política de cancelación</h4><p>' + esc(cancel) + "</p></div>" + reserveSlot
       + '<div class="blk" id="revBox"><h4>Reseñas</h4></div>' + prov + "</div></div>";
     $("#dlg").showModal();
-    if (reserveSlot) loadReserve(a);
+    if (user && user.role === "TOURIST") loadReserve(a);
+    else if (!user) loadGuestSlots(a);
     loadReviews(a.id);
   }
 
@@ -3032,6 +3080,8 @@
   onSubmit("#loginForm", async function (d) {
     user = await api("POST", "/api/users/login", d);
     sessionStorage.setItem("user", JSON.stringify(user));
+    guest = false;
+    try { sessionStorage.removeItem("guest"); } catch (e) { }
     show();
   });
   onSubmit("#registerForm", async function (d, box, f) {
@@ -3045,13 +3095,42 @@
     show();
   });
 
+  function enterGuest() {
+    guest = true;
+    try { sessionStorage.setItem("guest", "1"); } catch (e) { }
+    show();
+  }
+  function leaveGuest(tab) {
+    guest = false;
+    try { sessionStorage.removeItem("guest"); } catch (e) { }
+    show();
+    $(tab === "register" ? "#tabRegister" : "#tabLogin").click();
+  }
+  $("#guestBtn").addEventListener("click", enterGuest);
+  $("#guestLogin").addEventListener("click", function () { leaveGuest("login"); });
+  $("#guestRegister").addEventListener("click", function () { leaveGuest("register"); });
+  $("#dlg").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-guest]");
+    if (!b) return;
+    $("#dlg").close();
+    leaveGuest(b.getAttribute("data-guest"));
+  });
+
   function show() {
-    $("#auth").hidden = !!user;
-    $("#app").hidden = !user;
+    var inApp = !!user || guest;
+    $("#auth").hidden = inApp;
+    $("#app").hidden = !inApp;
     Object.keys(ROLES).forEach(function (r) { $("#view-" + r).hidden = !user || user.role !== r; });
+    if (!user && guest) $("#view-TOURIST").hidden = false;
+    $("#userBar").hidden = !user;
+    $("#guestBar").hidden = !!user;
+    $("#tTabs").hidden = !user;
     window.scrollTo(0, 0);
     if (typeof helpReset === "function") helpReset();
-    if (!user) return;
+    if (!user) {
+      if (guest) { switchT("explore"); loadTourist(); }
+      return;
+    }
     var full = ((user.firstName || "") + " " + (user.lastName || "")).trim();
     $("#avatar").textContent = initials(full);
     $("#whoName").textContent = full;
