@@ -463,6 +463,23 @@
   .langsw button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
   @media (max-width:600px){dialog.drawer{border-radius:0}.formside{padding:1.6rem 1.1rem 2.2rem}.tabs{display:flex}.tabs button{flex:1;padding:.5rem .6rem}}
   @media (max-width:1000px){.auth{grid-template-columns:1fr}.formside{padding-top:3.6rem}}
+
+  .eyebrow{display:block;font:650 .68rem var(--font);letter-spacing:.09em;text-transform:uppercase;color:var(--clay)}
+  .dr .eyebrow{margin-bottom:.35rem}
+  .eqset{border:1px solid var(--line);border-radius:var(--r2);padding:.7rem .9rem .8rem;margin:0 0 1rem;min-width:0}
+  .eqset legend{font:650 .86rem var(--font);padding:0 .35rem}
+  .eqgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.3rem .8rem}
+  .eqchk{display:flex;align-items:center;gap:.5rem;font-size:.9rem;cursor:pointer;min-height:30px}
+  .eqchk input{width:17px;height:17px;margin:0;accent-color:var(--accent);flex:none}
+  .eqlbl{font-size:.78rem;font-weight:650;color:var(--faint);margin:.55rem 0 .35rem;letter-spacing:.05em;text-transform:uppercase}
+  .chips2{display:flex;flex-wrap:wrap;gap:.4rem}
+  .chips2 li{padding:.2rem .7rem;border:1px solid var(--line-strong);border-radius:99px;font-size:.84rem;background:var(--surface);color:var(--text)}
+  .crudform{margin-bottom:1.2rem}
+  .crudrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto;gap:0 1rem;align-items:end}
+  .crudrow.nod{grid-template-columns:minmax(0,1fr) auto}
+  .crudrow .btn{margin-bottom:1rem}
+  .crudin{min-height:38px}
+  @media (max-width:700px){.crudrow,.crudrow.nod{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -586,6 +603,7 @@
           <h3>Departamento</h3>
           <ul id="depList"></ul>
           <div class="fgrid">
+            <label class="fl"><span>Categoría</span><select id="fCat"><option value="">Todas las categorías</option></select></label>
             <label class="fl"><span>Localidad</span><select id="fLoc"><option value="">Todas las localidades</option></select></label>
             <label class="fl"><span>Fecha de la actividad</span><input type="date" id="fDate"></label>
             <div class="fl"><span>Precio</span><div class="pr"><input type="number" id="fMin" min="0" inputmode="numeric" placeholder="Mín." aria-label="Precio mínimo"><input type="number" id="fMax" min="0" inputmode="numeric" placeholder="Máx." aria-label="Precio máximo"></div></div>
@@ -686,6 +704,7 @@
                 <h4 class="sub">Datos de la atracción</h4>
                 <label class="field"><span>Emprendimiento</span><select name="prestadorId" id="prestadorId"></select></label>
                 <label class="field"><span>Nombre</span><input type="text" name="name" required></label>
+                <label class="field"><span>Categoría</span><select name="categoryId" id="categoryId" required></select></label>
                 <label class="field"><span>Descripción</span><textarea name="description" maxlength="2000" required></textarea></label>
                 <div class="two">
                   <label class="field"><span>Departamento</span><input type="text" name="department" required></label>
@@ -709,7 +728,9 @@
                   <label class="field"><span>Precio ($)</span><input type="number" name="price" min="0" step="0.01" required></label>
                 </div>
                 <label class="field"><span>Edad mínima</span><input type="number" name="minimumAge" min="0"><small>Opcional.</small></label>
-                <label class="field"><span>Requerimientos para participar</span><textarea name="requirements" maxlength="2000"></textarea><small>Equipamiento, estado físico, documentos. El turista lo ve destacado.</small></label>
+                <fieldset class="eqset"><legend>Equipamiento que proporciona el prestador</legend><div class="eqgrid" id="eqProvided"></div></fieldset>
+                <fieldset class="eqset"><legend>Equipamiento que debe llevar el turista</legend><div class="eqgrid" id="eqRequired"></div></fieldset>
+                <label class="field"><span>Requerimientos para participar</span><textarea name="requirements" maxlength="2000"></textarea><small>Estado físico, documentos y otras condiciones. El turista lo ve destacado.</small></label>
                 <label class="switch"><input type="checkbox" name="allowsCancellation" id="allowsCancellation"><span class="track"></span><span>Esta actividad permite cancelación</span></label>
                 <div id="cancelFields" class="two" hidden>
                   <label class="field"><span>Cancelar hasta (min antes)</span><input type="number" name="cancellationDeadlineMinutes" id="deadline" min="0"></label>
@@ -777,6 +798,8 @@
       <div class="tabs" role="tablist">
         <button type="button" role="tab" aria-selected="true" data-atab="requests">Solicitudes</button>
         <button type="button" role="tab" aria-selected="false" data-atab="attractions">Atracciones</button>
+        <button type="button" role="tab" aria-selected="false" data-atab="categories">Categorías</button>
+        <button type="button" role="tab" aria-selected="false" data-atab="equipment">Equipamiento</button>
       </div>
       <div id="atab-requests">
         <div class="filt" id="stFilter" role="group" aria-label="Filtrar por estado">
@@ -789,6 +812,12 @@
       </div>
       <div id="atab-attractions" hidden>
         <div id="adminAttractions"></div>
+      </div>
+      <div id="atab-categories" hidden>
+        <div id="adminCategories" data-kind="cat"></div>
+      </div>
+      <div id="atab-equipment" hidden>
+        <div id="adminEquipment" data-kind="eq"></div>
       </div>
     </section>
 
@@ -1335,7 +1364,50 @@
 "La cédula debe tener 7 u 8 dígitos.": "O documento deve ter 7 ou 8 dígitos.",
 "Hay cédulas repetidas entre los participantes.": "Há documentos repetidos entre os participantes.",
 "La fecha de nacimiento no es válida.": "A data de nascimento não é válida.",
-"{who} no cumple la edad mínima de {n} años.": "{who} não atinge a idade mínima de {n} anos."
+"{who} no cumple la edad mínima de {n} años.": "{who} não atinge a idade mínima de {n} anos.",
+"Categoría": "Categoria",
+"Elegí una categoría": "Escolha uma categoria",
+"Elegí una categoría para la actividad.": "Escolha uma categoria para a atividade.",
+"Todas las categorías": "Todas as categorias",
+"Equipamiento": "Equipamento",
+"Lo proporciona el prestador": "Fornecido pelo prestador",
+"Lo tenés que llevar vos": "Você precisa levar",
+"Equipamiento que proporciona el prestador": "Equipamento fornecido pelo prestador",
+"Equipamiento que debe llevar el turista": "Equipamento que o turista deve levar",
+"Todavía no hay tipos de equipamiento.": "Ainda não há tipos de equipamento.",
+"Estado físico, documentos y otras condiciones. El turista lo ve destacado.": "Condição física, documentos e outras condições. O turista vê isso em destaque.",
+"Categorías": "Categorias",
+"Nueva categoría": "Nova categoria",
+"Nuevo tipo de equipamiento": "Novo tipo de equipamento",
+"Nombre de la categoría": "Nome da categoria",
+"Nombre del tipo de equipamiento": "Nome do tipo de equipamento",
+"Descripción (opcional)": "Descrição (opcional)",
+"Agregar": "Adicionar",
+"Editar": "Editar",
+"Eliminar": "Excluir",
+"Guardar": "Salvar",
+"Cancelar": "Cancelar",
+"¿Seguro?": "Tem certeza?",
+"Todavía no hay categorías": "Ainda não há categorias",
+"Creá la primera para que los emprendedores puedan clasificar sus actividades.": "Crie a primeira para que os empreendedores possam classificar suas atividades.",
+"Todavía no hay tipos de equipamiento": "Ainda não há tipos de equipamento",
+"Creá el primero para que los emprendedores lo asignen a sus actividades.": "Crie o primeiro para que os empreendedores o atribuam às suas atividades.",
+"Categoría creada.": "Categoria criada.",
+"Categoría actualizada.": "Categoria atualizada.",
+"Categoría eliminada.": "Categoria excluída.",
+"Tipo de equipamiento creado.": "Tipo de equipamento criado.",
+"Tipo de equipamiento actualizado.": "Tipo de equipamento atualizado.",
+"Tipo de equipamiento eliminado.": "Tipo de equipamento excluído.",
+"La categoría no existe.": "A categoria não existe.",
+"El tipo de equipamiento no existe.": "O tipo de equipamento não existe.",
+"Un mismo equipamiento no puede ser a la vez proporcionado y requerido.": "Um mesmo equipamento não pode ser fornecido e exigido ao mesmo tempo.",
+"El nombre es obligatorio.": "O nome é obrigatório.",
+"El nombre no puede superar los 60 caracteres.": "O nome não pode ter mais de 60 caracteres.",
+"Ya existe una categoría con ese nombre.": "Já existe uma categoria com esse nome.",
+"Ya existe un tipo de equipamiento con ese nombre.": "Já existe um tipo de equipamento com esse nome.",
+"No se puede eliminar: hay actividades que usan esta categoría.": "Não é possível excluir: há atividades que usam esta categoria.",
+"No se puede eliminar: hay actividades que usan este equipamiento.": "Não é possível excluir: há atividades que usam este equipamento.",
+"Solo los administradores pueden hacer esto.": "Somente os administradores podem fazer isso."
 },
 "en": {
 "Mapa de Uruguay": "Map of Uruguay",
@@ -1850,7 +1922,49 @@
 "La cédula debe tener 7 u 8 dígitos.": "The ID number must have 7 or 8 digits.",
 "Hay cédulas repetidas entre los participantes.": "There are repeated ID numbers among the participants.",
 "La fecha de nacimiento no es válida.": "The date of birth is not valid.",
-"{who} no cumple la edad mínima de {n} años.": "{who} does not meet the minimum age of {n}."
+"{who} no cumple la edad mínima de {n} años.": "{who} does not meet the minimum age of {n}.",
+"Categoría": "Category",
+"Elegí una categoría": "Choose a category",
+"Elegí una categoría para la actividad.": "Choose a category for the activity.",
+"Todas las categorías": "All categories",
+"Equipamiento": "Equipment",
+"Lo proporciona el prestador": "Provided by the operator",
+"Lo tenés que llevar vos": "You need to bring it",
+"Equipamiento que proporciona el prestador": "Equipment provided by the operator",
+"Equipamiento que debe llevar el turista": "Equipment the tourist must bring",
+"Todavía no hay tipos de equipamiento.": "There are no equipment types yet.",
+"Estado físico, documentos y otras condiciones. El turista lo ve destacado.": "Physical condition, documents and other conditions. Tourists see it highlighted.",
+"Categorías": "Categories",
+"Nueva categoría": "New category",
+"Nuevo tipo de equipamiento": "New equipment type",
+"Nombre de la categoría": "Category name",
+"Nombre del tipo de equipamiento": "Equipment type name",
+"Descripción (opcional)": "Description (optional)",
+"Agregar": "Add",
+"Editar": "Edit",
+"Eliminar": "Delete",
+"Guardar": "Save",
+"¿Seguro?": "Are you sure?",
+"Todavía no hay categorías": "There are no categories yet",
+"Creá la primera para que los emprendedores puedan clasificar sus actividades.": "Create the first one so entrepreneurs can classify their activities.",
+"Todavía no hay tipos de equipamiento": "There are no equipment types yet",
+"Creá el primero para que los emprendedores lo asignen a sus actividades.": "Create the first one so entrepreneurs can assign it to their activities.",
+"Categoría creada.": "Category created.",
+"Categoría actualizada.": "Category updated.",
+"Categoría eliminada.": "Category deleted.",
+"Tipo de equipamiento creado.": "Equipment type created.",
+"Tipo de equipamiento actualizado.": "Equipment type updated.",
+"Tipo de equipamiento eliminado.": "Equipment type deleted.",
+"La categoría no existe.": "The category does not exist.",
+"El tipo de equipamiento no existe.": "The equipment type does not exist.",
+"Un mismo equipamiento no puede ser a la vez proporcionado y requerido.": "The same equipment cannot be both provided and required.",
+"El nombre es obligatorio.": "The name is required.",
+"El nombre no puede superar los 60 caracteres.": "The name cannot exceed 60 characters.",
+"Ya existe una categoría con ese nombre.": "A category with that name already exists.",
+"Ya existe un tipo de equipamiento con ese nombre.": "An equipment type with that name already exists.",
+"No se puede eliminar: hay actividades que usan esta categoría.": "Cannot delete: some activities use this category.",
+"No se puede eliminar: hay actividades que usan este equipamiento.": "Cannot delete: some activities use this equipment.",
+"Solo los administradores pueden hacer esto.": "Only administrators can do this."
 }
 };
   var I18N_PATTERNS = [["^No hay lugares suficientes\\. Quedan (\\d+)\\.$", "No hay lugares suficientes. Quedan {n}.", ["n"]],
@@ -1981,7 +2095,8 @@
   var attractionById = {};
   var providersAll = [];
   var plateCache = {};
-  var tourist = {q: "", dep: "", cancel: false, sort: "new", loc: "", date: "", pmin: "", pmax: ""};
+  var tourist = {q: "", dep: "", cancel: false, sort: "new", loc: "", date: "", pmin: "", pmax: "", cat: ""};
+  var categories = [], equipmentTypes = [];
   var adminStatus = "";
 
   function esc(s) {
@@ -2167,7 +2282,7 @@
   function cardHtml(a) {
     return '<article class="card" data-open="' + esc(a.id) + '" tabindex="0" role="button" aria-label="' + esc(tt("Ver detalle de {n}", {n: a.name})) + '">'
       + '<div class="plate">' + plateSvg(a) + photoHtml(a) + '<span class="dept">' + esc(a.department) + "</span></div>"
-      + '<div class="cb"><div class="l1"><h3 class="ttl">' + esc(a.name) + '</h3><span class="price">' + money(a.price) + "</span></div>"
+      + '<div class="cb">' + (a.category ? '<span class="eyebrow">' + esc(a.category.name) + "</span>" : "") + '<div class="l1"><h3 class="ttl">' + esc(a.name) + '</h3><span class="price">' + money(a.price) + "</span></div>"
       + '<p class="loc">' + icon("pin") + esc(a.locality) + "</p>" + rateHtml(a.id)
       + '<p class="desc">' + esc(a.description) + "</p>" + facts(a) + "</div></article>";
   }
@@ -2273,6 +2388,23 @@
     return !isNaN(end) && end <= Date.now();
   }
 
+  function equipHtml(a) {
+    var prov = a.providedEquipment || [], req = a.requiredEquipment || [];
+    if (!prov.length && !req.length) return "";
+    function chips(l) { return '<ul class="chips2">' + l.map(function (e) { return "<li>" + esc(e.name) + "</li>"; }).join("") + "</ul>"; }
+    return '<div class="blk"><h4>Equipamiento</h4>'
+      + (prov.length ? '<p class="eqlbl">Lo proporciona el prestador</p>' + chips(prov) : "")
+      + (req.length ? '<p class="eqlbl">Lo tenés que llevar vos</p>' + chips(req) : "") + "</div>";
+  }
+
+  // Categorias y tipos de equipamiento que administra el admin
+  async function loadClasificacion() {
+    try {
+      categories = await api("GET", "/api/categories");
+      equipmentTypes = await api("GET", "/api/equipment-types");
+    } catch (e) { categories = []; equipmentTypes = []; }
+  }
+
   function openDetail(id) {
     var a = attractionById[id];
     if (!a) return;
@@ -2292,10 +2424,10 @@
     var reserveSlot = user && user.role === "TOURIST" ? '<div class="reserve" id="reserveBox"></div>' : "";
     $("#dlg").innerHTML = '<div class="dr"><div class="plate">' + plateSvg(a) + photoHtml(a)
       + '<button class="x" type="button" aria-label="Cerrar" data-close>' + icon("x") + "</button></div>"
-      + '<div class="body"><div><h3>' + esc(a.name) + '</h3><p class="loc" style="margin-top:.4rem">' + icon("pin") + esc(a.locality) + ", " + esc(a.department) + "</p></div>"
+      + '<div class="body"><div>' + (a.category ? '<span class="eyebrow">' + esc(a.category.name) + "</span>" : "") + '<h3>' + esc(a.name) + '</h3><p class="loc" style="margin-top:.4rem">' + icon("pin") + esc(a.locality) + ", " + esc(a.department) + "</p></div>"
       + '<div class="keys"><div><small>Precio</small><b>' + money(a.price) + "</b></div><div><small>Duración</small><b>" + dur(a.durationMinutes) + "</b></div>"
       + "<div><small>Edad mínima</small><b>" + (a.minimumAge != null ? esc(tt("{n} años", {n: a.minimumAge})) : esc(tt("Sin límite"))) + "</b></div></div>"
-      + '<div class="blk"><h4>Descripción</h4><p>' + esc(a.description) + "</p></div>"
+      + '<div class="blk"><h4>Descripción</h4><p>' + esc(a.description) + "</p></div>" + equipHtml(a)
       + (a.requirements ? '<div class="note">' + icon("alert") + '<div class="blk"><h4>Requerimientos para participar</h4><p>' + esc(a.requirements) + "</p></div></div>" : "")
       + '<div class="blk"><h4>Política de cancelación</h4><p>' + esc(cancel) + "</p></div>" + reserveSlot
       + '<div class="blk" id="revBox"><h4>Reseñas</h4></div>' + prov + "</div></div>";
@@ -2363,6 +2495,7 @@
       if (tourist.dep && a.department !== tourist.dep) return false;
       if (tourist.cancel && !a.allowsCancellation) return false;
       if (tourist.loc && a.locality !== tourist.loc) return false;
+      if (tourist.cat && !(a.category && String(a.category.id) === tourist.cat)) return false;
       if (pr.min !== null && price < pr.min) return false;
       if (pr.max !== null && price > pr.max) return false;
       if (tourist.date && (instDates[a.id] || []).indexOf(tourist.date) < 0) return false;
@@ -2387,6 +2520,18 @@
     $("#fLoc").innerHTML = html;
   }
 
+  // Solo se ofrecen las categorias que tienen alguna atraccion publicada
+  function renderCats() {
+    var used = {};
+    attractions.forEach(function (a) { if (a.category) used[a.category.id] = true; });
+    if (tourist.cat && !used[tourist.cat]) tourist.cat = "";
+    var html = '<option value="">' + esc(tt("Todas las categorías")) + "</option>";
+    categories.forEach(function (c) {
+      if (used[c.id]) html += '<option value="' + esc(c.id) + '"' + (String(c.id) === tourist.cat ? " selected" : "") + ">" + esc(c.name) + "</option>";
+    });
+    $("#fCat").innerHTML = html;
+  }
+
   function renderRail() {
     var counts = {}, deps = [];
     attractions.forEach(function (a) {
@@ -2400,6 +2545,7 @@
       html += '<li><button type="button" data-dep="' + esc(d) + '" aria-pressed="' + (tourist.dep === d) + '">' + esc(d) + " <small>" + counts[d] + "</small></button></li>";
     });
     $("#depList").innerHTML = html;
+    renderCats();
     renderLocs();
   }
 
@@ -2423,6 +2569,7 @@
     $("#count").textContent = "";
     try {
       await loadAttractions();
+      await loadClasificacion();
       renderRail();
       renderTourist();
     } catch (e) {
@@ -2434,12 +2581,13 @@
   $("#sort").addEventListener("change", function () { tourist.sort = this.value; renderTourist(); });
   $("#fCancel").addEventListener("change", function () { tourist.cancel = this.checked; renderTourist(); });
   $("#fLoc").addEventListener("change", function () { tourist.loc = this.value; renderTourist(); });
+  $("#fCat").addEventListener("change", function () { tourist.cat = this.value; renderTourist(); });
   $("#fDate").addEventListener("change", function () { tourist.date = this.value; renderTourist(); });
   $("#fMin").addEventListener("input", function () { tourist.pmin = this.value; renderTourist(); });
   $("#fMax").addEventListener("input", function () { tourist.pmax = this.value; renderTourist(); });
   $("#clearF").addEventListener("click", function () {
     tourist.q = ""; tourist.dep = ""; tourist.cancel = false;
-    tourist.loc = ""; tourist.date = ""; tourist.pmin = ""; tourist.pmax = "";
+    tourist.loc = ""; tourist.date = ""; tourist.pmin = ""; tourist.pmax = ""; tourist.cat = "";
     $("#q").value = ""; $("#fCancel").checked = false;
     $("#fDate").value = ""; $("#fMin").value = ""; $("#fMax").value = "";
     renderRail(); renderTourist();
@@ -2471,16 +2619,37 @@
     }).join("");
   }
 
+  function fillProviderClass() {
+    $("#categoryId").innerHTML = '<option value="">' + esc(tt("Elegí una categoría")) + "</option>"
+      + categories.map(function (c) { return '<option value="' + esc(c.id) + '">' + esc(c.name) + "</option>"; }).join("");
+    function boxes(n) {
+      return equipmentTypes.map(function (e) {
+        return '<label class="eqchk"><input type="checkbox" name="' + n + '" value="' + esc(e.id) + '"><span>' + esc(e.name) + "</span></label>";
+      }).join("") || '<span class="muted">' + esc(tt("Todavía no hay tipos de equipamiento.")) + "</span>";
+    }
+    $("#eqProvided").innerHTML = boxes("eqp");
+    $("#eqRequired").innerHTML = boxes("eqr");
+  }
+  // Un mismo equipamiento no puede ser a la vez proporcionado y requerido
+  $("#attractionForm").addEventListener("change", function (e) {
+    var t = e.target;
+    if (!t || t.type !== "checkbox" || !t.checked || (t.name !== "eqp" && t.name !== "eqr")) return;
+    var other = t.name === "eqp" ? "eqr" : "eqp";
+    $$('#attractionForm input[name="' + other + '"]').forEach(function (i) { if (i.value === t.value) i.checked = false; });
+  });
+
   async function loadProvider() {
     $("#provHello").textContent = tt("Hola, {name}", {name: user.firstName});
     $("#myAttractions").innerHTML = skeletons(3);
     try {
       providersAll = await api("GET", "/api/providers");
       await loadAttractions();
+      await loadClasificacion();
     } catch (e) {
       toast(e.message, true);
       return;
     }
+    fillProviderClass();
     var providers = providersAll.filter(mine);
     renderFlow(providers);
     $("#myProviders").innerHTML = providers.map(function (p) {
@@ -2598,6 +2767,7 @@
 
   onSubmit("#attractionForm", async function (d, box, f) {
     var cancel = !!d.allowsCancellation;
+    if (!d.categoryId) throw new Error(tt("Elegí una categoría para la actividad."));
     var auto = $("#autoSched").checked;
     if (auto) {
       var check = schedGet("a");
@@ -2612,6 +2782,9 @@
       price: Number(d.price),
       minimumAge: d.minimumAge === "" ? null : Number(d.minimumAge),
       requirements: d.requirements,
+      category: {id: Number(d.categoryId)},
+      providedEquipment: $$("#eqProvided input:checked").map(function (i) { return {id: Number(i.value)}; }),
+      requiredEquipment: $$("#eqRequired input:checked").map(function (i) { return {id: Number(i.value)}; }),
       allowsCancellation: cancel,
       cancellationDeadlineMinutes: cancel ? Number(d.cancellationDeadlineMinutes) : null,
       refundPercentage: cancel ? Number(d.refundPercentage) : null,
@@ -2708,7 +2881,99 @@
     $("#stAttr").textContent = attractions.length;
     renderAdminProviders();
     renderAdminAttractions();
+    await loadClasificacion();
+    renderCrud("cat");
+    renderCrud("eq");
   }
+
+  // ----- Administracion de categorias y tipos de equipamiento (RF-16 y RF-17) -----
+  var CRUD = {
+    cat: {url: "/api/categories", box: "#adminCategories", desc: true, nameLbl: "Nombre de la categoría", head: "Nueva categoría",
+          emptyT: "Todavía no hay categorías", emptyP: "Creá la primera para que los emprendedores puedan clasificar sus actividades.",
+          ok: ["Categoría creada.", "Categoría actualizada.", "Categoría eliminada."]},
+    eq: {url: "/api/equipment-types", box: "#adminEquipment", desc: false, nameLbl: "Nombre del tipo de equipamiento", head: "Nuevo tipo de equipamiento",
+         emptyT: "Todavía no hay tipos de equipamiento", emptyP: "Creá el primero para que los emprendedores lo asignen a sus actividades.",
+         ok: ["Tipo de equipamiento creado.", "Tipo de equipamiento actualizado.", "Tipo de equipamiento eliminado."]}
+  };
+  var crudEdit = {cat: null, eq: null};
+  var crudSure = {cat: null, eq: null};
+  function crudList(k) { return k === "cat" ? categories : equipmentTypes; }
+
+  function renderCrud(kind) {
+    var c = CRUD[kind], list = crudList(kind);
+    var html = '<form class="panel crudform" data-crud="' + kind + '" novalidate><h4 class="sub">' + c.head + "</h4>"
+      + '<div class="crudrow' + (c.desc ? "" : " nod") + '"><label class="field"><span>' + c.nameLbl + '</span><input type="text" name="name" maxlength="60" required></label>'
+      + (c.desc ? '<label class="field"><span>Descripción (opcional)</span><input type="text" name="description" maxlength="300"></label>' : "")
+      + '<button class="btn" type="submit">Agregar</button></div><div class="msg" role="status"></div></form>';
+    if (!list.length) {
+      html += '<div class="grid">' + emptyHtml("list", c.emptyT, c.emptyP) + "</div>";
+    } else {
+      var rows = list.map(function (x) {
+        var editing = crudEdit[kind] === x.id, sure = crudSure[kind] === x.id;
+        var name = editing ? '<input type="text" class="crudin" data-f="name" maxlength="60" value="' + esc(x.name) + '" aria-label="' + c.nameLbl + '">' : "<strong>" + esc(x.name) + "</strong>";
+        var desc = c.desc ? '<td data-l="Descripción">' + (editing ? '<input type="text" class="crudin" data-f="description" maxlength="300" value="' + esc(x.description || "") + '" aria-label="Descripción">' : esc(x.description || "")) + "</td>" : "";
+        var acts = editing
+          ? '<button class="btn sm" type="button" data-crud-act="save" data-id="' + esc(x.id) + '">Guardar</button><button class="btn ghost sm" type="button" data-crud-act="cancel" data-id="' + esc(x.id) + '">Cancelar</button>'
+          : '<button class="btn ghost sm" type="button" data-crud-act="edit" data-id="' + esc(x.id) + '">Editar</button><button class="btn danger sm" type="button" data-crud-act="del" data-id="' + esc(x.id) + '">' + (sure ? "¿Seguro?" : "Eliminar") + "</button>";
+        return '<tr><td data-l="' + c.nameLbl + '">' + name + "</td>" + desc + '<td class="acts">' + acts + "</td></tr>";
+      }).join("");
+      html += '<div class="tblwrap"><table><thead><tr><th scope="col">' + c.nameLbl + '</th>' + (c.desc ? '<th scope="col">Descripción</th>' : "") + '<th scope="col"><span class="sr">Acciones</span></th></tr></thead><tbody>' + rows + "</tbody></table></div>";
+    }
+    $(c.box).innerHTML = html;
+  }
+
+  async function refreshCrud(kind) {
+    var list = await api("GET", CRUD[kind].url);
+    if (kind === "cat") categories = list; else equipmentTypes = list;
+    crudEdit[kind] = null; crudSure[kind] = null;
+    renderCrud(kind);
+  }
+
+  ["#adminCategories", "#adminEquipment"].forEach(function (sel) {
+    var host = $(sel), kind = host.getAttribute("data-kind"), c = CRUD[kind];
+    host.addEventListener("submit", async function (e) {
+      var f = e.target.closest("form[data-crud]");
+      if (!f) return;
+      e.preventDefault();
+      var box = f.querySelector(".msg"), b = f.querySelector("button[type=submit]");
+      if (!f.checkValidity()) { f.reportValidity(); return; }
+      b.disabled = true;
+      try {
+        await api("POST", c.url + "?adminId=" + encodeURIComponent(user.id), {name: f.elements.name.value, description: c.desc ? f.elements.description.value : null});
+        toast(c.ok[0]);
+        await refreshCrud(kind);
+      } catch (err) { msg(box, err.message, false); b.disabled = false; }
+    });
+    host.addEventListener("click", async function (e) {
+      var b = e.target.closest("[data-crud-act]");
+      if (!b) return;
+      var act = b.getAttribute("data-crud-act"), id = Number(b.getAttribute("data-id"));
+      if (act === "edit") { crudEdit[kind] = id; crudSure[kind] = null; renderCrud(kind); return; }
+      if (act === "cancel") { crudEdit[kind] = null; renderCrud(kind); return; }
+      if (act === "del" && crudSure[kind] !== id) {
+        crudSure[kind] = id; renderCrud(kind);
+        setTimeout(function () { if (crudSure[kind] === id) { crudSure[kind] = null; renderCrud(kind); } }, 4000);
+        return;
+      }
+      b.disabled = true;
+      try {
+        if (act === "save") {
+          var row = b.closest("tr"), body = {};
+          row.querySelectorAll(".crudin").forEach(function (i) { body[i.getAttribute("data-f")] = i.value; });
+          await api("PUT", c.url + "/" + id + "?adminId=" + encodeURIComponent(user.id), body);
+          toast(c.ok[1]);
+        } else {
+          await api("DELETE", c.url + "/" + id + "?adminId=" + encodeURIComponent(user.id));
+          toast(c.ok[2]);
+        }
+        await refreshCrud(kind);
+      } catch (err) {
+        toast(err.message, true);
+        crudSure[kind] = null;
+        b.disabled = false;
+      }
+    });
+  });
 
   $("#adminProviders").addEventListener("click", async function (e) {
     var t = e.target.closest("[data-toggle]");
@@ -2739,9 +3004,9 @@
   });
   $$("[data-atab]").forEach(function (b) {
     b.addEventListener("click", function () {
+      var sel = b.getAttribute("data-atab");
       $$("[data-atab]").forEach(function (x) { x.setAttribute("aria-selected", String(x === b)); });
-      $("#atab-requests").hidden = b.getAttribute("data-atab") !== "requests";
-      $("#atab-attractions").hidden = b.getAttribute("data-atab") !== "attractions";
+      ["requests", "attractions", "categories", "equipment"].forEach(function (n) { $("#atab-" + n).hidden = n !== sel; });
     });
   });
 

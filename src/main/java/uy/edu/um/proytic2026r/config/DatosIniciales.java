@@ -3,12 +3,16 @@ package uy.edu.um.proytic2026r.config;
 import uy.edu.um.proytic2026r.entities.ActivityInstance;
 import uy.edu.um.proytic2026r.entities.Atraccion;
 import uy.edu.um.proytic2026r.entities.Booking;
+import uy.edu.um.proytic2026r.entities.Category;
+import uy.edu.um.proytic2026r.entities.EquipmentType;
 import uy.edu.um.proytic2026r.entities.Participant;
 import uy.edu.um.proytic2026r.entities.Prestador;
 import uy.edu.um.proytic2026r.entities.Usuario;
 import uy.edu.um.proytic2026r.repositorio.ActivityInstanceRepository;
 import uy.edu.um.proytic2026r.repositorio.AtraccionRepositorio;
 import uy.edu.um.proytic2026r.repositorio.BookingRepository;
+import uy.edu.um.proytic2026r.repositorio.CategoryRepository;
+import uy.edu.um.proytic2026r.repositorio.EquipmentTypeRepository;
 import uy.edu.um.proytic2026r.repositorio.PrestadorRepositorio;
 import uy.edu.um.proytic2026r.repositorio.UsuarioRepositorio;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +24,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 // Carga datos de ejemplo al arrancar, pero SOLO si la base de datos no tiene ningun usuario.
@@ -34,23 +39,32 @@ public class DatosIniciales implements CommandLineRunner {
     private final AtraccionRepositorio atracciones;
     private final ActivityInstanceRepository instancias;
     private final BookingRepository reservas;
+    private final CategoryRepository categorias;
+    private final EquipmentTypeRepository equipamientos;
 
     @Value("${app.datos-iniciales:true}")
     private boolean activo;
 
     public DatosIniciales(UsuarioRepositorio usuarios, PrestadorRepositorio prestadores,
                           AtraccionRepositorio atracciones, ActivityInstanceRepository instancias,
-                          BookingRepository reservas) {
+                          BookingRepository reservas, CategoryRepository categorias,
+                          EquipmentTypeRepository equipamientos) {
         this.usuarios = usuarios;
         this.prestadores = prestadores;
         this.atracciones = atracciones;
         this.instancias = instancias;
         this.reservas = reservas;
+        this.categorias = categorias;
+        this.equipamientos = equipamientos;
     }
 
     @Override
     public void run(String... args) {
-        if (!activo || usuarios.count() > 0) {
+        if (!activo) {
+            return;
+        }
+        cargarClasificacion();
+        if (usuarios.count() > 0) {
             return;
         }
 
@@ -100,6 +114,12 @@ public class DatosIniciales implements CommandLineRunner {
                 "Salida en lancha hasta la isla de Lobos para ver la colonia.",
                 "Rocha", "La Paloma", 150, "2200", 6, null, true, 1440, 80);
 
+        clasificar(cabalgata, "Cabalgatas", new String[] {"Caballo y montura", "Casco"}, new String[] {"Calzado cerrado"});
+        clasificar(trekking, "Trekking y senderismo", new String[] {"Agua"}, new String[] {"Calzado de trekking", "Protector solar"});
+        clasificar(vinedo, "Enoturismo", new String[] {}, new String[] {});
+        clasificar(kayak, "Deportes náuticos", new String[] {"Kayak y remo", "Chaleco salvavidas"}, new String[] {"Protector solar"});
+        clasificar(avistaje, "Avistaje de fauna", new String[] {"Chaleco salvavidas", "Binoculares"}, new String[] {"Ropa de abrigo"});
+
         Atraccion[] todas = new Atraccion[] {cabalgata, trekking, vinedo, kayak, avistaje};
         LocalDate hoy = LocalDate.now();
         for (Atraccion a : todas) {
@@ -124,6 +144,44 @@ public class DatosIniciales implements CommandLineRunner {
         reservas.save(reserva);
 
         System.out.println("Datos iniciales cargados: admin@iatu.uy / admin123, ana@iatu.uy / ana123, martin@iatu.uy / martin123");
+    }
+
+    // Categorias y tipos de equipamiento estandarizados: se cargan si las tablas estan vacias
+    private void cargarClasificacion() {
+        if (categorias.count() == 0) {
+            String[] nombres = {"Cabalgatas", "Trekking y senderismo", "Enoturismo", "Deportes náuticos",
+                    "Avistaje de fauna", "Gastronomía rural"};
+            for (String n : nombres) {
+                Category c = new Category();
+                c.setName(n);
+                categorias.save(c);
+            }
+        }
+        if (equipamientos.count() == 0) {
+            String[] nombres = {"Casco", "Chaleco salvavidas", "Caballo y montura", "Kayak y remo", "Binoculares",
+                    "Bastones de trekking", "Agua", "Calzado cerrado", "Calzado de trekking", "Ropa de abrigo",
+                    "Impermeable", "Protector solar", "Gorra o sombrero"};
+            for (String n : nombres) {
+                EquipmentType e = new EquipmentType();
+                e.setName(n);
+                equipamientos.save(e);
+            }
+        }
+    }
+
+    private void clasificar(Atraccion a, String categoria, String[] provisto, String[] requerido) {
+        a.setCategory(categorias.findByNameIgnoreCase(categoria).orElse(null));
+        a.setProvidedEquipment(equipos(provisto));
+        a.setRequiredEquipment(equipos(requerido));
+        atracciones.save(a);
+    }
+
+    private java.util.Set<EquipmentType> equipos(String[] nombres) {
+        java.util.Set<EquipmentType> conjunto = new LinkedHashSet<EquipmentType>();
+        for (String n : nombres) {
+            equipamientos.findByNameIgnoreCase(n).ifPresent(conjunto::add);
+        }
+        return conjunto;
     }
 
     private Participant participante(Booking reserva, String nombre, String apellido, String cedula, LocalDate nacimiento) {

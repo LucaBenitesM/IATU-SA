@@ -1,14 +1,20 @@
 package uy.edu.um.proytic2026r.servicio;
 
 import uy.edu.um.proytic2026r.entities.Atraccion;
+import uy.edu.um.proytic2026r.entities.Category;
+import uy.edu.um.proytic2026r.entities.EquipmentType;
 import uy.edu.um.proytic2026r.entities.Prestador;
 import uy.edu.um.proytic2026r.repositorio.AtraccionRepositorio;
+import uy.edu.um.proytic2026r.repositorio.CategoryRepository;
+import uy.edu.um.proytic2026r.repositorio.EquipmentTypeRepository;
 import uy.edu.um.proytic2026r.repositorio.PrestadorRepositorio;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Base64;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,10 +23,15 @@ public class AtraccionServicio {
 
     private final AtraccionRepositorio atraccionrepositorio;
     private final PrestadorRepositorio prestadorRepositorio;
+    private final CategoryRepository categoryRepository;
+    private final EquipmentTypeRepository equipmentTypeRepository;
 
-    public AtraccionServicio(AtraccionRepositorio atraccionrepositorio, PrestadorRepositorio prestadorRepositorio) {
+    public AtraccionServicio(AtraccionRepositorio atraccionrepositorio, PrestadorRepositorio prestadorRepositorio,
+                             CategoryRepository categoryRepository, EquipmentTypeRepository equipmentTypeRepository) {
         this.atraccionrepositorio = atraccionrepositorio;
         this.prestadorRepositorio = prestadorRepositorio;
+        this.categoryRepository = categoryRepository;
+        this.equipmentTypeRepository = equipmentTypeRepository;
     }
 
     public Atraccion crearAtraccion(Atraccion a) {
@@ -47,7 +58,47 @@ public class AtraccionServicio {
             a.setRefundPercentage(null);
         }
         a.setPrestador(p);
+        a.setCategory(resolverCategoria(a.getCategory()));
+        Set<EquipmentType> provisto = resolverEquipos(a.getProvidedEquipment());
+        Set<EquipmentType> requerido = resolverEquipos(a.getRequiredEquipment());
+        for (EquipmentType p1 : provisto) {
+            for (EquipmentType r1 : requerido) {
+                if (p1.getId().equals(r1.getId())) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            "Un mismo equipamiento no puede ser a la vez proporcionado y requerido.");
+                }
+            }
+        }
+        a.setProvidedEquipment(provisto);
+        a.setRequiredEquipment(requerido);
         return atraccionrepositorio.save(a);
+    }
+
+    // La categoria es obligatoria al publicar una actividad (RF-12)
+    private Category resolverCategoria(Category recibida) {
+        if (recibida == null || recibida.getId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Elegí una categoría para la actividad.");
+        }
+        Category c = categoryRepository.findById(recibida.getId()).orElse(null);
+        if (c == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La categoría no existe.");
+        }
+        return c;
+    }
+
+    private Set<EquipmentType> resolverEquipos(Set<EquipmentType> recibidos) {
+        Set<EquipmentType> resueltos = new LinkedHashSet<EquipmentType>();
+        if (recibidos == null) {
+            return resueltos;
+        }
+        for (EquipmentType e : recibidos) {
+            EquipmentType real = e == null || e.getId() == null ? null : equipmentTypeRepository.findById(e.getId()).orElse(null);
+            if (real == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El tipo de equipamiento no existe.");
+            }
+            resueltos.add(real);
+        }
+        return resueltos;
     }
 
     public List<Atraccion> listarAtracciones() {

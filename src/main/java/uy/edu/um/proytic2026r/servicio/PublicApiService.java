@@ -219,6 +219,7 @@ public class PublicApiService {
         fila.put("attractionId", a.getId());
         fila.put("name", a.getName());
         fila.put("description", a.getDescription());
+        fila.put("category", a.getCategory() == null ? null : a.getCategory().getName());
         fila.put("department", a.getDepartment());
         fila.put("locality", a.getLocality());
         fila.put("price", a.getPrice());

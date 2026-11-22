@@ -3,6 +3,8 @@ package uy.edu.um.proytic2026r.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "atracciones")
@@ -29,6 +31,23 @@ public class Atraccion {
     @ManyToOne
     @JoinColumn(name = "prestador_id")
     private Prestador prestador;
+
+    // Categoria de la actividad (RF-12) y equipamiento estandarizado (RF-03/RF-17)
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private Category category;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "atraccion_equipo_provisto",
+            joinColumns = @JoinColumn(name = "atraccion_id"),
+            inverseJoinColumns = @JoinColumn(name = "tipo_equipamiento_id"))
+    private Set<EquipmentType> providedEquipment = new LinkedHashSet<EquipmentType>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "atraccion_equipo_requerido",
+            joinColumns = @JoinColumn(name = "atraccion_id"),
+            inverseJoinColumns = @JoinColumn(name = "tipo_equipamiento_id"))
+    private Set<EquipmentType> requiredEquipment = new LinkedHashSet<EquipmentType>();
 
     // Imagen opcional de la actividad (base64). No se envia en el JSON de la actividad:
     // se pide aparte en GET /api/attractions/{id}/image
@@ -65,6 +84,13 @@ public class Atraccion {
     public void setRefundPercentage(Integer refundPercentage) { this.refundPercentage = refundPercentage; }
     public Prestador getPrestador() { return prestador; }
     public void setPrestador(Prestador prestador) { this.prestador = prestador; }
+
+    public Category getCategory() { return category; }
+    public void setCategory(Category category) { this.category = category; }
+    public Set<EquipmentType> getProvidedEquipment() { return providedEquipment; }
+    public void setProvidedEquipment(Set<EquipmentType> providedEquipment) { this.providedEquipment = providedEquipment; }
+    public Set<EquipmentType> getRequiredEquipment() { return requiredEquipment; }
+    public void setRequiredEquipment(Set<EquipmentType> requiredEquipment) { this.requiredEquipment = requiredEquipment; }
 
     @JsonIgnore
     public String getImageData() { return imageData; }
